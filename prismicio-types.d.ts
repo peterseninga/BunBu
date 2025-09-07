@@ -70,9 +70,9 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 type PageDocumentDataSlicesSlice =
-  | TestimonialsSlice
   | FeaturesSlice
-  | HeroSlice;
+  | HeroSlice
+  | RichTextSlice;
 
 /**
  * Content for Page documents
