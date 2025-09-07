@@ -65,15 +65,14 @@ section:deep(.richbutton) {
 
 <style scoped>
 section:deep(.image) {
-  @apply max-w-4xl;
+  @apply mx-auto my-8 w-full sm:w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2;
   margin: 2em auto;
-  max-height: fit-content;
   }
 </style>
 
 <style scoped>
 .horizontal {
-  @apply grid grid-cols-2;
+  @apply grid grid-cols-1 md:grid-cols-2 gap-8;
   text-align: start;
   justify-items: center;
   align-items: start;
@@ -81,6 +80,7 @@ section:deep(.image) {
 
 .horizontal2 {
   padding-top: 120px;
+  @apply text-center place-items-center justify-center;
 }
 
 .default {

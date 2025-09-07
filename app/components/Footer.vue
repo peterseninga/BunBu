@@ -4,21 +4,25 @@ const settings = useSettings();
 
 <template>
     <Bounded as="footer" class="!py-4 md:!py-6 lg:!py-8 bg-[#004b5a] text-white">
-        <div class="flex gap-4 items-center justify-between flex-col sm:flex-row">   
-        <Logo />
-        <p class="text-xs">
-            © {{ new Date().getFullYear() }} {{ settings?.data.site_title }}
-        </p>
-        <nav>
-            <ul class="flex">
+        <div class="flex flex-col items-center justify-between sm:flex-row gap-4">   
+        <a href="#top" >
+            <Logo class="order-1 sm:order-1"/>
+        </a>
+        
+        <nav class="order-2 sm:order-3">
+            <ul class="flex flex-wrap sm:flex-col sm:items-start items-center gap-2">
                 <li v-for="item of settings?.data.navigation"
                     :key="item.label ?? ''">
-                 <PrismicLink :field="item.link" class="p-4">
+                 <PrismicLink :field="item.link" class="p-2 sm:p-4 hover:underline">
                     {{ item.label }}
                  </PrismicLink> 
                 </li> 
             </ul>
         </nav>
+        
+        <p class="text-xs order-3 sm:order-2">
+            © {{ new Date().getFullYear() }} {{ settings?.data.site_title }}
+        </p>
        </div>
     </Bounded>
 </template>
