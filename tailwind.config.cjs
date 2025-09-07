@@ -2,6 +2,7 @@ module.exports = {
     content: [
         './components/**/*.{ts,vue,js}',
         './slices/**/*.{ts,vue,js}',
+        './slices/Hero/**/*.{ts,vue,js}',
     ],
     theme: {
         extend: {
