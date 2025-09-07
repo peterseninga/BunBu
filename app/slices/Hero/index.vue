@@ -65,8 +65,9 @@ section:deep(.richbutton) {
 
 <style scoped>
 section:deep(.image) {
-  max-width: auto;
+  @apply max-w-4xl;
   margin: 2em auto;
+  max-height: fit-content;
   }
 </style>
 
