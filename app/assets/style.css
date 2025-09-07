@@ -1,0 +1,23 @@
+.heading {
+    @apply font-serif leading-tight tracking-tight font-heading text-slate-700;
+}
+
+.heading--sm {
+    @apply text-2xl md:text-3xl;
+}
+
+.heading--md {
+    @apply text-3xl md:text-4xl;
+}
+
+.heading--lg {
+    @apply text-4xl md:text-5xl;
+}
+
+.heading--xl {
+    @apply text-5xl md:text-6xl;
+}
+
+.button {
+    @apply block w-fit bg-cyan-700 hover:bg-cyan-800 transition-colors duration-200 ease-in-out py-3 px-[39px] font-heading rounded-full text-white tracking-wider;
+}
