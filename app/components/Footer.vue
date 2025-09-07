@@ -5,9 +5,9 @@ const settings = useSettings();
 <template>
     <Bounded as="footer" class="!py-4 md:!py-6 lg:!py-8 bg-[#004b5a] text-white">
         <div class="flex flex-col items-center justify-between sm:flex-row gap-4">   
-        <a href="#top" >
+        <NuxtLink to="/">
             <Logo class="order-1 sm:order-1"/>
-        </a>
+        </NuxtLink>
         
         <nav class="order-2 sm:order-3">
             <ul class="flex flex-wrap sm:flex-col sm:items-start items-center gap-2">

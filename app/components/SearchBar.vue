@@ -1,4 +1,3 @@
-<!-- components/SearchBar.vue -->
 <template>
   <div class="relative w-full sm:w-64">
     <input
