@@ -1,0 +1,35 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"heading": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading1",
+						"content": {
+							"text": "Impressum",
+							"spans": []
+						},
+						"direction": "ltr"
+					}
+				]
+			},
+			"body": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Consectetur id mollit do magna pariatur tempor et anim commodo est id veniam do minim. Fugiat in aliqua fugiat do quis id ipsum.Consectetur id mollit do magna pariatur tempor et anim commodo est id veniam do minim. Fugiat in aliqua fugiat do quis id ipsum.Consectetur id mollit do magna pariatur tempor et anim commodo est id veniam do minim. Fugiat in aliqua fugiat do quis id ipsum.Consectetur id mollit do magna pariatur tempor et anim commodo est id veniam do minim. Fugiat in aliqua fugiat do quis id ipsum.Consectetur id mollit do magna pariatur tempor et anim commodo est id veniam do minim. Fugiat in aliqua fugiat do quis id ipsum.Consectetur id mollit do magna pariatur tempor et anim commodo est id veniam do minim. Fugiat in aliqua fugiat do quis id ipsum.Consectetur id mollit do magna pariatur tempor et anim commodo est id veniam do minim. Fugiat in aliqua fugiat do quis id ipsum.Consectetur id mollit do magna pariatur tempor et anim commodo est id veniam do minim. Fugiat in aliqua fugiat do quis id ipsum.Consectetur id mollit do magna pariatur tempor et anim commodo est id veniam do minim. Fugiat in aliqua fugiat do quis id ipsum.Consectetur id mollit do magna pariatur tempor et anim commodo est id veniam do minim. Fugiat in aliqua fugiat do quis id ipsum.Consectetur id mollit do magna pariatur tempor et anim commodo est id veniam do minim. Fugiat in aliqua fugiat do quis id ipsum.",
+							"spans": []
+						},
+						"direction": "ltr"
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

@@ -106,6 +106,8 @@ export type FilternavDocument<Lang extends string = string> =
   >;
 
 type PageDocumentDataSlicesSlice =
+  | ImpressumSlice
+  | AboutSlice
   | WelcomeSlice
   | BookListSlice
   | FeaturesSlice
@@ -275,6 +277,88 @@ export type AllDocumentTypes =
   | FilternavDocument
   | PageDocument
   | SettingsDocument;
+
+/**
+ * Primary content in *About → Default → Primary*
+ */
+export interface AboutSliceDefaultPrimary {
+  /**
+   * Heading field in *About → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: about.default.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * Links field in *About → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: about.default.primary.links
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  links: prismic.RichTextField;
+
+  /**
+   * Person field in *About → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: about.default.primary.person
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  person: prismic.ImageField<never>;
+
+  /**
+   * Rechts field in *About → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: about.default.primary.rechts
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  rechts: prismic.RichTextField;
+
+  /**
+   * Logo field in *About → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: about.default.primary.logo
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  logo: prismic.ImageField<never>;
+}
+
+/**
+ * Default variation for About Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<AboutSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *About*
+ */
+type AboutSliceVariation = AboutSliceDefault;
+
+/**
+ * About Shared Slice
+ *
+ * - **API ID**: `about`
+ * - **Description**: About
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type AboutSlice = prismic.SharedSlice<"about", AboutSliceVariation>;
 
 /**
  * Item in *BookList → Default → Primary → Content*
@@ -692,48 +776,58 @@ type HeroSliceVariation = HeroSliceDefault | HeroSliceHorizontal;
 export type HeroSlice = prismic.SharedSlice<"hero", HeroSliceVariation>;
 
 /**
- * Primary content in *RichText → Default → Primary*
+ * Primary content in *Impressum → Default → Primary*
  */
-export interface RichTextSliceDefaultPrimary {
+export interface ImpressumSliceDefaultPrimary {
   /**
-   * Content field in *RichText → Default → Primary*
+   * Heading field in *Impressum → Default → Primary*
    *
    * - **Field Type**: Rich Text
-   * - **Placeholder**: Lorem ipsum...
-   * - **API ID Path**: rich_text.default.primary.content
+   * - **Placeholder**: *None*
+   * - **API ID Path**: impressum.default.primary.heading
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
-  content: prismic.RichTextField;
+  heading: prismic.RichTextField;
+
+  /**
+   * Body field in *Impressum → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: impressum.default.primary.body
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  body: prismic.RichTextField;
 }
 
 /**
- * Default variation for RichText Slice
+ * Default variation for Impressum Slice
  *
  * - **API ID**: `default`
- * - **Description**: RichText
+ * - **Description**: Default
  * - **Documentation**: https://prismic.io/docs/slices
  */
-export type RichTextSliceDefault = prismic.SharedSliceVariation<
+export type ImpressumSliceDefault = prismic.SharedSliceVariation<
   "default",
-  Simplify<RichTextSliceDefaultPrimary>,
+  Simplify<ImpressumSliceDefaultPrimary>,
   never
 >;
 
 /**
- * Slice variation for *RichText*
+ * Slice variation for *Impressum*
  */
-type RichTextSliceVariation = RichTextSliceDefault;
+type ImpressumSliceVariation = ImpressumSliceDefault;
 
 /**
- * RichText Shared Slice
+ * Impressum Shared Slice
  *
- * - **API ID**: `rich_text`
- * - **Description**: RichText
+ * - **API ID**: `impressum`
+ * - **Description**: Impressum
  * - **Documentation**: https://prismic.io/docs/slices
  */
-export type RichTextSlice = prismic.SharedSlice<
-  "rich_text",
-  RichTextSliceVariation
+export type ImpressumSlice = prismic.SharedSlice<
+  "impressum",
+  ImpressumSliceVariation
 >;
 
 /**
@@ -831,6 +925,10 @@ declare module "@prismicio/client" {
       SettingsDocumentData,
       SettingsDocumentDataNavigationItem,
       AllDocumentTypes,
+      AboutSlice,
+      AboutSliceDefaultPrimary,
+      AboutSliceVariation,
+      AboutSliceDefault,
       BookListSlice,
       BookListSliceDefaultPrimaryContentItem,
       BookListSliceDefaultPrimaryContent2Item,
@@ -848,10 +946,10 @@ declare module "@prismicio/client" {
       HeroSliceVariation,
       HeroSliceDefault,
       HeroSliceHorizontal,
-      RichTextSlice,
-      RichTextSliceDefaultPrimary,
-      RichTextSliceVariation,
-      RichTextSliceDefault,
+      ImpressumSlice,
+      ImpressumSliceDefaultPrimary,
+      ImpressumSliceVariation,
+      ImpressumSliceDefault,
       WelcomeSlice,
       WelcomeSliceDefaultPrimary,
       WelcomeSliceVariation,
