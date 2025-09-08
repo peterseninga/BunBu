@@ -69,7 +69,11 @@ type ContentRelationshipFieldWithData<
   >;
 }[Exclude<TCustomType[number], string>["id"]];
 
-type PageDocumentDataSlicesSlice = FeaturesSlice | HeroSlice;
+type PageDocumentDataSlicesSlice =
+  | WelcomeSlice
+  | BookListSlice
+  | FeaturesSlice
+  | HeroSlice;
 
 /**
  * Content for Page documents
@@ -232,6 +236,163 @@ export type SettingsDocument<Lang extends string = string> =
   >;
 
 export type AllDocumentTypes = PageDocument | SettingsDocument;
+
+/**
+ * Item in *BookList → Default → Primary → Content*
+ */
+export interface BookListSliceDefaultPrimaryContentItem {
+  /**
+   * Cover image field in *BookList → Default → Primary → Content*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.content[].cover_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  cover_image: prismic.ImageField<never>;
+
+  /**
+   * Titel field in *BookList → Default → Primary → Content*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.content[].titel
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  titel: prismic.RichTextField;
+
+  /**
+   * Author field in *BookList → Default → Primary → Content*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.content[].author
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  author: prismic.RichTextField;
+}
+
+/**
+ * Item in *BookList → Default → Primary → Content_2*
+ */
+export interface BookListSliceDefaultPrimaryContent2Item {
+  /**
+   * Cover image field in *BookList → Default → Primary → Content_2*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.content_2[].cover_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  cover_image: prismic.ImageField<never>;
+
+  /**
+   * Title field in *BookList → Default → Primary → Content_2*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.content_2[].title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * Author field in *BookList → Default → Primary → Content_2*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.content_2[].author
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  author: prismic.RichTextField;
+}
+
+/**
+ * Primary content in *BookList → Default → Primary*
+ */
+export interface BookListSliceDefaultPrimary {
+  /**
+   * Heading field in *BookList → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * Heading_2 field in *BookList → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.heading_2
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading_2: prismic.RichTextField;
+
+  /**
+   * Content field in *BookList → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.content[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  content: prismic.GroupField<Simplify<BookListSliceDefaultPrimaryContentItem>>;
+
+  /**
+   * Content_2 field in *BookList → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.content_2[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  content_2: prismic.GroupField<
+    Simplify<BookListSliceDefaultPrimaryContent2Item>
+  >;
+
+  /**
+   * Mehr laden field in *BookList → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.mehr_laden
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  mehr_laden: prismic.RichTextField;
+}
+
+/**
+ * Default variation for BookList Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type BookListSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<BookListSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *BookList*
+ */
+type BookListSliceVariation = BookListSliceDefault;
+
+/**
+ * BookList Shared Slice
+ *
+ * - **API ID**: `book_list`
+ * - **Description**: BookList
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type BookListSlice = prismic.SharedSlice<
+  "book_list",
+  BookListSliceVariation
+>;
 
 /**
  * Item in *Features → Default → Primary → Features*
@@ -536,6 +697,71 @@ export type RichTextSlice = prismic.SharedSlice<
   RichTextSliceVariation
 >;
 
+/**
+ * Primary content in *Welcome → Default → Primary*
+ */
+export interface WelcomeSliceDefaultPrimary {
+  /**
+   * Background_image field in *Welcome → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: welcome.default.primary.background_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  background_image: prismic.ImageField<never>;
+
+  /**
+   * Heading field in *Welcome → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: welcome.default.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * Description field in *Welcome → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: welcome.default.primary.description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+}
+
+/**
+ * Default variation for Welcome Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type WelcomeSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<WelcomeSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Welcome*
+ */
+type WelcomeSliceVariation = WelcomeSliceDefault;
+
+/**
+ * Welcome Shared Slice
+ *
+ * - **API ID**: `welcome`
+ * - **Description**: Welcome
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type WelcomeSlice = prismic.SharedSlice<
+  "welcome",
+  WelcomeSliceVariation
+>;
+
 declare module "@prismicio/client" {
   interface CreateClient {
     (
@@ -564,6 +790,12 @@ declare module "@prismicio/client" {
       SettingsDocumentData,
       SettingsDocumentDataNavigationItem,
       AllDocumentTypes,
+      BookListSlice,
+      BookListSliceDefaultPrimaryContentItem,
+      BookListSliceDefaultPrimaryContent2Item,
+      BookListSliceDefaultPrimary,
+      BookListSliceVariation,
+      BookListSliceDefault,
       FeaturesSlice,
       FeaturesSliceDefaultPrimaryFeaturesItem,
       FeaturesSliceDefaultPrimary,
@@ -579,6 +811,10 @@ declare module "@prismicio/client" {
       RichTextSliceDefaultPrimary,
       RichTextSliceVariation,
       RichTextSliceDefault,
+      WelcomeSlice,
+      WelcomeSliceDefaultPrimary,
+      WelcomeSliceVariation,
+      WelcomeSliceDefault,
     };
   }
 }

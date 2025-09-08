@@ -1,5 +1,5 @@
 .heading {
-    @apply font-serif leading-tight tracking-tight font-heading text-slate-700;
+    @apply font-heading leading-tight tracking-tight text-black;
 }
 
 .heading--sm {
@@ -20,4 +20,16 @@
 
 .button {
     @apply block w-fit bg-cyan-700 hover:bg-cyan-800 transition-colors duration-200 ease-in-out py-3 px-[39px] font-heading rounded-full text-white tracking-wider;
+}
+
+.body {
+    @apply font-body leading-tight tracking-tight text-black;
+}
+
+.body--sm {
+    @apply text-[16px] md:text-[18x] lg:text-[20px];
+}
+
+.body-author {
+    @apply text-[12px] md:text-[14px] lg:text-[15px];
 }

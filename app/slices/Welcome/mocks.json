@@ -1,0 +1,53 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"background_image": {
+				"__TYPE__": "ImageContent",
+				"origin": {
+					"id": "main",
+					"url": "https://images.unsplash.com/photo-1491975474562-1f4e30bc9468",
+					"width": 4000,
+					"height": 6000
+				},
+				"url": "https://images.unsplash.com/photo-1491975474562-1f4e30bc9468?rect=0%2C2458%2C4000%2C1085&w=992&h=269",
+				"width": 992,
+				"height": 269,
+				"edit": {
+					"zoom": 1,
+					"crop": {
+						"x": 0,
+						"y": 2458
+					},
+					"background": "transparent"
+				},
+				"alt": "them",
+				"thumbnails": {}
+			},
+			"heading": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading1",
+						"content": {
+							"text": "Industrial"
+						}
+					}
+				]
+			},
+			"description": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Commodo veniam enim enim laboris enim."
+						}
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

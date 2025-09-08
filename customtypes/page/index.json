@@ -27,6 +27,12 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "welcome": {
+              "type": "SharedSlice"
+            },
+            "book_list": {
+              "type": "SharedSlice"
+            },
             "features": {
               "type": "SharedSlice"
             },
