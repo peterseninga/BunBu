@@ -69,6 +69,42 @@ type ContentRelationshipFieldWithData<
   >;
 }[Exclude<TCustomType[number], string>["id"]];
 
+/**
+ * Content for Filternav documents
+ */
+interface FilternavDocumentData {
+  /**
+   * Filter Format field in *Filternav*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **Default Value**: Buch
+   * - **API ID Path**: filternav.filter_format
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  filter_format: prismic.SelectField<
+    "Buch" | "Braille" | "E-Book" | "Hörbuch",
+    "filled"
+  >;
+}
+
+/**
+ * Filternav document from Prismic
+ *
+ * - **API ID**: `filternav`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type FilternavDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<FilternavDocumentData>,
+    "filternav",
+    Lang
+  >;
+
 type PageDocumentDataSlicesSlice =
   | WelcomeSlice
   | BookListSlice
@@ -235,7 +271,10 @@ export type SettingsDocument<Lang extends string = string> =
     Lang
   >;
 
-export type AllDocumentTypes = PageDocument | SettingsDocument;
+export type AllDocumentTypes =
+  | FilternavDocument
+  | PageDocument
+  | SettingsDocument;
 
 /**
  * Item in *BookList → Default → Primary → Content*
@@ -783,6 +822,8 @@ declare module "@prismicio/client" {
 
   namespace Content {
     export type {
+      FilternavDocument,
+      FilternavDocumentData,
       PageDocument,
       PageDocumentData,
       PageDocumentDataSlicesSlice,

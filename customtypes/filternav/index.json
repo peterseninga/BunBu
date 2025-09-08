@@ -1,0 +1,20 @@
+{
+  "format": "custom",
+  "id": "filternav",
+  "label": "Filternav",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "filter_format": {
+        "type": "Select",
+        "config": {
+          "label": "Filter Format",
+          "placeholder": "",
+          "options": ["Buch", "Braille", "E-Book", "Hörbuch"],
+          "default_value": "Buch"
+        }
+      }
+    }
+  }
+}
