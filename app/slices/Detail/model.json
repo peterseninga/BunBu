@@ -1,0 +1,97 @@
+{
+  "id": "detail",
+  "type": "SharedSlice",
+  "name": "Detail",
+  "description": "Detail",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "cover": {
+          "type": "Image",
+          "config": {
+            "label": "Cover",
+            "constraint": {
+              "width": 348
+            },
+            "thumbnails": []
+          }
+        },
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "heading2"
+          }
+        },
+        "author": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Author",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "paragraph,em,strong"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "paragraph,em,strong"
+          }
+        },
+        "formate": {
+          "type": "Group",
+          "config": {
+            "label": "Formate",
+            "repeat": true,
+            "fields": {
+              "format": {
+                "type": "Text",
+                "config": {
+                  "label": "Format",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        },
+        "kategorien": {
+          "type": "Group",
+          "config": {
+            "label": "Kategorien",
+            "repeat": true,
+            "fields": {
+              "label": {
+                "type": "Text",
+                "config": {
+                  "label": "Label",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        },
+        "beschreibung": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Beschreibung",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "paragraph,strong"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

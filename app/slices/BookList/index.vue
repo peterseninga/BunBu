@@ -19,29 +19,34 @@ defineProps(
 			<div class="layout">
 				<PrismicText :field="slice.primary.heading" wrapper="h2" class="h heading heading--lg" />
 				<div class="done">
-					<div v-for="item in slice.primary.content" class="book-card">
+					<!-- NuxtLink to .book noch anpassen, denn .book gibts noch nicht haha -->
+					<NuxtLink to="/detailpage" v-for="item in slice.primary.content" class="book-card">
 						<PrismicImage :field="item.cover_image" class="book-image" />
 						<div class="book-info">
-							<PrismicText :field="item.titel" wrapper="h5" class="hed body body--sm" />
-							<PrismicText :field="item.author" wrapper="section" class="body body-author" />
+							<PrismicText :field="item.titel" wrapper="h5" class="hed body--sm" />
+							<PrismicText :field="item.author"  />
 						</div>
-					</div>
+					</NuxtLink>
 				</div>
-				<PrismicText :field="slice.primary.mehr_laden" wrapper="section" class="body body-author"/>
+				<NuxtLink to="/about" class="hover:underline">
+					<PrismicText :field="slice.primary.mehr_laden"/>
+				</NuxtLink>
 			</div>
 			
 			<div class="layout ">
 					<PrismicText :field="slice.primary.heading_2" wrapper="h2" class="h heading heading--lg" />
 					<div class="done layout-left">
-						<div v-for="item in slice.primary.content_2" class="book-card bottom audio">
+						<NuxtLink to="/.book" v-for="item in slice.primary.content_2" class="book-card bottom audio">
 							<PrismicImage :field="item.cover_image" class="book-image"/>
 							<div class="book-info">
-								<PrismicText :field="item.title" wrapper="h5" class="hed body body--sm"/>
-								<PrismicText :field="item.author" wrapper="section" class="body body-author"/>
+								<PrismicText :field="item.title" wrapper="h5" class="hed body--sm"/>
+								<PrismicText :field="item.author" />
 							</div>
-						</div>
+						</NuxtLink>
 					</div>
-					<PrismicText :field="slice.primary.mehr_laden" wrapper="section" class="body body-author"/>
+					<NuxtLink to="/impressum" class="hover:underline">
+						<PrismicText :field="slice.primary.mehr_laden" />
+					</NuxtLink>
 				</div>
 				</div>
 
@@ -76,7 +81,7 @@ defineProps(
 }
 
 .book-card {
-	@apply flex flex-row place-items-center gap-4 sm:w-[300px] md:w-[350px] lg:w-[400px] bg-[rgba(0,75,90,0.1)] rounded-lg p-4;
+	@apply flex flex-row place-items-center gap-4 sm:w-[400px] md:w-[500px] lg:w-[500px] bg-[rgba(0,75,90,0.1)] rounded-lg p-4;
 }
 
 .bottom {

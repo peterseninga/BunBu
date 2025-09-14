@@ -23,7 +23,7 @@ const props = defineProps(
     <div class="content">
 		<PrismicImage :field="slice.primary.background_image" class="img"/>
 		<PrismicRichText :field="slice.primary.heading" wrapper="h1" class="h heading"/>
-		<PrismicRichText :field="slice.primary.description"/>
+		<PrismicRichText :field="slice.primary.description" class="body--sm"/>
 	</div>
   </section>
 </template>

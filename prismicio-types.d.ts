@@ -70,23 +70,96 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 /**
+ * Item in *Filternav → Format*
+ */
+export interface FilternavDocumentDataFormatItem {
+  /**
+   * item_label field in *Filternav → Format*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: filternav.format[].item_label
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  item_label: prismic.Repeatable<
+    prismic.LinkField<string, string, unknown, prismic.FieldState, never>
+  >;
+}
+
+/**
+ * Item in *Filternav → Themen*
+ */
+export interface FilternavDocumentDataThemenItem {
+  /**
+   * Titel field in *Filternav → Themen*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: filternav.themen[].titel
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  titel: prismic.RichTextField;
+
+  /**
+   * Subtopic field in *Filternav → Themen*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: filternav.themen[].subtopic
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  subtopic: prismic.Repeatable<
+    prismic.LinkField<string, string, unknown, prismic.FieldState, never>
+  >;
+}
+
+/**
  * Content for Filternav documents
  */
 interface FilternavDocumentData {
   /**
-   * Filter Format field in *Filternav*
+   * Format_heading field in *Filternav*
    *
-   * - **Field Type**: Select
+   * - **Field Type**: Rich Text
    * - **Placeholder**: *None*
-   * - **Default Value**: Buch
-   * - **API ID Path**: filternav.filter_format
+   * - **API ID Path**: filternav.format_heading
    * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/fields/select
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
-  filter_format: prismic.SelectField<
-    "Buch" | "Braille" | "E-Book" | "Hörbuch",
-    "filled"
-  >;
+  format_heading: prismic.RichTextField;
+
+  /**
+   * Format field in *Filternav*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: filternav.format[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  format: prismic.GroupField<Simplify<FilternavDocumentDataFormatItem>>;
+
+  /**
+   * Themen_heading field in *Filternav*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: filternav.themen_heading
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  themen_heading: prismic.RichTextField;
+
+  /**
+   * Themen field in *Filternav*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: filternav.themen[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  themen: prismic.GroupField<Simplify<FilternavDocumentDataThemenItem>>;
 }
 
 /**
@@ -106,6 +179,7 @@ export type FilternavDocument<Lang extends string = string> =
   >;
 
 type PageDocumentDataSlicesSlice =
+  | DetailSlice
   | ImpressumSlice
   | AboutSlice
   | WelcomeSlice
@@ -518,6 +592,140 @@ export type BookListSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Item in *Detail → Default → Primary → Formate*
+ */
+export interface DetailSliceDefaultPrimaryFormateItem {
+  /**
+   * Format field in *Detail → Default → Primary → Formate*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detail.default.primary.formate[].format
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  format: prismic.KeyTextField;
+}
+
+/**
+ * Item in *Detail → Default → Primary → Kategorien*
+ */
+export interface DetailSliceDefaultPrimaryKategorienItem {
+  /**
+   * Label field in *Detail → Default → Primary → Kategorien*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detail.default.primary.kategorien[].label
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  label: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *Detail → Default → Primary*
+ */
+export interface DetailSliceDefaultPrimary {
+  /**
+   * Cover field in *Detail → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detail.default.primary.cover
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  cover: prismic.ImageField<never>;
+
+  /**
+   * Title field in *Detail → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detail.default.primary.title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * Author field in *Detail → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detail.default.primary.author
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  author: prismic.RichTextField;
+
+  /**
+   * Description field in *Detail → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detail.default.primary.description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+
+  /**
+   * Formate field in *Detail → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detail.default.primary.formate[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  formate: prismic.GroupField<Simplify<DetailSliceDefaultPrimaryFormateItem>>;
+
+  /**
+   * Kategorien field in *Detail → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detail.default.primary.kategorien[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  kategorien: prismic.GroupField<
+    Simplify<DetailSliceDefaultPrimaryKategorienItem>
+  >;
+
+  /**
+   * Beschreibung field in *Detail → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detail.default.primary.beschreibung
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  beschreibung: prismic.RichTextField;
+}
+
+/**
+ * Default variation for Detail Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type DetailSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<DetailSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Detail*
+ */
+type DetailSliceVariation = DetailSliceDefault;
+
+/**
+ * Detail Shared Slice
+ *
+ * - **API ID**: `detail`
+ * - **Description**: Detail
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type DetailSlice = prismic.SharedSlice<"detail", DetailSliceVariation>;
+
+/**
  * Item in *Features → Default → Primary → Features*
  */
 export interface FeaturesSliceDefaultPrimaryFeaturesItem {
@@ -918,6 +1126,8 @@ declare module "@prismicio/client" {
     export type {
       FilternavDocument,
       FilternavDocumentData,
+      FilternavDocumentDataFormatItem,
+      FilternavDocumentDataThemenItem,
       PageDocument,
       PageDocumentData,
       PageDocumentDataSlicesSlice,
@@ -935,6 +1145,12 @@ declare module "@prismicio/client" {
       BookListSliceDefaultPrimary,
       BookListSliceVariation,
       BookListSliceDefault,
+      DetailSlice,
+      DetailSliceDefaultPrimaryFormateItem,
+      DetailSliceDefaultPrimaryKategorienItem,
+      DetailSliceDefaultPrimary,
+      DetailSliceVariation,
+      DetailSliceDefault,
       FeaturesSlice,
       FeaturesSliceDefaultPrimaryFeaturesItem,
       FeaturesSliceDefaultPrimary,

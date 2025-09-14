@@ -16,7 +16,7 @@ const { slice } = defineProps(
 
 const formattedText = asHTML(slice.primary.rechts).replace(
 	"<strong>Moin, ich bin Inga</strong>",
-	'<strong><span style="color: #b15300;">Moin, ich bin Inga</span></strong>'
+	'<strong><span style="color: #8f4200;">Moin, ich bin Inga</span></strong>'
 );
 
 console.log(asHTML(slice.primary.rechts));
