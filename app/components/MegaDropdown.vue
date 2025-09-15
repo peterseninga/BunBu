@@ -22,13 +22,8 @@
               class="format-item"
               @click="selectFormat(format)"
             >
-              <span class="format-name">{{ format.name }}</span>
-              <span 
-                class="format-count" 
-                :class="{ zero: format.count === 0 }"
-              >
-                {{ format.count }}
-              </span>
+              <h4 class="format-heading"> {{ format.name }} 
+                <span class="format-count-grey"> ({{ format.count }}) </span></h4>
             </div>
           </div>
         </div>
@@ -126,13 +121,11 @@ const defaultCategories: Category[] = [
     ]
   },
   {
-    title: 'Beziehung & Lebenswelten',
+    title: 'Herausfordernde Themen',
     items: [
-      'Freundschaft & Familie',
-      'Behinderung & Lebenswelten',
-      'Tiere',
-      'Soziale Medien',
-      'Coolness'
+      'Gewalt & Missbrauch',
+      'Diskriminierung',
+      'Mobbing'
     ]
   },
   {
@@ -153,11 +146,13 @@ const defaultCategories: Category[] = [
     ]
   },
   {
-    title: 'Herausfordernde Themen',
+    title: 'Beziehung & Lebenswelten',
     items: [
-      'Gewalt & Missbrauch',
-      'Diskriminierung',
-      'Mobbing'
+      'Freundschaft & Familie',
+      'Behinderung & Lebenswelten',
+      'Tiere',
+      'Soziale Medien',
+      'Coolness'
     ]
   },
   {
@@ -230,13 +225,23 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
 .mega-navbar {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 50;
-  width: 100%;
+  width: max-content;
   display: flex;
-  justify-content: right;
-  margin-right: 25%;
+  justify-content: center;
+  padding-top: 2rem;
 }
 
 .menu-container {
@@ -249,43 +254,39 @@ onUnmounted(() => {
 .menu-item {
   position: relative;
   cursor: pointer;
+  text-decoration: underline;
 }
 
 .menu-label {
-  color: white;
   font-weight: 500;
   font-size: 1.1rem;
   padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  transition: all 0.3s ease;
+  border-radius: 15px 15px 0 0;
   display: inline-block;
   position: relative;
   user-select: none;
 }
 
+.menu-item.active,
 .menu-label:hover {
   text-decoration: underline;
-  background: white;
   color: black;
-  border-radius: 15px 15px 0 0;
+  background: white;
+  border-radius: 0.75rem 0.75rem 0 0;
 }
 
 .menu-label::after {
   margin-left: 0.5rem;
   font-size: 0.8rem;
-  transition: transform 0.3s ease;
-}
-
-.menu-item.active .menu-label::after {
-  transform: rotate(180deg);
 }
 
 .mega-dropdown {
+  overflow-inline: hidden;
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
-  min-width: fit-content;
+  width: 1265px;
   transform: translateX(-50%);
   background: white;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -299,14 +300,15 @@ onUnmounted(() => {
 .mega-dropdown.show {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(0);
+  transform: translateX(-51%) translateY(0);
 }
 
 .dropdown-content {
   display: grid;
-  grid-template-columns: repeat(6, max-content);
+  grid-template-columns: repeat(3, 350px);
   gap: 2rem;
   padding: 2rem;
+  margin-left: 40px;
   max-height: 80vh;
   overflow-y: auto;
 }
@@ -327,12 +329,13 @@ onUnmounted(() => {
 }
 
 .dropdown-column li {
-  padding: 0.5rem 0;
+  padding: 0.25rem 0;
   color: #374151;
   cursor: pointer;
   transition: all 0.2s ease;
   border-radius: 0.25rem;
   padding-left: 0.5rem;
+  font-size: 0.9rem;
 }
 
 .dropdown-column li:hover {
@@ -342,9 +345,13 @@ onUnmounted(() => {
 }
 
 .format-dropdown {
+  overflow-inline: hidden;
   position: absolute;
   top: 100%;
   left: 0;
+  right: 0;
+  width: 1265px;
+  height: 497px;
   transform: translateX(-50%);
   background: white;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -353,22 +360,32 @@ onUnmounted(() => {
   visibility: hidden;
   transform: translateX(-50%) translateY(-10px);
   z-index: 999;
-  min-width: fit-content;
 }
+
+.format-heading {
+  color: #004b5a;         /* Blau wie bei Themen */
+  font-size: 1.1rem;
+  font-weight: 600;       /* Fett */
+  cursor: pointer;
+  display: inline-block;
+}
+
+
 
 .format-dropdown.show {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(0);
+  transform: translateX(-40.15%) translateY(0);
 }
 
 .format-content {
-  display: grid;
-  grid-template-columns: repeat(4, 250px);
+  display: flex;
+  grid-template-columns: repeat(4, 100px);
   max-height: 80vh;
-  gap: 1rem;
+  gap: 2rem;
+  text-align: center;
   padding: 2rem;
-  overflow-y: auto;
+  justify-content: center;
 }
 
 .format-item {
@@ -378,8 +395,7 @@ onUnmounted(() => {
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border: 1px solid #e5e7eb;
+
 }
 
 .format-item:hover {
@@ -402,6 +418,12 @@ onUnmounted(() => {
   font-weight: 600;
   min-width: 25px;
   text-align: center;
+}
+
+.format-count-grey {
+  color: #6b7280;
+  font-weight: normal;
+  margin-left: 0.5rem;
 }
 
 .format-count.zero {
