@@ -22,7 +22,11 @@ export default defineNuxtConfig({
 
   css: ['@fontsource-variable/mulish', '@fontsource/marcellus', '~/assets/style.css'],
 
-  modules: ['@nuxt/eslint', '@nuxtjs/prismic', '@nuxtjs/tailwindcss'],
+  modules: ['@nuxt/eslint', '@nuxtjs/prismic', '@nuxtjs/tailwindcss', '@nuxtjs/supabase'],
+
+  supabase: {
+    redirect: false
+  },
 
   prismic: {
     endpoint: apiEndpoint || repositoryName,
