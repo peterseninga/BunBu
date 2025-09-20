@@ -7,6 +7,7 @@ export const components = defineSliceZoneComponents({
   about: defineAsyncComponent(() => import("./About/index.vue")),
   book_list: defineAsyncComponent(() => import("./BookList/index.vue")),
   detail: defineAsyncComponent(() => import("./Detail/index.vue")),
+  detailslice: defineAsyncComponent(() => import("./Detailslice/index.vue")),
   features: defineAsyncComponent(() => import("./Features/index.vue")),
   hero: defineAsyncComponent(() => import("./Hero/index.vue")),
   impressum: defineAsyncComponent(() => import("./Impressum/index.vue")),

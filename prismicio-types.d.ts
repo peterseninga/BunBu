@@ -70,6 +70,132 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 /**
+ * Item in *book → Format*
+ */
+export interface BookDocumentDataFormatItem {
+  /**
+   * formaat field in *book → Format*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book.format[].formaat
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  formaat: prismic.KeyTextField;
+}
+
+/**
+ * Item in *book → Categories*
+ */
+export interface BookDocumentDataCategoriesItem {
+  /**
+   * category field in *book → Categories*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book.categories[].category
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  category: prismic.KeyTextField;
+}
+
+type BookDocumentDataSlicesSlice = DetailsliceSlice;
+
+/**
+ * Content for book documents
+ */
+interface BookDocumentData {
+  /**
+   * title field in *book*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book.title
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * author field in *book*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book.author
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  author: prismic.RichTextField;
+
+  /**
+   * Description field in *book*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book.description
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+
+  /**
+   * cover_url field in *book*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book.cover_url
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  cover_url: prismic.KeyTextField;
+
+  /**
+   * Format field in *book*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book.format[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  format: prismic.GroupField<Simplify<BookDocumentDataFormatItem>>;
+
+  /**
+   * Categories field in *book*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book.categories[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  categories: prismic.GroupField<Simplify<BookDocumentDataCategoriesItem>>;
+
+  /**
+   * Slice Zone field in *book*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<BookDocumentDataSlicesSlice>;
+}
+
+/**
+ * book document from Prismic
+ *
+ * - **API ID**: `book`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type BookDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<Simplify<BookDocumentData>, "book", Lang>;
+
+/**
  * Item in *Filternav → Format*
  */
 export interface FilternavDocumentDataFormatItem {
@@ -348,6 +474,7 @@ export type SettingsDocument<Lang extends string = string> =
   >;
 
 export type AllDocumentTypes =
+  | BookDocument
   | FilternavDocument
   | PageDocument
   | SettingsDocument;
@@ -724,6 +851,135 @@ type DetailSliceVariation = DetailSliceDefault;
  * - **Documentation**: https://prismic.io/docs/slices
  */
 export type DetailSlice = prismic.SharedSlice<"detail", DetailSliceVariation>;
+
+/**
+ * Item in *Detailslice → Default → Primary → kategorien*
+ */
+export interface DetailsliceSliceDefaultPrimaryKategorienItem {
+  /**
+   * label field in *Detailslice → Default → Primary → kategorien*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detailslice.default.primary.kategorien[].label
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  label: prismic.KeyTextField;
+}
+
+/**
+ * Item in *Detailslice → Default → Primary → formate*
+ */
+export interface DetailsliceSliceDefaultPrimaryFormateItem {
+  /**
+   * format field in *Detailslice → Default → Primary → formate*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detailslice.default.primary.formate[].format
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  format: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *Detailslice → Default → Primary*
+ */
+export interface DetailsliceSliceDefaultPrimary {
+  /**
+   * kategorien field in *Detailslice → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detailslice.default.primary.kategorien[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  kategorien: prismic.GroupField<
+    Simplify<DetailsliceSliceDefaultPrimaryKategorienItem>
+  >;
+
+  /**
+   * formate field in *Detailslice → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detailslice.default.primary.formate[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  formate: prismic.GroupField<
+    Simplify<DetailsliceSliceDefaultPrimaryFormateItem>
+  >;
+
+  /**
+   * beschreibung field in *Detailslice → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detailslice.default.primary.beschreibung
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  beschreibung: prismic.RichTextField;
+
+  /**
+   * author field in *Detailslice → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detailslice.default.primary.author
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  author: prismic.RichTextField;
+
+  /**
+   * title field in *Detailslice → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detailslice.default.primary.title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * cover_url field in *Detailslice → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: detailslice.default.primary.cover_url
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  cover_url: prismic.KeyTextField;
+}
+
+/**
+ * Default variation for Detailslice Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type DetailsliceSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<DetailsliceSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Detailslice*
+ */
+type DetailsliceSliceVariation = DetailsliceSliceDefault;
+
+/**
+ * Detailslice Shared Slice
+ *
+ * - **API ID**: `detailslice`
+ * - **Description**: Detailslice
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type DetailsliceSlice = prismic.SharedSlice<
+  "detailslice",
+  DetailsliceSliceVariation
+>;
 
 /**
  * Item in *Features → Default → Primary → Features*
@@ -1124,6 +1380,11 @@ declare module "@prismicio/client" {
 
   namespace Content {
     export type {
+      BookDocument,
+      BookDocumentData,
+      BookDocumentDataFormatItem,
+      BookDocumentDataCategoriesItem,
+      BookDocumentDataSlicesSlice,
       FilternavDocument,
       FilternavDocumentData,
       FilternavDocumentDataFormatItem,
@@ -1151,6 +1412,12 @@ declare module "@prismicio/client" {
       DetailSliceDefaultPrimary,
       DetailSliceVariation,
       DetailSliceDefault,
+      DetailsliceSlice,
+      DetailsliceSliceDefaultPrimaryKategorienItem,
+      DetailsliceSliceDefaultPrimaryFormateItem,
+      DetailsliceSliceDefaultPrimary,
+      DetailsliceSliceVariation,
+      DetailsliceSliceDefault,
       FeaturesSlice,
       FeaturesSliceDefaultPrimaryFeaturesItem,
       FeaturesSliceDefaultPrimary,

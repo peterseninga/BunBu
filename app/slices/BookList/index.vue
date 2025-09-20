@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { Content } from "@prismicio/client";
 
+
+
+
 // The array passed to `getSliceComponentProps` is purely optional.
 // Consider it as a visual hint for you when templating your slice.
 defineProps(
@@ -20,7 +23,7 @@ defineProps(
 				<PrismicText :field="slice.primary.heading" wrapper="h2" class="h heading heading--lg" />
 				<div class="done">
 					<!-- NuxtLink to .book noch anpassen, denn .book gibts noch nicht haha -->
-					<NuxtLink to="/detailpage" v-for="item in slice.primary.content" class="book-card">
+					<NuxtLink to="`/book/${item.book.uid}`" v-for="item in slice.primary.content" class="book-card">
 						<PrismicImage :field="item.cover_image" class="book-image" />
 						<div class="book-info">
 							<PrismicText :field="item.titel" wrapper="h5" class="hed body--sm" />

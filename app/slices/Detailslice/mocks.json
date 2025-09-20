@@ -1,0 +1,83 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"kategorien": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"label",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "cast",
+									"type": "Text"
+								}
+							]
+						]
+					}
+				]
+			},
+			"formate": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"format",
+								{
+									"__TYPE__": "FieldContent",
+									"value": "fish",
+									"type": "Text"
+								}
+							]
+						]
+					}
+				]
+			},
+			"beschreibung": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Minim ut velit tempor exercitation. Proident anim sit sunt adipisicing irure nulla ullamco occaecat eu irure velit laborum."
+						}
+					}
+				]
+			},
+			"author": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Consectetur nisi id exercitation nulla nulla enim nisi esse et amet. Quis occaecat qui ex voluptate est ad. Aliqua adipisicing exercitation non quis aliqua ipsum cillum eu."
+						}
+					}
+				]
+			},
+			"title": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading4",
+						"content": {
+							"text": "Adventure"
+						}
+					}
+				]
+			},
+			"cover_url": {
+				"__TYPE__": "FieldContent",
+				"value": "nothing",
+				"type": "Text"
+			}
+		},
+		"items": []
+	}
+]

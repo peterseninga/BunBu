@@ -1,5 +1,8 @@
 <script setup lang="ts">
+
+
 const settings = useSettings();
+
 
 const { asImageSrc } = usePrismic();
 
@@ -8,6 +11,7 @@ useSeoMeta({
   description: settings.value?.data.meta_discription,
   ogImage: asImageSrc(settings.value?.data.og_image),
 });
+
 </script>
 
 <template>
