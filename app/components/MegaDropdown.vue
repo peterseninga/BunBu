@@ -56,7 +56,9 @@
                   :key="itemIndex"
                   @click="selectTheme(item, category.title)"
                 >
-                  {{ item }}
+                 {{ item }}
+                 <span class="format-count-grey">({{ categoryCounts[item] || 0 }})</span>
+
                 </li>
               </ul>
             </div>
@@ -68,6 +70,7 @@
 </template>
 
 <script setup lang="ts">
+
 // Types
 interface Format {
   name: string
@@ -115,7 +118,7 @@ const defaultCategories: Category[] = [
     title: 'Entwicklung & Bildung',
     items: [
       'Leseförderung & Bildung',
-      'Frühförderung & Behinderung',
+      'Frühförderung & Babythemen',
       'Leichte Sprache & Barrierefreiheit',
       'Mehrsprachigkeit & Migration'
     ]
@@ -125,14 +128,14 @@ const defaultCategories: Category[] = [
     items: [
       'Gewalt & Missbrauch',
       'Diskriminierung',
-      'Mobbing'
+      'Mobbing & Ausgrenzung'
     ]
   },
   {
     title: 'Kreativität & Ausdruck',
     items: [
       'Körperbild',
-      'Kreativität & Medien'
+      'Kreativität & Fantasie'
     ]
   },
   {
@@ -141,7 +144,7 @@ const defaultCategories: Category[] = [
       'Emotionale Intelligenz & Empathie',
       'Gemeinschaft',
       'Konsens & Autonomie',
-      'Selbstbewusstsein & Selbstbild',
+      'Selbstbewusstsein & Selbstliebe',
       'Psychische Gesundheit'
     ]
   },
@@ -149,7 +152,7 @@ const defaultCategories: Category[] = [
     title: 'Beziehung & Lebenswelten',
     items: [
       'Freundschaft & Familie',
-      'Behinderung & Lebenswelten',
+      'Detektivische Lebenswelten',
       'Tiere',
       'Soziale Medien',
       'Coolness'
@@ -160,24 +163,42 @@ const defaultCategories: Category[] = [
     items: [
       'Vielfalt & Diversität',
       'Inklusion & Behinderung',
-      'Nachhaltigkeit & Umwelt',
-      'Demokratie & Partizipation',
-      'Gerechtigkeit & Religion',
-      'Gender & Rollenbilder'
+      'Religion & Glaube',
+      'Toleranz & Respekt',
+      'Gleichberechtigung & Rollenbilder',
+      'Gerechtigkeit & Konfliktlösung'
     ]
   }
 ]
 
-const defaultFormats: Format[] = [
-  { name: 'Buch', count: 6 },
-  { name: 'Hörbuch', count: 2 },
-  { name: 'Braille', count: 0 },
-  { name: 'E-Book', count: 0 }
-]
+const categoryCounts = ref<Record<string, number>>({})
+const formatCounts = ref<Record<string, number>>({})
 
-// Computed properties
-const categories = computed<Category[]>(() => props.customCategories || defaultCategories)
-const formats = computed<Format[]>(() => props.customFormats || defaultFormats)
+onMounted(async () => {
+  const res = await fetch('/api/counts')
+  const data = await res.json()
+  formatCounts.value = data.formats
+  categoryCounts.value = data.categories
+})
+
+// Computed properties Dropdowns werden angezeigt
+const categories = computed<Category[]>(() => {
+  if (props.customCategories) return props.customCategories
+  return defaultCategories
+})
+
+const formats = computed<Format[]>(() => {
+
+  if (props.customFormats) return props.customFormats
+
+  return [
+    { name: 'Buch', count: formatCounts.value['Buch'] || 0 },
+    { name: 'Hörbuch', count: formatCounts.value['Hörbuch'] || 0 },
+    { name: 'Braille', count: formatCounts.value['Braille'] || 0 },
+    { name: 'E-Book', count: formatCounts.value['E-Book'] || 0 }
+  ]
+})
+
 
 // Methods
 const handleMouseLeave = (type: 'format' | 'themen'): void => {
@@ -253,7 +274,7 @@ html, body {
 
 .menu-item {
   position: relative;
-  cursor: pointer;
+  cursor: default;
   text-decoration: underline;
 }
 
@@ -265,6 +286,7 @@ html, body {
   display: inline-block;
   position: relative;
   user-select: none;
+  cursor: pointer;
 }
 
 .menu-item.active,
