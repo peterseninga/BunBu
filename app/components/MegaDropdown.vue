@@ -1,75 +1,153 @@
 <template>
-  <nav class="mega-navbar">
-    <div class="menu-container">
-      <!-- Format Menu -->
-      <div 
-        class="menu-item" 
-        :class="{ active: showFormatDropdown }"
-        @mouseenter="showFormatDropdown = true" 
-        @mouseleave="() => handleMouseLeave('format')"
-      >
-        <span class="menu-label">Format</span>
+  <div>
+    <nav class="mega-navbar">
+      <div class="menu-container">
+        <!-- Format Menu -->
         <div 
-          class="format-dropdown" 
-          :class="{ show: showFormatDropdown }"
-          @mouseenter="showFormatDropdown = true"
-          @mouseleave="() => handleMouseLeave('format')"
+          class="menu-item" 
+          :class="{ active: showFormatDropdown && !isMobile }"
+          @mouseenter="!isMobile && (showFormatDropdown = true)" 
+          @mouseleave="!isMobile && handleMouseLeave('format')"
+          @click="isMobile && handleFormatClick()"
         >
-          <div class="format-content">
-            <div 
-              v-for="(format, index) in formats" 
-              :key="index"
-              class="format-item"
-              @click="selectFormat(format)"
-            >
-              <h4 class="format-heading"> {{ format.name }} 
-                <span class="format-count-grey"> ({{ format.count }}) </span></h4>
+          <span class="menu-label">Format</span>
+          <div 
+            v-if="!isMobile"
+            class="format-dropdown" 
+            :class="{ show: showFormatDropdown }"
+            @mouseenter="showFormatDropdown = true"
+            @mouseleave="handleMouseLeave('format')"
+          >
+            <div class="format-content">
+              <div 
+                v-for="(format, index) in formats" 
+                :key="index"
+                class="format-item"
+                @click="selectFormat(format)"
+              >
+                <h4 class="format-heading">{{ format.name }} 
+                  <span class="format-count-grey">({{ format.count }})</span>
+                </h4>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Themen Menu -->
+        <div 
+          class="menu-item" 
+          :class="{ active: showThemenDropdown && !isMobile }"
+          @mouseenter="!isMobile && (showThemenDropdown = true)" 
+          @mouseleave="!isMobile && handleMouseLeave('themen')"
+          @click="isMobile && handleThemenClick()"
+        >
+          <span class="menu-label">Themen</span>
+          <div 
+            v-if="!isMobile"
+            class="mega-dropdown" 
+            :class="{ show: showThemenDropdown }"
+            @mouseenter="showThemenDropdown = true"
+            @mouseleave="handleMouseLeave('themen')"
+          >
+            <div class="dropdown-content">
+              <div 
+                v-for="(category, index) in categories" 
+                :key="index"
+                class="dropdown-column"
+              >
+                <h4>{{ category.title }}</h4>
+                <ul>
+                  <li 
+                    v-for="(item, itemIndex) in category.items" 
+                    :key="itemIndex"
+                    @click="selectTheme(item, category.title)"
+                  >
+                   {{ item }}
+                   <span class="format-count-grey">({{ categoryCounts[item] || 0 }})</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
       </div>
+    </nav>
 
-      <!-- Themen Menu -->
-      <div 
-        class="menu-item" 
-        :class="{ active: showThemenDropdown }"
-        @mouseenter="showThemenDropdown = true" 
-        @mouseleave="() => handleMouseLeave('themen')"
-      >
-        <span class="menu-label">Themen</span>
-        <div 
-          class="mega-dropdown" 
-          :class="{ show: showThemenDropdown }"
-          @mouseenter="showThemenDropdown = true"
-          @mouseleave="() => handleMouseLeave('themen')"
-        >
-          <div class="dropdown-content">
-            <div 
-              v-for="(category, index) in categories" 
-              :key="index"
-              class="dropdown-column"
-            >
-              <h4>{{ category.title }}</h4>
-              <ul>
-                <li 
-                  v-for="(item, itemIndex) in category.items" 
-                  :key="itemIndex"
-                  @click="selectTheme(item, category.title)"
-                >
-                 {{ item }}
-                 <span class="format-count-grey">({{ categoryCounts[item] || 0 }})</span>
-
-                </li>
-              </ul>
+    <!-- Mobile Format Overlay -->
+    <teleport to="body" v-if="isMobile && showFormatDropdown">
+      <div class="mobile-overlay" @touchmove.prevent @scroll.prevent @wheel.prevent>
+        <div class="mobile-overlay-backdrop" @click="closeOverlay"></div>
+        <div class="mobile-overlay-content">
+          <div class="mobile-overlay-header">
+            <h2 class="mobile-overlay-title">Format wählen</h2>
+            <button @click="closeOverlay" class="mobile-overlay-close">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="mobile-overlay-body">
+            <div class="mobile-format-list">
+              <div 
+                v-for="(format, index) in formats" 
+                :key="index"
+                class="mobile-format-item"
+                @click="selectFormat(format)"
+              >
+                <h4 class="mobile-format-name">{{ format.name }}</h4>
+                <span class="mobile-format-count">({{ format.count }})</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </nav>
+    </teleport>
+
+    <!-- Mobile Themen Overlay -->
+    <teleport to="body" v-if="isMobile && showThemenDropdown">
+      <div class="mobile-overlay">
+        <div class="mobile-overlay-backdrop" @click="closeOverlay"></div>
+        <div class="mobile-overlay-content">
+          <div class="mobile-overlay-header">
+            <h2 class="mobile-overlay-title">Themen wählen</h2>
+            <button @click="closeOverlay" class="mobile-overlay-close">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="mobile-overlay-body">
+            <div class="mobile-theme-list">
+              <div 
+                v-for="(category, index) in categories" 
+                :key="index"
+                class="mobile-theme-category"
+              >
+                <h4 class="mobile-category-title">{{ category.title }}</h4>
+                <ul class="mobile-category-items">
+                  <li 
+                    v-for="(item, itemIndex) in category.items" 
+                    :key="itemIndex"
+                    class="mobile-theme-item"
+                    @click="selectTheme(item, category.title)"
+                  >
+                    <span class="mobile-theme-name">{{ item }}</span>
+                    <span class="mobile-theme-count">({{ categoryCounts[item] || 0 }})</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </teleport>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 // Types
 interface Format {
@@ -107,6 +185,7 @@ const emit = defineEmits<{
 // Reactive state
 const showThemenDropdown = ref<boolean>(false)
 const showFormatDropdown = ref<boolean>(false)
+const isMobile = ref<boolean>(false)
 
 // Timeouts
 let formatTimeout: ReturnType<typeof setTimeout> | null = null
@@ -174,21 +253,42 @@ const defaultCategories: Category[] = [
 const categoryCounts = ref<Record<string, number>>({})
 const formatCounts = ref<Record<string, number>>({})
 
+// Check mobile device
+const checkMobile = (): void => {
+  isMobile.value = window.innerWidth <= 1024 // iPad breakpoint
+}
+
 onMounted(async () => {
+  // API call for counts
   const res = await fetch('/api/counts')
   const data = await res.json()
   formatCounts.value = data.formats
   categoryCounts.value = data.categories
+
+  // Setup mobile detection
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+  document.addEventListener('click', handleClickOutside)
 })
 
-// Computed properties Dropdowns werden angezeigt
+onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile)
+  document.removeEventListener('click', handleClickOutside)
+  // CSS-Klassen entfernen falls Komponente unmounted wird
+  document.documentElement.classList.remove('overlay-open')
+  document.body.classList.remove('overlay-open')
+  // Cleanup alle timeouts
+  if (formatTimeout) clearTimeout(formatTimeout)
+  if (themenTimeout) clearTimeout(themenTimeout)
+})
+
+// Computed properties
 const categories = computed<Category[]>(() => {
   if (props.customCategories) return props.customCategories
   return defaultCategories
 })
 
 const formats = computed<Format[]>(() => {
-
   if (props.customFormats) return props.customFormats
 
   return [
@@ -199,9 +299,28 @@ const formats = computed<Format[]>(() => {
   ]
 })
 
-
 // Methods
+const handleFormatClick = (): void => {
+  if (isMobile.value) {
+    showFormatDropdown.value = true
+    // CSS-Klasse hinzufügen um Scrolling zu verhindern
+    document.documentElement.classList.add('overlay-open')
+    document.body.classList.add('overlay-open')
+  }
+}
+
+const handleThemenClick = (): void => {
+  if (isMobile.value) {
+    showThemenDropdown.value = true
+    // CSS-Klasse hinzufügen um Scrolling zu verhindern
+    document.documentElement.classList.add('overlay-open')
+    document.body.classList.add('overlay-open')
+  }
+}
+
 const handleMouseLeave = (type: 'format' | 'themen'): void => {
+  if (isMobile.value) return
+
   if (type === 'format') {
     formatTimeout = setTimeout(() => {
       showFormatDropdown.value = false
@@ -216,14 +335,30 @@ const handleMouseLeave = (type: 'format' | 'themen'): void => {
 const selectFormat = (format: Format): void => {
   emit('formatSelected', format)
   showFormatDropdown.value = false
+  // CSS-Klasse entfernen um Scrolling wieder zu aktivieren
+  document.documentElement.classList.remove('overlay-open')
+  document.body.classList.remove('overlay-open')
 }
 
 const selectTheme = (item: string, category: string): void => {
   emit('themeSelected', { item, category })
   showThemenDropdown.value = false
+  // CSS-Klasse entfernen um Scrolling wieder zu aktivieren
+  document.documentElement.classList.remove('overlay-open')
+  document.body.classList.remove('overlay-open')
+}
+
+const closeOverlay = (): void => {
+  showFormatDropdown.value = false
+  showThemenDropdown.value = false
+  // CSS-Klasse entfernen um Scrolling wieder zu aktivieren
+  document.documentElement.classList.remove('overlay-open')
+  document.body.classList.remove('overlay-open')
 }
 
 const handleClickOutside = (event: Event): void => {
+  if (isMobile.value) return // Mobile uses overlays, not click outside
+
   const target = event.target as Element | null
   const navbar = target?.closest('.mega-navbar')
   if (!navbar) {
@@ -231,22 +366,9 @@ const handleClickOutside = (event: Event): void => {
     showThemenDropdown.value = false
   }
 }
-
-// Lifecycle
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-  // Cleanup alle timeouts
-  if (formatTimeout) clearTimeout(formatTimeout)
-  if (themenTimeout) clearTimeout(themenTimeout)
-})
 </script>
 
 <style scoped>
-
 html, body {
   margin: 0;
   padding: 0;
@@ -295,11 +417,6 @@ html, body {
   color: black;
   background: white;
   border-radius: 0.75rem 0.75rem 0 0;
-}
-
-.menu-label::after {
-  margin-left: 0.5rem;
-  font-size: 0.8rem;
 }
 
 .mega-dropdown {
@@ -385,14 +502,12 @@ html, body {
 }
 
 .format-heading {
-  color: #004b5a;         /* Blau wie bei Themen */
+  color: #004b5a;
   font-size: 1.1rem;
-  font-weight: 600;       /* Fett */
+  font-weight: 600;
   cursor: pointer;
   display: inline-block;
 }
-
-
 
 .format-dropdown.show {
   opacity: 1;
@@ -417,7 +532,6 @@ html, body {
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   cursor: pointer;
-
 }
 
 .format-item:hover {
@@ -426,33 +540,189 @@ html, body {
   transform: translateY(-2px);
 }
 
-.format-name {
-  font-weight: 500;
-  color: #374151;
-}
-
-.format-count {
-  background: #004b5a;
-  color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 9999px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  min-width: 25px;
-  text-align: center;
-}
-
 .format-count-grey {
   color: #6b7280;
   font-weight: normal;
   margin-left: 0.5rem;
 }
 
-.format-count.zero {
-  background: #9ca3af;
+/* Mobile Overlay Styles */
+.mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none; /* Verhindert Touch-Scrolling */
 }
 
-@media (max-width: 768px) {
+.mobile-overlay-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  touch-action: none;
+  overflow: hidden;
+}
+
+.mobile-overlay-content {
+  position: relative;
+  background: white;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  touch-action: auto; /* Scrolling nur im Content */
+}
+
+.mobile-overlay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.mobile-overlay-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.mobile-overlay-close {
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s ease;
+}
+
+.mobile-overlay-close:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.mobile-overlay-body {
+  padding: 1rem;
+  flex: 1;
+  overflow-y: auto; /* Scrolling nur im Body-Bereich */
+}
+
+/* Format-spezifische Styles - kein Scrolling */
+.mobile-format-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: stretch;
+  overflow: hidden; /* Verhindert Scrolling bei Formaten */
+}
+
+.mobile-format-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 60px; /* Größere Touch-Targets */
+}
+
+.mobile-format-item:hover {
+  background: #f3f4f6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 75, 90, 0.1);
+}
+
+.mobile-format-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #004b5a;
+  margin: 0;
+}
+
+.mobile-format-count {
+  color: #6b7280;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Theme-spezifische Styles - mit Scrolling */
+.mobile-theme-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow: hidden;
+  /* Kein overflow hidden hier - Scrolling erlaubt */
+}
+
+.mobile-theme-category {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mobile-category-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #004b5a;
+  border-bottom: 2px solid #004b5a;
+  padding-bottom: 0.5rem;
+  margin: 0;
+}
+
+.mobile-category-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobile-theme-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-theme-item:hover {
+  background: #f3f4f6;
+}
+
+.mobile-theme-name {
+  color: #374151;
+}
+
+.mobile-theme-count {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 1024px) {
+  .menu-item {
+    cursor: pointer;
+  }
+  
   .menu-container {
     gap: 1rem;
   }
@@ -461,52 +731,20 @@ html, body {
     font-size: 1rem;
     padding: 0.5rem 1rem;
   }
-
-  .mega-dropdown,
-  .format-dropdown {
-    min-width: 95vw;
-    left: 2.5vw;
-    transform: none;
-  }
-
-  .mega-dropdown.show,
-  .format-dropdown.show {
-    transform: translateY(0);
-  }
-
-  .dropdown-content {
-    grid-template-columns: 1fr;
-    padding: 1rem;
-  }
-
-  .format-content {
-    grid-template-columns: 1fr;
-    padding: 1rem;
-  }
 }
 
 @media (max-width: 640px) {
   .menu-container {
-    flex-direction: column;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
     gap: 0.5rem;
+    margin-top: 10px;
   }
 
   .menu-label {
     font-size: 0.9rem;
     padding: 0.5rem 1rem;
-  }
-  
-  .format-content {
-    grid-template-columns: repeat(2, 1fr); /* 2 Spalten auch auf sehr kleinen Screens */
-  }
-  
-  .format-item {
-    min-height: 80px;
-    padding: 1rem 0.5rem;
-  }
-  
-  .format-name {
-    font-size: 1rem;
   }
 }
 </style>
