@@ -29,6 +29,7 @@ console.log('📚 Slices:', book.value?.data?.slices);
 
 <style scoped>
 .not-found {
+  display: block;
   @apply text-center text-red-500 pt-20;
 }
 </style>

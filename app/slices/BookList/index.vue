@@ -23,7 +23,7 @@ defineProps(
 				<PrismicText :field="slice.primary.heading" wrapper="h2" class="h heading heading--lg" />
 				<div class="done">
 					<!-- NuxtLink to .book noch anpassen, denn .book gibts noch nicht haha -->
-					<NuxtLink to="`/book/${item.book.uid}`" v-for="item in slice.primary.content" class="book-card">
+					<NuxtLink to="/about" v-for="item in slice.primary.content" class="book-card">
 						<PrismicImage :field="item.cover_image" class="book-image" />
 						<div class="book-info">
 							<PrismicText :field="item.titel" wrapper="h5" class="hed body--sm" />

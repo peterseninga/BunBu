@@ -17,7 +17,6 @@ defineProps(
   <Bounded
     :data-slice-type="slice.slice_type"
     :data-slice-variation="slice.variation"
-	class="overflow-hidden"
   >
     <div class="layout">
       <div class="cover">
@@ -31,7 +30,7 @@ defineProps(
           class="heading heading--sm"
         />
         <PrismicRichText :field="slice.primary.author" />
-        <div class="formate mb-8">
+        <div class="formate">
           <div v-for="item in slice.primary.formate" class="form">
             {{ item.format }}
           </div>
@@ -93,6 +92,11 @@ defineProps(
     width: 200px;
     text-align: center;
   }
+
+  .img {
+    width: 120%;
+    max-width: 120%;
+  }
 }
 
 @media (min-width: 640px) and (max-width: 680px) {
@@ -104,8 +108,10 @@ defineProps(
   .kat {
     @apply w-full text-left;
   }
+
   .img {
-	width: 200px;
+    width: 30%;
+    max-width: 30%;
   }
 }
 
@@ -127,8 +133,10 @@ defineProps(
     width: 200px;
     text-align: center;
   }
+
   .img {
-    width: 200px;
+    width: 80%;
+    max-width: 80%;
   }
 }
 @media (max-width: 639px) {
@@ -140,9 +148,12 @@ defineProps(
   .kat {
     @apply w-full text-left;
   }
+
   .img {
-    max-width: 150px;
+    width: 30%;
+    max-width: 30%;
   }
+
 }
 
 .cover {
@@ -154,7 +165,10 @@ defineProps(
 }
 
 .img {
-  @apply w-full max-w-[150px] sm:max-w-[150px] md:max-w-[170px] lg:max-w-[200px] h-auto mx-auto block;
+  display: block;
+  overflow: hidden;
+  height: auto;
+  margin: 0 auto;
 }
 
 .sidebar {

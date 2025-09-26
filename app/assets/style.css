@@ -2,6 +2,7 @@ html, body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  position: relative;
 }
 
 .heading {
@@ -39,3 +40,4 @@ html, body {
 .body-author {
     @apply text-[12px] md:text-[14px] lg:text-[15px];
 }
+
