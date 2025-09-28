@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import type { Content } from "@prismicio/client";
 
-
-
-
-// The array passed to `getSliceComponentProps` is purely optional.
-// Consider it as a visual hint for you when templating your slice.
-defineProps(
+const props = defineProps(
 	getSliceComponentProps<Content.BookListSlice>([
 		"slice",
 		"index",
@@ -14,51 +9,77 @@ defineProps(
 		"context",
 	]),
 );
+
+// Helper function to create book URL from title
+const createSlugFromTitle = (title: string) => {
+  return title.toLowerCase()
+    .replace(/[^a-z0-9]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+};
 </script>
 
 <template>
 	<Bounded :data-slice-type="slice.slice_type" :data-slice-variation="slice.variation">
 		<div class="lay">
+			<!-- Bücher Sektion -->
 			<div class="layout">
 				<PrismicText :field="slice.primary.heading" wrapper="h2" class="h heading heading--lg" />
 				<div class="done">
-					<!-- NuxtLink to .book noch anpassen, denn .book gibts noch nicht haha -->
-					<NuxtLink to="/about" v-for="item in slice.primary.content" class="book-card">
-						<PrismicImage :field="item.cover_image" class="book-image" />
-						<div class="book-info">
-							<PrismicText :field="item.titel" wrapper="h5" class="hed body--sm" />
-							<PrismicText :field="item.author"  />
-						</div>
-					</NuxtLink>
+					<template v-if="slice.primary.content && slice.primary.content.length > 0">
+						<NuxtLink 
+							:to="item.book_link?.url || `/book/${item.slug || createSlugFromTitle(item.titel?.[0]?.text || '')}`" 
+							v-for="(item, index) in slice.primary.content" 
+							:key="index"
+							class="book-card hover:bg-[rgba(0,75,90,0.15)] transition-colors cursor-pointer block"
+						>
+							<PrismicImage :field="item.cover_image" class="book-image"/> 
+							<div class="book-info">
+								<PrismicText :field="item.titel" wrapper="h5" class="hed body--sm" />
+								<PrismicText :field="item.author" wrapper="p" />
+							</div>
+						</NuxtLink>
+					</template>
+					<div v-else class="text-center text-gray-500 py-8">
+						Keine Bücher gefunden. Fügen Sie Bücher in Prismic hinzu.
+					</div>
 				</div>
-				<NuxtLink to="/about" class="hover:underline">
+				<NuxtLink to="/suche?q=Buch&filter=format" class="hover:underline">
 					<PrismicText :field="slice.primary.mehr_laden"/>
 				</NuxtLink>
 			</div>
 			
-			<div class="layout ">
-					<PrismicText :field="slice.primary.heading_2" wrapper="h2" class="h heading heading--lg" />
-					<div class="done layout-left">
-						<NuxtLink to="/.book" v-for="item in slice.primary.content_2" class="book-card bottom audio">
+			<!-- Hörbücher Sektion -->
+			<div class="layout">
+				<PrismicText :field="slice.primary.heading_2" wrapper="h2" class="h heading heading--lg" />
+				<div class="done layout-left">
+					<template v-if="slice.primary.content_2 && slice.primary.content_2.length > 0">
+						<NuxtLink 
+							:to="item.book_link?.url || `/book/${item.slug || createSlugFromTitle(item.title?.[0]?.text || '')}`" 
+							v-for="(item, index) in slice.primary.content_2" 
+							:key="index"
+							class="book-card bottom audio hover:bg-[rgba(0,75,90,0.15)] transition-colors cursor-pointer block"
+						>
 							<PrismicImage :field="item.cover_image" class="book-image"/>
 							<div class="book-info">
 								<PrismicText :field="item.title" wrapper="h5" class="hed body--sm"/>
-								<PrismicText :field="item.author" />
+								<PrismicText :field="item.author" wrapper="p" />
 							</div>
 						</NuxtLink>
+					</template>
+					<div v-else class="text-center text-gray-500 py-8">
+						Keine Hörbücher gefunden. Fügen Sie Hörbücher in Prismic hinzu.
 					</div>
-					<NuxtLink to="/impressum" class="hover:underline">
-						<PrismicText :field="slice.primary.mehr_laden" />
-					</NuxtLink>
 				</div>
-				</div>
-
+				<NuxtLink to="/suche?q=Hörbuch&filter=format" class="hover:underline">
+					<PrismicText :field="slice.primary.mehr_laden" />
+				</NuxtLink>
+			</div>
+		</div>
 	</Bounded>
 </template>
 
 <style scoped>
-
-
 .layout {
 	@apply grid sm:grid-cols-1 gap-x-4 gap-y-2 max-w-5xl mx-auto place-items-center;
 }
@@ -97,10 +118,10 @@ defineProps(
 
 .book-image {
 	width: 85px;
-  height: 115px;
-  object-fit: cover;
-  border-radius: 4px;
-  flex-shrink: 0;
+	height: 115px;
+	object-fit: cover;
+	border-radius: 4px;
+	flex-shrink: 0;
 }
 
 .book-info {

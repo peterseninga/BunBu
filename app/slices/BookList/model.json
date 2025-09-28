@@ -36,17 +36,6 @@
             "label": "Content",
             "repeat": true,
             "fields": {
-              "cover_image": {
-                "type": "Image",
-                "config": {
-                  "label": "Cover image",
-                  "constraint": {
-                    "width": 147,
-                    "height": 184
-                  },
-                  "thumbnails": []
-                }
-              },
               "titel": {
                 "type": "StructuredText",
                 "config": {
@@ -64,6 +53,23 @@
                   "allowTargetBlank": true,
                   "single": "paragraph,strong,em"
                 }
+              },
+              "cover_image": {
+                "type": "Image",
+                "config": {
+                  "label": "cover_image",
+                  "constraint": {
+                    "width": null
+                  },
+                  "thumbnails": []
+                }
+              },
+              "slug": {
+                "type": "Text",
+                "config": {
+                  "label": "slug",
+                  "placeholder": ""
+                }
               }
             }
           }
@@ -74,17 +80,6 @@
             "label": "Content_2",
             "repeat": true,
             "fields": {
-              "cover_image": {
-                "type": "Image",
-                "config": {
-                  "label": "Cover image",
-                  "constraint": {
-                    "width": 147,
-                    "height": 184
-                  },
-                  "thumbnails": []
-                }
-              },
               "title": {
                 "type": "StructuredText",
                 "config": {
@@ -101,6 +96,21 @@
                   "placeholder": "",
                   "allowTargetBlank": true,
                   "single": "paragraph,strong,em"
+                }
+              },
+              "cover_image": {
+                "type": "Image",
+                "config": {
+                  "label": "cover_image",
+                  "constraint": {},
+                  "thumbnails": []
+                }
+              },
+              "slug": {
+                "type": "Text",
+                "config": {
+                  "label": "slug",
+                  "placeholder": ""
                 }
               }
             }

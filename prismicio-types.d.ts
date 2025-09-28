@@ -669,16 +669,6 @@ export type AboutSlice = prismic.SharedSlice<"about", AboutSliceVariation>;
  */
 export interface BookListSliceDefaultPrimaryContentItem {
   /**
-   * Cover image field in *BookList → Default → Primary → Content*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: book_list.default.primary.content[].cover_image
-   * - **Documentation**: https://prismic.io/docs/fields/image
-   */
-  cover_image: prismic.ImageField<never>;
-
-  /**
    * Titel field in *BookList → Default → Primary → Content*
    *
    * - **Field Type**: Rich Text
@@ -697,22 +687,32 @@ export interface BookListSliceDefaultPrimaryContentItem {
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   author: prismic.RichTextField;
+
+  /**
+   * cover_image field in *BookList → Default → Primary → Content*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.content[].cover_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  cover_image: prismic.ImageField<never>;
+
+  /**
+   * slug field in *BookList → Default → Primary → Content*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.content[].slug
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  slug: prismic.KeyTextField;
 }
 
 /**
  * Item in *BookList → Default → Primary → Content_2*
  */
 export interface BookListSliceDefaultPrimaryContent2Item {
-  /**
-   * Cover image field in *BookList → Default → Primary → Content_2*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: book_list.default.primary.content_2[].cover_image
-   * - **Documentation**: https://prismic.io/docs/fields/image
-   */
-  cover_image: prismic.ImageField<never>;
-
   /**
    * Title field in *BookList → Default → Primary → Content_2*
    *
@@ -732,6 +732,26 @@ export interface BookListSliceDefaultPrimaryContent2Item {
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   author: prismic.RichTextField;
+
+  /**
+   * cover_image field in *BookList → Default → Primary → Content_2*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.content_2[].cover_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  cover_image: prismic.ImageField<never>;
+
+  /**
+   * slug field in *BookList → Default → Primary → Content_2*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_list.default.primary.content_2[].slug
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  slug: prismic.KeyTextField;
 }
 
 /**

@@ -258,12 +258,70 @@ const checkMobile = (): void => {
   isMobile.value = window.innerWidth <= 1024 // iPad breakpoint
 }
 
+// Ersetzen Sie den onMounted-Block in Ihrem Dropdown:
+
 onMounted(async () => {
-  // API call for counts
-  const res = await fetch('/api/counts')
-  const data = await res.json()
-  formatCounts.value = data.formats
-  categoryCounts.value = data.categories
+  // CSV-Daten laden (gleiche Quelle wie BookResults)
+  try {
+    const response = await fetch('/books.csv')
+    const csvText = await response.text()
+    const lines = csvText.split('\n')
+    
+    if (lines.length === 0) return
+    
+    const headers = lines[0].split(';').map(h => h.trim().replace(/^\uFEFF/, ''))
+    const books: any[] = []
+    
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim()
+      if (!line) continue
+      
+      const values = line.split(';').map(v => v.trim())
+      
+      const book = {
+        title: values[headers.indexOf('title')] || '',
+        author: values[headers.indexOf('author')] || '',
+        format: values[headers.indexOf('format')] || '',
+        categories: values[headers.indexOf('categories')] || ''
+      }
+      
+      if (book.title) {
+        books.push(book)
+      }
+    }
+    
+    // Format-Zählungen aus CSV-Daten berechnen
+    const formatCountsFromCSV: Record<string, number> = {}
+    const categoryCountsFromCSV: Record<string, number> = {}
+    
+    books.forEach(book => {
+      // Format-Zählung
+      if (book.format) {
+        const bookFormats = book.format.split(',').map((f: string) => f.trim())
+        bookFormats.forEach((format: string) => {
+          formatCountsFromCSV[format] = (formatCountsFromCSV[format] || 0) + 1
+        })
+      }
+      
+      // Kategorie-Zählung  
+      if (book.categories) {
+        const bookCategories = book.categories.split(',').map((c: string) => c.trim())
+        bookCategories.forEach((category: string) => {
+          categoryCountsFromCSV[category] = (categoryCountsFromCSV[category] || 0) + 1
+        })
+      }
+    })
+    
+    // Reactive refs setzen
+    formatCounts.value = formatCountsFromCSV
+    categoryCounts.value = categoryCountsFromCSV
+    
+    console.log('📊 Format-Zählungen:', formatCountsFromCSV)
+    console.log('📊 Kategorie-Zählungen:', categoryCountsFromCSV)
+    
+  } catch (error) {
+    console.error('❌ Fehler beim Laden der CSV für Dropdown:', error)
+  }
 
   // Setup mobile detection
   checkMobile()
@@ -338,6 +396,14 @@ const selectFormat = (format: Format): void => {
   // CSS-Klasse entfernen um Scrolling wieder zu aktivieren
   document.documentElement.classList.remove('overlay-open')
   document.body.classList.remove('overlay-open')
+
+  navigateTo({
+    path: '/suche',
+    query: { 
+      q: format.name,
+      filter: 'format'
+    }
+  })
 }
 
 const selectTheme = (item: string, category: string): void => {
@@ -348,10 +414,9 @@ const selectTheme = (item: string, category: string): void => {
   document.body.classList.remove('overlay-open')
 
   navigateTo({
-    path: '/search',
+    path: '/suche',
     query: { 
       q: item,
-      slice: 'bookresults',
       filter: 'category'
     }
   })
