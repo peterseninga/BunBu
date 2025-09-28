@@ -50,7 +50,7 @@ const customCategories = computed(() => {
 
 <template>
   <Bounded as="header" class="!py-4 md:!py-6 lg:!py-8 bg-[#004b5a] text-white">
-    <div class="flex flex-col items-center justify-between lg:flex-row gap-4">
+    <div class="flex flex-col items-center justify-between lg:flex-row gap-4 lg:min-h-[80px]">
       <NuxtLink to="/">
         <Logo class="order-1 lg:order-1" />
       </NuxtLink>
@@ -64,9 +64,18 @@ const customCategories = computed(() => {
           :custom-themen="customCategories"
         />
       </div>
-      <div class="w-xl lg:w-auto lg:ml-auto order-2 lg:order-3 mt-5">
+      <div class="w-xl lg:w-auto lg:ml-auto order-2 lg:order-3 mt-5 lg:mt-0 search-wrapper">
         <SearchBar />
       </div>
     </div>
   </Bounded>
 </template>
+
+<style scoped>
+@media (main-width: 1024px) {
+.search-wrapper {
+  display: flex;
+  align-items: center;
+}
+}
+</style>

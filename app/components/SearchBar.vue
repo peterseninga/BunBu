@@ -625,4 +625,37 @@ onMounted(() => {
     right: 0.375rem;
   }
 }
+
+@media (min-width: 1024px) {
+  /* Entfernt den margin-top von der SearchBar auf Desktop */
+  .w-xl.lg\\:w-auto.lg\\:ml-auto.order-2.lg\\:order-3.mt-5 {
+    margin-top: 0 !important;
+  }
+
+   .search-wrapper {
+    margin-top: 0 !important;
+  }
+}
+
+.header-flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 80px; /* Mindesthöhe für konsistente Zentrierung */
+}
+
+/* 4. Alternative: Grid-Layout für bessere Kontrolle */
+.header-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: center;
+  gap: 1rem;
+  min-height: 80px;
+}
+
+@media (min-width: 1024px) {
+  .header-grid-layout {
+    grid-template-columns: auto 1fr auto;
+  }
+}
 </style>

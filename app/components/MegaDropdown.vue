@@ -450,15 +450,15 @@ html, body {
 }
 
 .mega-navbar {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%); 
   z-index: 50;
   width: max-content;
-  display: flex;
-  justify-content: center;
-  padding-top: 2rem;
+  display: grid;
+  justify-content: center; 
+  margin-top: 3em; 
 }
 
 .menu-container {
@@ -813,7 +813,7 @@ html, body {
     flex-direction: row;
     justify-content: center;
     gap: 0.5rem;
-    margin-top: 15px;
+    margin-top: 0;
   }
 
   .menu-label {
@@ -828,7 +828,7 @@ html, body {
     flex-direction: row;
     justify-content: center;
     gap: 0.5rem;
-    margin-top: 15px;
+    margin-top: 0;
   }
 
   .menu-label {
@@ -843,7 +843,7 @@ html, body {
     flex-direction: row;
     justify-content: center;
     gap: 1rem;
-    margin-top: 18px;
+    margin-top: 5px;
   }
 
   .menu-label {
