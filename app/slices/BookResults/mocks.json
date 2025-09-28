@@ -1,0 +1,86 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"heading": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading1",
+						"content": {
+							"text": "Filtersuche: 5 Ergebnisse",
+							"spans": []
+						},
+						"direction": "ltr"
+					}
+				]
+			},
+			"formatzahl": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Buch, Hörbuch",
+							"spans": []
+						},
+						"direction": "ltr"
+					}
+				]
+			},
+			"book": {
+				"__TYPE__": "GroupContentType",
+				"value": [
+					{
+						"__TYPE__": "GroupItemContent",
+						"value": [
+							[
+								"cover_url",
+								{
+									"__TYPE__": "FieldContent",
+									"type": "Text",
+									"value": "https://images.thalia.media/00/-/e400f50acdda4f2c95e0270bfc5ee209/wunder-sieh-mich-nicht-an-taschenbuch-r-j-palacio.jpeg"
+								}
+							],
+							[
+								"title",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "heading4",
+											"content": {
+												"text": "Wunder",
+												"spans": []
+											},
+											"direction": "ltr"
+										}
+									]
+								}
+							],
+							[
+								"author",
+								{
+									"__TYPE__": "StructuredTextContent",
+									"value": [
+										{
+											"type": "paragraph",
+											"content": {
+												"text": "R.J. Palacio",
+												"spans": []
+											},
+											"direction": "ltr"
+										}
+									]
+								}
+							]
+						],
+						"key": "ac573549-b31d-4a39-a98d-821f11d014a6"
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

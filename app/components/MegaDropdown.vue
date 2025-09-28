@@ -346,6 +346,15 @@ const selectTheme = (item: string, category: string): void => {
   // CSS-Klasse entfernen um Scrolling wieder zu aktivieren
   document.documentElement.classList.remove('overlay-open')
   document.body.classList.remove('overlay-open')
+
+  navigateTo({
+    path: '/search',
+    query: { 
+      q: item,
+      slice: 'bookresults',
+      filter: 'category'
+    }
+  })
 }
 
 const closeOverlay = (): void => {
@@ -739,11 +748,41 @@ html, body {
     flex-direction: row;
     justify-content: center;
     gap: 0.5rem;
-    margin-top: 10px;
+    margin-top: 15px;
   }
 
   .menu-label {
     font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 768px) {
+  .menu-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 15px;
+  }
+
+  .menu-label {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .menu-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 18px;
+  }
+
+  .menu-label {
+    font-size: 1rem;
     padding: 0.5rem 1rem;
   }
 }

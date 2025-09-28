@@ -96,7 +96,11 @@ defineProps(
 }
 
 .book-image {
-	@apply w-24 h-auto object-cover;
+	width: 85px;
+  height: 115px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
 .book-info {

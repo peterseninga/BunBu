@@ -39,14 +39,7 @@ const handleThemeSelection = (selection: {
 // Optional: Custom Daten aus Prismic/CMS laden
 const customFormats = computed(() => {
   // Falls du die Formate aus Prismic laden willst:
-  return (
-    filternav.value?.data.format || [
-      { name: "Buch", count: 6 },
-      { name: "Hörbuch", count: 2 },
-      { name: "Braille", count: 0 },
-      { name: "E-Book", count: 0 },
-    ]
-  );
+  return filternav.value?.data.format || null;
 });
 
 const customCategories = computed(() => {
@@ -57,9 +50,9 @@ const customCategories = computed(() => {
 
 <template>
   <Bounded as="header" class="!py-4 md:!py-6 lg:!py-8 bg-[#004b5a] text-white">
-    <div class="flex flex-col items-center justify-between sm:flex-row gap-4">
+    <div class="flex flex-col items-center justify-between lg:flex-row gap-4">
       <NuxtLink to="/">
-        <Logo class="order-1 sm:order-1" />
+        <Logo class="order-1 lg:order-1" />
       </NuxtLink>
 
       <!-- MegaDropdown centered -->
@@ -71,7 +64,7 @@ const customCategories = computed(() => {
           :custom-themen="customCategories"
         />
       </div>
-      <div class="w-xl sm:w-auto sm:ml-auto order-2 sm:order-3 mt-2">
+      <div class="w-xl lg:w-auto lg:ml-auto order-2 lg:order-3 mt-5">
         <SearchBar />
       </div>
     </div>

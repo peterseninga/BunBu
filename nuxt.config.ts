@@ -4,6 +4,11 @@ import { repositoryName, apiEndpoint } from './slicemachine.config.json';
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
+  components: [
+    '~/components',
+    '~/slices'
+  ],
+
   app: {
     head: {
       title: 'Prismic + Nuxt Minimal Starter',

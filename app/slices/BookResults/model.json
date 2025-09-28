@@ -1,0 +1,71 @@
+{
+  "id": "book_results",
+  "type": "SharedSlice",
+  "name": "BookResults",
+  "description": "BookResults",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "heading": {
+          "type": "StructuredText",
+          "config": {
+            "label": "heading",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "heading1"
+          }
+        },
+        "formatzahl": {
+          "type": "StructuredText",
+          "config": {
+            "label": "formatzahl",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "single": "paragraph"
+          }
+        },
+        "book": {
+          "type": "Group",
+          "config": {
+            "label": "book",
+            "repeat": true,
+            "fields": {
+              "title": {
+                "type": "StructuredText",
+                "config": {
+                  "label": "title",
+                  "placeholder": "",
+                  "allowTargetBlank": true,
+                  "single": "heading4"
+                }
+              },
+              "author": {
+                "type": "StructuredText",
+                "config": {
+                  "label": "author",
+                  "placeholder": "",
+                  "allowTargetBlank": true,
+                  "single": "paragraph"
+                }
+              },
+              "cover_url": {
+                "type": "Text",
+                "config": {
+                  "label": "cover_url",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

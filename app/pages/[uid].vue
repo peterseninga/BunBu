@@ -7,6 +7,7 @@ const { data: page } = await useAsyncData(route.params.uid as string, () =>
   prismic.client.getByUID('page', route.params.uid as string)
 )
 
+
 useHead({
   title: prismic.asText(page.value?.data.title)
 })

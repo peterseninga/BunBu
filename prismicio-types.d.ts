@@ -384,6 +384,108 @@ export type PageDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<PageDocumentData>, "page", Lang>;
 
 /**
+ * Item in *Searchresults → book*
+ */
+export interface SearchresultsDocumentDataBookItem {
+  /**
+   * title field in *Searchresults → book*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: searchresults.book[].title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * author field in *Searchresults → book*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: searchresults.book[].author
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  author: prismic.RichTextField;
+
+  /**
+   * cover_url field in *Searchresults → book*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: searchresults.book[].cover_url
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  cover_url: prismic.KeyTextField;
+}
+
+type SearchresultsDocumentDataSlicesSlice = BookResultsSlice;
+
+/**
+ * Content for Searchresults documents
+ */
+interface SearchresultsDocumentData {
+  /**
+   * Heading  field in *Searchresults*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: searchresults.heading
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * Formatzahl field in *Searchresults*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: searchresults.formatzahl
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  formatzahl: prismic.RichTextField;
+
+  /**
+   * book field in *Searchresults*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: searchresults.book[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  book: prismic.GroupField<Simplify<SearchresultsDocumentDataBookItem>>;
+
+  /**
+   * Slice Zone field in *Searchresults*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: searchresults.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/slices
+   */
+  slices: prismic.SliceZone<SearchresultsDocumentDataSlicesSlice>;
+}
+
+/**
+ * Searchresults document from Prismic
+ *
+ * - **API ID**: `searchresults`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type SearchresultsDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<SearchresultsDocumentData>,
+    "searchresults",
+    Lang
+  >;
+
+/**
  * Item in *Settings → Navigation*
  */
 export interface SettingsDocumentDataNavigationItem {
@@ -477,6 +579,7 @@ export type AllDocumentTypes =
   | BookDocument
   | FilternavDocument
   | PageDocument
+  | SearchresultsDocument
   | SettingsDocument;
 
 /**
@@ -716,6 +819,106 @@ type BookListSliceVariation = BookListSliceDefault;
 export type BookListSlice = prismic.SharedSlice<
   "book_list",
   BookListSliceVariation
+>;
+
+/**
+ * Item in *BookResults → Default → Primary → book*
+ */
+export interface BookResultsSliceDefaultPrimaryBookItem {
+  /**
+   * title field in *BookResults → Default → Primary → book*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_results.default.primary.book[].title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * author field in *BookResults → Default → Primary → book*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_results.default.primary.book[].author
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  author: prismic.RichTextField;
+
+  /**
+   * cover_url field in *BookResults → Default → Primary → book*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_results.default.primary.book[].cover_url
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  cover_url: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *BookResults → Default → Primary*
+ */
+export interface BookResultsSliceDefaultPrimary {
+  /**
+   * heading field in *BookResults → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_results.default.primary.heading
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  heading: prismic.RichTextField;
+
+  /**
+   * formatzahl field in *BookResults → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_results.default.primary.formatzahl
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  formatzahl: prismic.RichTextField;
+
+  /**
+   * book field in *BookResults → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: book_results.default.primary.book[]
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  book: prismic.GroupField<Simplify<BookResultsSliceDefaultPrimaryBookItem>>;
+}
+
+/**
+ * Default variation for BookResults Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type BookResultsSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<BookResultsSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *BookResults*
+ */
+type BookResultsSliceVariation = BookResultsSliceDefault;
+
+/**
+ * BookResults Shared Slice
+ *
+ * - **API ID**: `book_results`
+ * - **Description**: BookResults
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type BookResultsSlice = prismic.SharedSlice<
+  "book_results",
+  BookResultsSliceVariation
 >;
 
 /**
@@ -1392,6 +1595,10 @@ declare module "@prismicio/client" {
       PageDocument,
       PageDocumentData,
       PageDocumentDataSlicesSlice,
+      SearchresultsDocument,
+      SearchresultsDocumentData,
+      SearchresultsDocumentDataBookItem,
+      SearchresultsDocumentDataSlicesSlice,
       SettingsDocument,
       SettingsDocumentData,
       SettingsDocumentDataNavigationItem,
@@ -1406,6 +1613,11 @@ declare module "@prismicio/client" {
       BookListSliceDefaultPrimary,
       BookListSliceVariation,
       BookListSliceDefault,
+      BookResultsSlice,
+      BookResultsSliceDefaultPrimaryBookItem,
+      BookResultsSliceDefaultPrimary,
+      BookResultsSliceVariation,
+      BookResultsSliceDefault,
       DetailSlice,
       DetailSliceDefaultPrimaryFormateItem,
       DetailSliceDefaultPrimaryKategorienItem,

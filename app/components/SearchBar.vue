@@ -204,12 +204,12 @@ const loadBooksData = async () => {
     authors.value = authorSet
     categories.value = categorySet
     
-    console.log(`📚 ${bookData.length} Bücher geladen`)
+    console.log(`${bookData.length} Bücher geladen`)
     
   } catch (error) {
-    console.error('❌ Fehler beim Laden der Buchdaten:', error)
+    console.error('Fehler beim Laden der Buchdaten:', error)
     
-    // Fallback: Demo data
+    // beispieldaten wenn Fehler
     books.value = [
       {
         title: 'Kennt ihr Blauland?',
@@ -337,25 +337,20 @@ const performSearch = (selectedSuggestion?: Suggestion) => {
     }
   }
   
-  // Clear the input field immediately
-  query.value = ''
-  showSuggestions.value = false
-  searchInput.value?.blur()
-
   console.log('🔍 Performing search:', searchQuery, filters)
   
-  // Emit search event
-  emit('search', searchQuery, filters)
-  
-  // Navigate to search results page
+  // Navigation zur Seite mit BookResults Slice
+  // Angenommen die Seite heißt '/suche' oder '/search-results'
   navigateTo({
-    path: '/search',
+    path: '/suche', // <- Hier den korrekten Pfad zu Ihrer Searchresults-Seite eintragen
     query: { 
       q: searchQuery,
-      ...filters
+      filter: filters.type || 'general' // 'author' | 'category' | 'general'
     }
   })
   
+  // UI zurücksetzen
+  query.value = ''
   showSuggestions.value = false
   searchInput.value?.blur()
 }
@@ -420,6 +415,7 @@ onMounted(() => {
   width: 100%;
   max-width: 400px;
   z-index: 10000; /* Basis z-index für Container */
+  margin: -8px auto;
 }
 
 .search-input-wrapper {
@@ -490,6 +486,7 @@ onMounted(() => {
   max-height: 400px;
   overflow-y: auto;
   margin-top: 0.5rem;
+  overflow-x: hidden; /* Verhindert horizontales Scrollen im Dropdown, ggf noch die breite erhöhen */
 }
 
 .suggestion-item {

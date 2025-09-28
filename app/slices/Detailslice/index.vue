@@ -169,6 +169,9 @@ defineProps(
   overflow: hidden;
   height: auto;
   margin: 0 auto;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
 }
 
 .sidebar {
