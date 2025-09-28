@@ -450,7 +450,7 @@ html, body {
 }
 
 .mega-navbar {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%); 
