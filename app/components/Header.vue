@@ -51,7 +51,7 @@ const customCategories = computed(() => {
 <template>
   <Bounded as="header" class="!py-4 md:!py-6 lg:!py-8 bg-[#004b5a] text-white">
     <div class="flex flex-col items-center justify-between lg:flex-row gap-4 lg:min-h-[80px]">
-      <NuxtLink to="/">
+      <NuxtLink to="/home">
         <Logo class="order-1 lg:order-1" />
       </NuxtLink>
 

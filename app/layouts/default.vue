@@ -18,6 +18,7 @@ useSeoMeta({
   <div>
     <Header />
     <slot />
+    <ScrollToTop />
     <Footer />
     <div class="bg-white z-[-1]"/>
   </div>

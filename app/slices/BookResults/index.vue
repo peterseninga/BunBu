@@ -2,15 +2,144 @@
   <div class="page-container">
     <!-- Header with results count -->
     <div class="results-header">
-      <h2 class="results-title">
-        <span class="heading heading--sm">
-          {{ resultsTitle }}
-        </span>
-      </h2>
+      <div class="header-content">
+        <h2 class="results-title">
+          <span class="heading heading--sm">
+            {{ resultsTitle }}
+          </span>
+        </h2>
+        
+        <!-- Mobile Filter Button -->
+        <button 
+          class="mobile-filter-btn"
+          @click="toggleMobileFilter"
+          :class="{ active: hasActiveFilters }"
+        >
+          Filtern
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="6" x2="20" y2="6"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="18" x2="20" y2="18"></line>
+          </svg>
+          <span v-if="hasActiveFilters" class="filter-badge">{{ activeFilterCount }}</span>
+        </button>
+      </div>
     </div>
 
+    <!-- Mobile Filter Overlay -->
+    <teleport to="body" v-if="isMobileFilterOpen">
+      <div class="mobile-overlay">
+        <div class="mobile-overlay-backdrop" @click="closeMobileFilter"></div>
+        <div class="mobile-overlay-content">
+          <div class="mobile-overlay-header">
+            <h2 class="mobile-overlay-title">Filter</h2>
+            <button 
+              class="mobile-overlay-close"
+              @click="closeMobileFilter"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          
+          <div class="mobile-overlay-body">
+            <!-- Format Filter -->
+            <div class="filter-section">
+              <h3 class="filter-title">Format</h3>
+              <div class="filter-options">
+                <label 
+                  v-for="format in allFormatsWithCounts" 
+                  :key="format.name"
+                  class="filter-option"
+                  :class="{ disabled: format.count === 0 }"
+                >
+                  <input
+                    type="checkbox"
+                    :value="format.name"
+                    v-model="selectedFormats"
+                    class="filter-checkbox"
+                    :disabled="format.count === 0"
+                  />
+                  <span class="filter-text">
+                    {{ format.name }}
+                    <span class="filter-count">({{ format.count }})</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Theme Filter -->
+            <div class="filter-section">
+              <h3 class="filter-title">Thema</h3>
+              <div class="theme-categories">
+                <div 
+                  v-for="category in allCategoriesWithCounts" 
+                  :key="category.title"
+                  class="theme-category"
+                >
+                  <button
+                    class="category-button"
+                    :class="{ 
+                      expanded: expandedCategories.includes(category.title)
+                    }"
+                    @click="toggleCategory(category.title)"
+                  >
+                    {{ category.title }}
+                    <span class="category-total">({{ getCategoryTotal(category) }})</span>
+                    <svg class="expand-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="6,9 12,15 18,9"></polyline>
+                    </svg>
+                  </button>
+                  
+                  <div 
+                    v-if="expandedCategories.includes(category.title)"
+                    class="category-content"
+                  >
+                    <label 
+                      v-for="item in category.items" 
+                      :key="item.name"
+                      class="filter-option theme-item"
+                      :class="{ disabled: item.count === 0 }"
+                    >
+                      <input
+                        type="checkbox"
+                        :value="item.name"
+                        v-model="selectedThemes"
+                        class="filter-checkbox"
+                        :disabled="item.count === 0"
+                      />
+                      <span class="filter-text">
+                        {{ item.name }}
+                        <span class="filter-count">({{ item.count }})</span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Clear Filters Button -->
+            <div v-if="hasActiveFilters" class="filter-section">
+              <button @click="clearAllFilters" class="clear-filters-btn">
+                Alle Filter zurücksetzen
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile Apply Button -->
+          <div class="mobile-apply-section">
+            <button @click="applyMobileFilters" class="apply-filters-btn">
+              Ergebnisse anzeigen ({{ filteredBooks.length }})
+            </button>
+          </div>
+        </div>
+      </div>
+    </teleport>
+
     <div class="layout">
-      <!-- Left Filter Sidebar -->
+      <!-- Left Filter Sidebar (Desktop) -->
       <div class="filter-sidebar">
         <!-- Format Filter -->
         <div class="filter-section">
@@ -113,7 +242,7 @@
         <!-- Books List -->
         <div v-else class="books-list">
           <div
-            v-for="book in filteredBooks"
+            v-for="book in displayedBooks"
             :key="book.slug || book.title"
             @click="navigateToBook(book)"
             class="book-item"
@@ -130,6 +259,13 @@
               <p class="book-author">{{ book.author }}</p>
             </div>
           </div>
+          
+          <!-- Load More Button -->
+          <div v-if="hasMoreBooks" class="load-more-container">
+            <button @click="loadMoreBooks" class="load-more-btn">
+              mehr laden
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -137,7 +273,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, navigateTo } from '#imports'
 import type { getSliceComponentProps } from '@prismicio/vue'
 import type { Content } from "@prismicio/client"
@@ -182,6 +318,8 @@ const route = useRoute()
 const expandedCategories = ref<string[]>([])
 const books = ref<BookData[]>([])
 const isLoading = ref(false)
+const isMobileFilterOpen = ref(false)
+const displayLimit = ref(20)
 
 // Lokale Filter-States
 const selectedThemes = ref<string[]>([])
@@ -338,6 +476,7 @@ watch([searchQuery, filterType], ([q, type]) => {
   // Filter zurücksetzen
   selectedThemes.value = []
   selectedFormats.value = []
+  displayLimit.value = 20 // Reset beim URL-Wechsel
   
   if (!q || !type) return
   
@@ -352,6 +491,10 @@ watch([searchQuery, filterType], ([q, type]) => {
 // Computed properties
 const hasActiveFilters = computed(() => {
   return selectedFormats.value.length > 0 || selectedThemes.value.length > 0
+})
+
+const activeFilterCount = computed(() => {
+  return selectedFormats.value.length + selectedThemes.value.length
 })
 
 const resultsTitle = computed(() => {
@@ -524,6 +667,18 @@ const filteredBooks = computed(() => {
   return filtered
 })
 
+const displayedBooks = computed(() => {
+  return filteredBooks.value.slice(0, displayLimit.value)
+})
+
+const hasMoreBooks = computed(() => {
+  return filteredBooks.value.length > displayLimit.value
+})
+
+const remainingBooksCount = computed(() => {
+  return filteredBooks.value.length - displayLimit.value
+})
+
 // Methods
 const toggleCategory = (categoryTitle: string) => {
   const index = expandedCategories.value.indexOf(categoryTitle)
@@ -541,6 +696,32 @@ const getCategoryTotal = (category: Category): number => {
 const clearAllFilters = () => {
   selectedFormats.value = []
   selectedThemes.value = []
+  displayLimit.value = 20 // Reset beim Filter-Reset
+}
+
+const loadMoreBooks = () => {
+  displayLimit.value += 20
+}
+
+const toggleMobileFilter = () => {
+  isMobileFilterOpen.value = !isMobileFilterOpen.value
+  if (isMobileFilterOpen.value) {
+    document.documentElement.classList.add('overlay-open')
+    document.body.classList.add('overlay-open')
+  } else {
+    document.documentElement.classList.remove('overlay-open')
+    document.body.classList.remove('overlay-open')
+  }
+}
+
+const closeMobileFilter = () => {
+  isMobileFilterOpen.value = false
+  document.documentElement.classList.remove('overlay-open')
+  document.body.classList.remove('overlay-open')
+}
+
+const applyMobileFilters = () => {
+  closeMobileFilter()
 }
 
 const navigateToBook = (book: BookData) => {
@@ -567,6 +748,11 @@ onMounted(() => {
   console.log('🔍 Initial URL params:', route.query)
   loadBooksData()
 })
+
+onUnmounted(() => {
+  document.documentElement.classList.remove('overlay-open')
+  document.body.classList.remove('overlay-open')
+})
 </script>
 
 <style scoped>
@@ -582,10 +768,171 @@ onMounted(() => {
   border-bottom: 2px solid #e0e0e0;
 }
 
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mobile-filter-btn {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #000;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.mobile-filter-btn:hover {
+  border-color: #000;
+}
+
+.mobile-filter-btn.active {
+  background: #004b5a;
+  color: #fff;
+  border-color: #004b5a;
+}
+
+.mobile-filter-btn.active svg {
+  color: #fff;
+}
+
+.filter-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #004b5a;
+  color: #fff;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.mobile-filter-btn.active .filter-badge {
+  background: #fff;
+  color: #000;
+}
+
+/* Mobile Overlay Styles (wie MegaDropdown) */
+.mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+.mobile-overlay-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  touch-action: none;
+}
+
+.mobile-overlay-content {
+  position: relative;
+  background: white;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  touch-action: auto;
+}
+
+.mobile-overlay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.mobile-overlay-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.mobile-overlay-close {
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-overlay-close:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.mobile-overlay-body {
+  padding: 1rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.mobile-apply-section {
+  display: none;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.apply-filters-btn {
+  width: 100%;
+  padding: 1rem;
+  background: #004b5a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.apply-filters-btn:hover {
+  background: #003a47;
+}
+
 .results-title {
   font-size: 1.5rem;
   color: #000;
-  margin-top: 100px;
+  margin-top: 50px;
 }
 
 .layout {
@@ -640,16 +987,12 @@ onMounted(() => {
   width: 16px;
   height: 16px;
   margin-right: 0.75rem;
-  accent-color: #000;
+  accent-color: #004b5a;
   cursor: pointer;
 }
 
 .filter-checkbox:disabled {
   cursor: not-allowed;
-}
-
-.filter-checkbox.checked {
-  background: #000;
 }
 
 .filter-text {
@@ -826,15 +1169,59 @@ onMounted(() => {
   font-size: 0.9rem;
 }
 
+/* Load More Button */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+}
+
+.load-more-btn {
+  padding: 0;
+  background: transparent;
+  color: #000;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  position: relative;
+}
+
+.load-more-btn:hover {
+  text-decoration: underline;
+}
+
 /* Responsive */
+@media (min-width: 769px) {
+  /* Desktop: Overlay verstecken */
+  .mobile-filter-btn {
+    display: none !important;
+  }
+  
+  .mobile-overlay {
+    display: none !important;
+  }
+}
+
 @media (max-width: 768px) {
+  .mobile-filter-btn {
+    display: flex;
+  }
+  
+  .mobile-apply-section {
+    display: block;
+  }
+  
   .layout {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
   
   .filter-sidebar {
-    position: static;
+    display: none;
   }
   
   .page-container {
@@ -851,7 +1238,22 @@ onMounted(() => {
   }
   
   .results-title {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
+  
+  .header-content {
+    flex-wrap: wrap;
+  }
+}
+</style>
+
+<style>
+/* Global overlay styles */
+html.overlay-open,
+body.overlay-open {
+  overflow: hidden !important;
+  position: fixed;
+  width: 100%;
+  height: 100%;
 }
 </style>
