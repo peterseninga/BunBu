@@ -17,8 +17,6 @@ const formattedText = asHTML(slice.primary.rechts).replace(
 	'<strong><span style="color: #8f4200;">Moin, ich bin Inga</span></strong>'
 );
 
-console.log(asHTML(slice.primary.rechts));
-
 useHead({
   title: "BunBu - About",
 })

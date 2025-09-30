@@ -17,7 +17,7 @@
       />
       
       <button 
-        @click="handleEnterKey"
+        @mousedown.prevent="handleEnterKey"
         class="search-button"
         :disabled="!query.trim()"
       >
@@ -48,7 +48,7 @@
       <div
         v-for="(suggestion, index) in filteredSuggestions"
         :key="index"
-        @click="selectSuggestion(suggestion)"
+        @mousedown.prevent="selectSuggestion(suggestion)"
         @mouseenter="selectedIndex = index"
         class="suggestion-item"
         :class="{ 
@@ -323,7 +323,8 @@ const generateSuggestions = () => {
 }
 
 const selectSuggestion = (suggestion: Suggestion) => {
-  query.value = suggestion.text
+  query.value = ''
+  searchInput.value?.blur()
   showSuggestions.value = false
   selectedIndex.value = -1
   
@@ -380,11 +381,14 @@ const navigateSuggestions = (direction: number) => {
 
 // Handle Enter key when a suggestion is selected
 const handleEnterKey = () => {
+  if (!query.value.trim()) return
+
   if (selectedIndex.value >= 0 && selectedIndex.value < filteredSuggestions.value.length) {
     selectSuggestion(filteredSuggestions.value[selectedIndex.value])
   } else {
     performSearch()
   }
+  query.value = '' // Suchfeld
 }
 
 const clearSuggestions = () => {
@@ -496,7 +500,9 @@ onMounted(() => {
   border: 1px solid #e5e7eb;
   z-index: 10001; /* Höher als alle anderen Elemente */
   max-height: 400px;
+  width: 300px;
   overflow-y: auto;
+  margin-left: -25px;
   margin-top: 0.5rem;
   overflow-x: hidden; /* Verhindert horizontales Scrollen im Dropdown, ggf noch die breite erhöhen */
 }
