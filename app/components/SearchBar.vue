@@ -17,7 +17,7 @@
       />
       
       <button 
-        @click="performSearch"
+        @click="handleEnterKey"
         class="search-button"
         :disabled="!query.trim()"
       >
@@ -55,7 +55,8 @@
           'selected': index === selectedIndex,
           'book': suggestion.type === 'book',
           'author': suggestion.type === 'author',
-          'category': suggestion.type === 'category'
+          'category': suggestion.type === 'category',
+          'format': suggestion.type === 'format'
         }"
       >
         <div class="suggestion-icon">
@@ -90,23 +91,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Show All Results -->
-      <div 
-        v-if="query.length > 0 && filteredSuggestions.length > 0"
-        @click="performSearch"
-        class="suggestion-item show-all"
-      >
-        <div class="suggestion-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="M21 21l-4.35-4.35"></path>
-          </svg>
-        </div>
-        <div class="suggestion-content">
-          <span>Alle Ergebnisse für "{{ query }}" anzeigen</span>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -114,8 +98,8 @@
 <script setup lang="ts">
 interface BookData {
   title: string
-  author: string
-  format: string
+  authors: string
+  formats: string
   categories: string
   cover_url?: string
   description?: string
@@ -124,7 +108,7 @@ interface BookData {
 
 interface Suggestion {
   text: string
-  type: 'book' | 'author' | 'category'
+  type: 'book' | 'author' | 'category' | 'format'
   subtitle?: string
   data?: BookData
 }
@@ -132,6 +116,10 @@ interface Suggestion {
 const emit = defineEmits<{
   search: [query: string, filters?: any]
 }>()
+
+const normalize = (str: string): string =>
+  str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+
 
 // Reactive state
 const query = ref('')
@@ -146,6 +134,7 @@ const searchInput = ref<HTMLInputElement>()
 const books = ref<BookData[]>([])
 const authors = ref<Set<string>>(new Set())
 const categories = ref<Set<string>>(new Set())
+const formats = ref<Set<string>>(new Set())
 
 // Load CSV data
 const loadBooksData = async () => {
@@ -164,6 +153,7 @@ const loadBooksData = async () => {
     const bookData: BookData[] = []
     const authorSet = new Set<string>()
     const categorySet = new Set<string>()
+    const formatSet = new Set<string>()
     
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim()
@@ -173,8 +163,8 @@ const loadBooksData = async () => {
       
       const book: BookData = {
         title: values[headers.indexOf('title')] || '',
-        author: values[headers.indexOf('author')] || '',
-        format: values[headers.indexOf('format')] || '',
+        authors: values[headers.indexOf('author')] || '',
+        formats: values[headers.indexOf('format')] || '',
         categories: values[headers.indexOf('categories')] || '',
         cover_url: values[headers.indexOf('cover_url')] || '',
         description: values[headers.indexOf('description')] || '',
@@ -185,8 +175,8 @@ const loadBooksData = async () => {
         bookData.push(book)
         
         // Collect authors
-        if (book.author) {
-          book.author.split(',').forEach(author => {
+        if (book.authors) {
+          book.authors.split(',').forEach(author => {
             authorSet.add(author.trim())
           })
         }
@@ -197,12 +187,20 @@ const loadBooksData = async () => {
             categorySet.add(category.trim())
           })
         }
+
+        // Collect formats
+        if (book.formats) {
+          book.formats.split(',').forEach(format => {
+            formatSet.add(format.trim())
+          })
+        }
       }
     }
     
     books.value = bookData
     authors.value = authorSet
     categories.value = categorySet
+    formats.value = formatSet
     
     console.log(`${bookData.length} Bücher geladen`)
     
@@ -213,8 +211,8 @@ const loadBooksData = async () => {
     books.value = [
       {
         title: 'Kennt ihr Blauland?',
-        author: 'Tina Rau',
-        format: 'Buch',
+        authors: 'Tina Rau',
+        formats: 'Buch',
         categories: 'Vielfalt & Diversität, Toleranz & Respekt',
         cover_url: 'https://example.com/cover1.jpg',
         description: 'Ein liebevoll gestaltetes Bilderbuch...',
@@ -223,6 +221,7 @@ const loadBooksData = async () => {
     ]
     authors.value = new Set(['Tina Rau'])
     categories.value = new Set(['Vielfalt & Diversität', 'Toleranz & Respekt'])
+    formats.value = new Set(['Buch'])
     
   } finally {
     isLoading.value = false
@@ -248,16 +247,16 @@ const onInput = () => {
 }
 
 const generateSuggestions = () => {
-  const searchTerm = query.value.toLowerCase()
+  const searchTerm = normalize(query.value)
   const suggestions: Suggestion[] = []
   
   // Search in books
   books.value.forEach(book => {
-    if (book.title.toLowerCase().includes(searchTerm)) {
+    if (normalize(book.title).includes(searchTerm)) {
       suggestions.push({
         text: book.title,
         type: 'book',
-        subtitle: book.author,
+        subtitle: book.authors,
         data: book
       })
     }
@@ -265,9 +264,9 @@ const generateSuggestions = () => {
   
   // Search in authors
   authors.value.forEach(author => {
-    if (author.toLowerCase().includes(searchTerm)) {
+    if (normalize(author).includes(searchTerm)) {
       const bookCount = books.value.filter(book => 
-        book.author.toLowerCase().includes(author.toLowerCase())
+        book.authors.toLowerCase().includes(author.toLowerCase())
       ).length
       
       suggestions.push({
@@ -280,7 +279,7 @@ const generateSuggestions = () => {
   
   // Search in categories
   categories.value.forEach(category => {
-    if (category.toLowerCase().includes(searchTerm)) {
+    if (normalize(category).includes(searchTerm)) {
       const bookCount = books.value.filter(book => 
         book.categories.toLowerCase().includes(category.toLowerCase())
       ).length
@@ -288,6 +287,20 @@ const generateSuggestions = () => {
       suggestions.push({
         text: category,
         type: 'category',
+        subtitle: `${bookCount} ${bookCount === 1 ? 'Buch' : 'Bücher'}`
+      })
+    }
+  })
+
+  formats.value.forEach(format => {
+    if (normalize(format).includes(searchTerm)) {
+      const bookCount = books.value.filter(book => 
+        book.formats.toLowerCase().includes(format.toLowerCase())
+      ).length
+      
+      suggestions.push({
+        text: format,
+        type: 'format',
         subtitle: `${bookCount} ${bookCount === 1 ? 'Buch' : 'Bücher'}`
       })
     }
@@ -303,7 +316,7 @@ const generateSuggestions = () => {
       if (!aExact && bExact) return 1
       
       // Then by type priority: books > authors > categories
-      const typeOrder = { book: 0, author: 1, category: 2 }
+      const typeOrder = { book: 0, author: 1, category: 2, format: 3 }
       return typeOrder[a.type] - typeOrder[b.type]
     })
     .slice(0, 8)
@@ -339,10 +352,8 @@ const performSearch = (selectedSuggestion?: Suggestion) => {
   
   console.log('🔍 Performing search:', searchQuery, filters)
   
-  // Navigation zur Seite mit BookResults Slice
-  // Angenommen die Seite heißt '/suche' oder '/search-results'
   navigateTo({
-    path: '/suche', // <- Hier den korrekten Pfad zu Ihrer Searchresults-Seite eintragen
+    path: '/suche', 
     query: { 
       q: searchQuery,
       filter: filters.type || 'general' // 'author' | 'category' | 'general'
@@ -398,7 +409,8 @@ const getTypeLabel = (type: string): string => {
   const labels = {
     book: 'Buch',
     author: 'Autor',
-    category: 'Kategorie'
+    category: 'Kategorie',
+    format: 'Format'
   }
   return labels[type as keyof typeof labels] || type
 }
@@ -504,7 +516,7 @@ onMounted(() => {
 
 .suggestion-item:hover,
 .suggestion-item.selected {
-  background: #f8f9fa;
+  background: #c2c2c2;
 }
 
 .suggestion-item.show-all {
@@ -539,11 +551,15 @@ onMounted(() => {
 }
 
 .suggestion-item.author .suggestion-icon {
-  color: #059669;
+  color: #8f4200;
 }
 
 .suggestion-item.category .suggestion-icon {
   color: #7c3aed;
+}
+
+.suggestion-item.format .suggestion-icon {
+  color: #059669;
 }
 
 .suggestion-content {
@@ -564,8 +580,8 @@ onMounted(() => {
 }
 
 .suggestion-text :deep(mark) {
-  background: #fef3c7;
-  color: #92400e;
+  background: #f2ddcc;
+  color: #8f4200;
   padding: 0.125rem 0.25rem;
   border-radius: 0.25rem;
 }

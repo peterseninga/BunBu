@@ -8,20 +8,29 @@
             {{ resultsTitle }}
           </span>
         </h2>
-        
+
         <!-- Mobile Filter Button -->
-        <button 
+        <button
           class="mobile-filter-btn"
           @click="toggleMobileFilter"
           :class="{ active: hasActiveFilters }"
         >
           Filtern
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <line x1="4" y1="6" x2="20" y2="6"></line>
             <line x1="4" y1="12" x2="20" y2="12"></line>
             <line x1="4" y1="18" x2="20" y2="18"></line>
           </svg>
-          <span v-if="hasActiveFilters" class="filter-badge">{{ activeFilterCount }}</span>
+          <span v-if="hasActiveFilters" class="filter-badge">{{
+            activeFilterCount
+          }}</span>
         </button>
       </div>
     </div>
@@ -33,24 +42,28 @@
         <div class="mobile-overlay-content">
           <div class="mobile-overlay-header">
             <h2 class="mobile-overlay-title">Filter wählen</h2>
-            <button 
-              class="mobile-overlay-close"
-              @click="closeMobileFilter"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <button class="mobile-overlay-close" @click="closeMobileFilter">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
             </button>
           </div>
-          
+
           <div class="mobile-overlay-body">
             <!-- Format Filter -->
             <div class="filter-section">
               <h3 class="filter-title">Format</h3>
               <div class="filter-options">
-                <label 
-                  v-for="format in allFormatsWithCounts" 
+                <label
+                  v-for="format in allFormatsWithCounts"
                   :key="format.name"
                   class="filter-option"
                   :class="{ disabled: format.count === 0 }"
@@ -74,31 +87,41 @@
             <div class="filter-section">
               <h3 class="filter-title">Thema</h3>
               <div class="theme-categories">
-                <div 
-                  v-for="category in allCategoriesWithCounts" 
+                <div
+                  v-for="category in allCategoriesWithCounts"
                   :key="category.title"
                   class="theme-category"
                 >
                   <button
                     class="category-button"
-                    :class="{ 
-                      expanded: expandedCategories.includes(category.title)
+                    :class="{
+                      expanded: expandedCategories.includes(category.title),
                     }"
                     @click="toggleCategory(category.title)"
                   >
                     {{ category.title }}
-                    <span class="category-total">({{ getCategoryTotal(category) }})</span>
-                    <svg class="expand-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <span class="category-total"
+                      >({{ getCategoryTotal(category) }})</span
+                    >
+                    <svg
+                      class="expand-icon"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
                       <polyline points="6,9 12,15 18,9"></polyline>
                     </svg>
                   </button>
-                  
-                  <div 
+
+                  <div
                     v-if="expandedCategories.includes(category.title)"
                     class="category-content"
                   >
-                    <label 
-                      v-for="item in category.items" 
+                    <label
+                      v-for="item in category.items"
                       :key="item.name"
                       class="filter-option theme-item"
                       :class="{ disabled: item.count === 0 }"
@@ -145,8 +168,8 @@
         <div class="filter-section">
           <h3 class="filter-title">Format</h3>
           <div class="filter-options">
-            <label 
-              v-for="format in allFormatsWithCounts" 
+            <label
+              v-for="format in allFormatsWithCounts"
               :key="format.name"
               class="filter-option"
               :class="{ disabled: format.count === 0 }"
@@ -171,31 +194,41 @@
         <div class="filter-section">
           <h3 class="filter-title">Thema</h3>
           <div class="theme-categories">
-            <div 
-              v-for="category in allCategoriesWithCounts" 
+            <div
+              v-for="category in allCategoriesWithCounts"
               :key="category.title"
               class="theme-category"
             >
               <button
                 class="category-button"
-                :class="{ 
-                  expanded: expandedCategories.includes(category.title)
+                :class="{
+                  expanded: expandedCategories.includes(category.title),
                 }"
                 @click="toggleCategory(category.title)"
               >
                 {{ category.title }}
-                <span class="category-total">({{ getCategoryTotal(category) }})</span>
-                <svg class="expand-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <span class="category-total"
+                  >({{ getCategoryTotal(category) }})</span
+                >
+                <svg
+                  class="expand-icon"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <polyline points="6,9 12,15 18,9"></polyline>
                 </svg>
               </button>
-              
-              <div 
+
+              <div
                 v-if="expandedCategories.includes(category.title)"
                 class="category-content"
               >
-                <label 
-                  v-for="item in category.items" 
+                <label
+                  v-for="item in category.items"
                   :key="item.name"
                   class="filter-option theme-item"
                   :class="{ disabled: item.count === 0 }"
@@ -225,20 +258,25 @@
           </button>
         </div>
       </div>
-      
+
       <!-- Right Content Area -->
       <div class="content-area">
         <!-- Loading State -->
         <div v-if="isLoading" class="loading-message">
           Bücher werden geladen...
         </div>
-        
+
         <!-- No Results -->
-        <div v-else-if="filteredBooks.length === 0 && books.length > 0" class="no-results">
+        <div
+          v-else-if="filteredBooks.length === 0 && books.length > 0"
+          class="no-results"
+        >
           <p>Keine Bücher für die aktuellen Filter/Suchergebnisse gefunden.</p>
-          <button @click="clearAllFilters" class="reset-btn">Filter zurücksetzen</button>
+          <button @click="clearAllFilters" class="reset-btn">
+            Filter zurücksetzen
+          </button>
         </div>
-        
+
         <!-- Books List -->
         <div v-else class="books-list">
           <div
@@ -247,11 +285,11 @@
             @click="navigateToBook(book)"
             class="book-item"
           >
-            <img 
-              :src="book.cover_url || '/placeholder-book.jpg'" 
-              :alt="`Cover von ${book.title}`" 
+            <img
+              :src="book.cover_url || '/placeholder-book.jpg'"
+              :alt="`Cover von ${book.title}`"
               class="book-cover"
-              @error="(e) => e.target.src = '/placeholder-book.jpg'"
+              @error="(e) => (e.target.src = '/placeholder-book.jpg')"
               loading="lazy"
             />
             <div class="book-details">
@@ -259,7 +297,7 @@
               <p class="book-author">{{ book.author }}</p>
             </div>
           </div>
-          
+
           <!-- Load More Button -->
           <div v-if="hasMoreBooks" class="load-more-container">
             <button @click="loadMoreBooks" class="load-more-btn">
@@ -273,486 +311,547 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { useRoute, navigateTo } from '#imports'
-import type { getSliceComponentProps } from '@prismicio/vue'
-import type { Content } from "@prismicio/client"
+import { ref, computed, watch, onMounted, onUnmounted } from "vue";
+import { useRoute, navigateTo } from "#imports";
+import type { getSliceComponentProps } from "@prismicio/vue";
+import type { Content } from "@prismicio/client";
 
 // Prismic Props
 defineProps(
   getSliceComponentProps<Content.BookResultsSlice>([
     "slice",
-    "index", 
+    "index",
     "slices",
     "context",
   ])
-)
+);
 
 interface BookData {
-  title: string
-  author: string
-  format: string
-  categories: string
-  cover_url?: string
-  description?: string
-  slug: string
+  title: string;
+  author: string;
+  format: string;
+  categories: string;
+  cover_url?: string;
+  description?: string;
+  slug: string;
 }
 
 interface Format {
-  name: string
-  count: number
+  name: string;
+  count: number;
 }
 
 interface CategoryItem {
-  name: string
-  count: number
+  name: string;
+  count: number;
 }
 
 interface Category {
-  title: string
-  items: CategoryItem[]
+  title: string;
+  items: CategoryItem[];
 }
 
+const normalize = (str: string): string =>
+  str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+const getRelevanceScore = (book: BookData, query: string): number => {
+  const q = normalize(query);
+
+  let score = 0;
+  if (normalize(book.title) === q) score += 100;
+  else if (normalize(book.title).includes(q)) score += 80;
+  if (normalize(book.author).includes(q)) score += 60;
+  if (normalize(book.categories).includes(q)) score += 40;
+  if (normalize(book.description || "").includes(q)) score += 20;
+
+  return score;
+};
+
 // Reactive state
-const route = useRoute()
-const expandedCategories = ref<string[]>([])
-const books = ref<BookData[]>([])
-const isLoading = ref(false)
-const isMobileFilterOpen = ref(false)
-const displayLimit = ref(20)
+const route = useRoute();
+const expandedCategories = ref<string[]>([]);
+const books = ref<BookData[]>([]);
+const isLoading = ref(false);
+const isMobileFilterOpen = ref(false);
+const displayLimit = ref(20);
 
 // Lokale Filter-States
-const selectedThemes = ref<string[]>([])
-const selectedFormats = ref<string[]>([])
+const selectedThemes = ref<string[]>([]);
+const selectedFormats = ref<string[]>([]);
 
 // URL-Parameter
-const searchQuery = computed(() => route.query.q?.toString() || '')
-const filterType = computed(() => route.query.filter?.toString() || '')
+const searchQuery = computed(() => route.query.q?.toString() || "");
+const filterType = computed(() => route.query.filter?.toString() || "");
 
 // All possible formats
-const allFormats = [
-  'Buch',
-  'Hörbuch', 
-  'E-Book',
-  'Braille'
-]
+const allFormats = ["Buch", "Hörbuch", "E-Book", "Braille"];
 
 // Default category structure
 const defaultCategories = [
   {
-    title: 'Gesellschaft & Werte',
+    title: "Gesellschaft & Werte",
     items: [
-      'Vielfalt & Diversität',
-      'Inklusion & Behinderung',
-      'Religion & Glaube',
-      'Toleranz & Respekt',
-      'Gleichberechtigung & Rollenbilder',
-      'Gerechtigkeit & Konfliktlösung'
-    ]
+      "Vielfalt & Diversität",
+      "Inklusion & Behinderung",
+      "Religion & Glaube",
+      "Toleranz & Respekt",
+      "Gleichberechtigung & Rollenbilder",
+      "Gerechtigkeit & Konfliktlösung",
+    ],
   },
   {
-    title: 'Kreativität & Ausdruck',
-    items: [
-      'Körperbild',
-      'Kreativität & Fantasie'
-    ]
+    title: "Kreativität & Ausdruck",
+    items: ["Körperbild", "Kreativität & Fantasie"],
   },
   {
-    title: 'Beziehung & Lebenswelten',
+    title: "Beziehung & Lebenswelten",
     items: [
-      'Freundschaft & Familie',
-      'Detektivische Lebenswelten',
-      'Tiere',
-      'Soziale Medien',
-      'Coolness'
-    ]
+      "Freundschaft & Familie",
+      "Detektivische Lebenswelten",
+      "Tiere",
+      "Soziale Medien",
+      "Coolness",
+    ],
   },
   {
-    title: 'Entwicklung & Bildung',
+    title: "Entwicklung & Bildung",
     items: [
-      'Leseförderung & Bildung',
-      'Frühförderung & Babythemen',
-      'Leichte Sprache & Barrierefreiheit',
-      'Mehrsprachigkeit & Migration'
-    ]
+      "Leseförderung & Bildung",
+      "Frühförderung & Babythemen",
+      "Leichte Sprache & Barrierefreiheit",
+      "Mehrsprachigkeit & Migration",
+    ],
   },
   {
-    title: 'Soziale & emotionale Kompetenzen',
+    title: "Soziale & emotionale Kompetenzen",
     items: [
-      'Emotionale Intelligenz & Empathie',
-      'Gemeinschaft',
-      'Konsens & Autonomie',
-      'Selbstbewusstsein & Selbstliebe',
-      'Psychische Gesundheit'
-    ]
+      "Emotionale Intelligenz & Empathie",
+      "Gemeinschaft",
+      "Konsens & Autonomie",
+      "Selbstbewusstsein & Selbstliebe",
+      "Psychische Gesundheit",
+    ],
   },
   {
-    title: 'Herausfordernde Themen',
-    items: [
-      'Gewalt & Missbrauch',
-      'Diskriminierung',
-      'Mobbing & Ausgrenzung'
-    ]
-  }
-]
+    title: "Herausfordernde Themen",
+    items: ["Gewalt & Missbrauch", "Diskriminierung", "Mobbing & Ausgrenzung"],
+  },
+];
 
 // Load CSV data
 const loadBooksData = async () => {
   try {
-    isLoading.value = true
-    const response = await fetch('/books.csv')
-    
+    isLoading.value = true;
+    const response = await fetch("/books.csv");
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
-    const csvText = await response.text()
-    const lines = csvText.split('\n')
-    
+
+    const csvText = await response.text();
+    const lines = csvText.split("\n");
+
     if (lines.length === 0) {
-      throw new Error('CSV file is empty')
+      throw new Error("CSV file is empty");
     }
-    
-    const headers = lines[0].split(';').map(h => h.trim().replace(/^\uFEFF/, ''))
-    const bookData: BookData[] = []
-    
+
+    const headers = lines[0]
+      .split(";")
+      .map((h) => h.trim().replace(/^\uFEFF/, ""));
+    const bookData: BookData[] = [];
+
     for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim()
-      if (!line) continue
-      
-      const values = line.split(';').map(v => v.trim())
-      
+      const line = lines[i].trim();
+      if (!line) continue;
+
+      const values = line.split(";").map((v) => v.trim());
+
       const book: BookData = {
-        title: values[headers.indexOf('title')] || '',
-        author: values[headers.indexOf('author')] || '',
-        format: values[headers.indexOf('format')] || '',
-        categories: values[headers.indexOf('categories')] || '',
-        cover_url: values[headers.indexOf('cover_url')] || '',
-        description: values[headers.indexOf('description')] || '',
-        slug: values[headers.indexOf('slug')] || ''
-      }
-      
+        title: values[headers.indexOf("title")] || "",
+        author: values[headers.indexOf("author")] || "",
+        format: values[headers.indexOf("format")] || "",
+        categories: values[headers.indexOf("categories")] || "",
+        cover_url: values[headers.indexOf("cover_url")] || "",
+        description: values[headers.indexOf("description")] || "",
+        slug: values[headers.indexOf("slug")] || "",
+      };
+
       if (book.title) {
-        bookData.push(book)
+        bookData.push(book);
       }
     }
-    
-    books.value = bookData
-    console.log(`📚 ${bookData.length} Bücher geladen`)
-    
+
+    books.value = bookData;
+    console.log(`📚 ${bookData.length} Bücher geladen`);
   } catch (error) {
-    console.error('❌ Fehler beim Laden der CSV:', error)
-    
+    console.error("❌ Fehler beim Laden der CSV:", error);
+
     // Fallback Demo-Daten
     books.value = [
       {
-        title: 'Kennt ihr Blauland?',
-        author: 'Tina Rau',
-        format: 'Buch',
-        categories: 'Vielfalt & Diversität, Toleranz & Respekt',
-        cover_url: 'https://via.placeholder.com/100x150?text=Buch+1',
-        description: 'Ein liebevoll gestaltetes Bilderbuch...',
-        slug: 'kennt-ihr-blauland'
+        title: "Kennt ihr Blauland?",
+        author: "Tina Rau",
+        format: "Buch",
+        categories: "Vielfalt & Diversität, Toleranz & Respekt",
+        cover_url: "https://via.placeholder.com/100x150?text=Buch+1",
+        description: "Ein liebevoll gestaltetes Bilderbuch...",
+        slug: "kennt-ihr-blauland",
       },
       {
-        title: 'Freunde fürs Leben',
-        author: 'Anna Autorin',
-        format: 'Hörbuch',
-        categories: 'Freundschaft & Familie, Emotionale Intelligenz & Empathie',
-        cover_url: 'https://via.placeholder.com/100x150?text=Buch+2',
-        description: 'Eine Geschichte über wahre Freundschaft',
-        slug: 'freunde-fuers-leben'
-      }
-    ]
+        title: "Freunde fürs Leben",
+        author: "Anna Autorin",
+        format: "Hörbuch",
+        categories: "Freundschaft & Familie, Emotionale Intelligenz & Empathie",
+        cover_url: "https://via.placeholder.com/100x150?text=Buch+2",
+        description: "Eine Geschichte über wahre Freundschaft",
+        slug: "freunde-fuers-leben",
+      },
+    ];
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
-// Filter aus URL übernehmen und Suche implementieren  
-watch([searchQuery, filterType], ([q, type]) => {
-  console.log('🔍 URL Parameter:', { q, type })
-  
-  // Filter zurücksetzen
-  selectedThemes.value = []
-  selectedFormats.value = []
-  displayLimit.value = 20 // Reset beim URL-Wechsel
-  
-  if (!q || !type) return
-  
-  // Spezifische Filter aus URL anwenden
-  if (type === 'category') {
-    selectedThemes.value = [q]
-  } else if (type === 'format') {
-    selectedFormats.value = [q]
+// Filter aus URL übernehmen und Suche implementieren
+watch(
+  [searchQuery, filterType],
+  ([q, type]) => {
+    console.log("🔍 URL Parameter:", { q, type });
+
+    // Filter zurücksetzen
+    selectedThemes.value = [];
+    selectedFormats.value = [];
+    displayLimit.value = 20; // Reset beim URL-Wechsel
+
+    if (!q || !type) return;
+
+    const normalizedQ = normalize(q);
+
+    // Spezifische Filter aus URL anwenden
+    if (type === "category") {
+      selectedThemes.value = [q];
+    } else if (type === "format") {
+      selectedFormats.value = [q];
+    } else if (type === 'general') {
+    // Automatisch aktivieren, wenn exakter Treffer bei Format
+    const matchedFormat = allFormats.find(f => normalize(f) === normalizedQ)
+    if (matchedFormat) {
+      selectedFormats.value = [matchedFormat]
+      console.log('✅ Format automatisch aktiviert:', matchedFormat)
+    }
+
+    // Automatisch aktivieren, wenn exakter Treffer bei Kategorie
+    const matchedTheme = defaultCategories
+      .flatMap(c => c.items)
+      .find(item => normalize(item) === normalizedQ)
+    if (matchedTheme) {
+      selectedThemes.value = [matchedTheme]
+      console.log('✅ Thema automatisch aktiviert:', matchedTheme)
+    }
   }
-}, { immediate: true })
+
+  },
+  { immediate: true }
+);
 
 // Computed properties
 const hasActiveFilters = computed(() => {
-  return selectedFormats.value.length > 0 || selectedThemes.value.length > 0
-})
+  return selectedFormats.value.length > 0 || selectedThemes.value.length > 0;
+});
 
 const activeFilterCount = computed(() => {
-  return selectedFormats.value.length + selectedThemes.value.length
-})
+  return selectedFormats.value.length + selectedThemes.value.length;
+});
 
 const resultsTitle = computed(() => {
   if (searchQuery.value) {
     if (hasActiveFilters.value) {
-      return `Filtersuche: "${searchQuery.value}" - ${filteredBooks.value.length} Treffer`
+      return `Filtersuche: "${searchQuery.value}" - ${filteredBooks.value.length} Treffer`;
     } else {
-      return `Suchergebnisse für "${searchQuery.value}" - ${filteredBooks.value.length} Treffer`
+      return `Suchergebnisse für "${searchQuery.value}" - ${filteredBooks.value.length} Treffer`;
     }
   } else if (hasActiveFilters.value) {
-    return `Filtersuche: ${filteredBooks.value.length} Treffer`
+    return `Filtersuche: ${filteredBooks.value.length} Treffer`;
   } else {
-    return `${books.value.length} Bücher`
+    return `${books.value.length} Bücher`;
   }
-})
+});
 
 const allFormatsWithCounts = computed<Format[]>(() => {
-  return allFormats.map(format => {
-    let filteredBooks = books.value
-    
-    // Textsuche anwenden
-    if (searchQuery.value && filterType.value === 'general') {
-      const query = searchQuery.value.toLowerCase()
-      filteredBooks = filteredBooks.filter(book => 
-        book.title.toLowerCase().includes(query) ||
-        book.author.toLowerCase().includes(query) ||
-        book.categories.toLowerCase().includes(query)
-      )
-    }
-    
-    // Theme filter anwenden
-    if (selectedThemes.value.length > 0) {
-      filteredBooks = filteredBooks.filter(book => {
-        if (!book.categories) return false
-        const bookCategories = book.categories.toLowerCase()
-        return selectedThemes.value.every(theme =>
-          bookCategories.includes(theme.toLowerCase())
-        )
-      })
-    }
-    
-    // Andere Format-Filter anwenden
-    const otherSelectedFormats = selectedFormats.value.filter(f => f !== format)
-    if (otherSelectedFormats.length > 0) {
-      filteredBooks = filteredBooks.filter(book => {
-        if (!book.format) return false
-        const bookFormats = book.format.toLowerCase()
-        return otherSelectedFormats.every(f =>
-          bookFormats.includes(f.toLowerCase())
-        )
-      })
-    }
-    
-    // Zählen für dieses spezifische Format
-    const count = filteredBooks.filter(book =>
-      book.format && book.format.toLowerCase().includes(format.toLowerCase())
-    ).length
-    
-    return {
-      name: format,
-      count
-    }
-  })
-})
+  return allFormats.map((format) => {
+    let filteredBooks = books.value;
 
-const allCategoriesWithCounts = computed<Category[]>(() => {
-  const categoryMap = new Map<string, Map<string, number>>()
-  
-  // Alle Kategorien mit 0 initialisieren
-  defaultCategories.forEach(category => {
-    categoryMap.set(category.title, new Map())
-    category.items.forEach(item => {
-      categoryMap.get(category.title)!.set(item, 0)
-    })
-  })
-  
-  // Für jedes Theme-Item berechnen
-  defaultCategories.forEach(category => {
-    category.items.forEach(item => {
-      let filteredBooks = books.value
-      
-      // Textsuche anwenden
-      if (searchQuery.value && filterType.value === 'general') {
-        const query = searchQuery.value.toLowerCase()
-        filteredBooks = filteredBooks.filter(book => 
+    // Textsuche anwenden
+    if (searchQuery.value && filterType.value === "general") {
+      const query = searchQuery.value.toLowerCase();
+      filteredBooks = filteredBooks.filter(
+        (book) =>
           book.title.toLowerCase().includes(query) ||
           book.author.toLowerCase().includes(query) ||
-          book.categories.toLowerCase().includes(query)
-        )
+          book.categories.toLowerCase().includes(query) ||
+          book.format.toLowerCase().includes(query)
+      );
+    }
+
+    // Theme filter anwenden
+    if (selectedThemes.value.length > 0) {
+      filteredBooks = filteredBooks.filter((book) => {
+        if (!book.categories) return false;
+        const bookCategories = book.categories.toLowerCase();
+        return selectedThemes.value.every((theme) =>
+          bookCategories.includes(theme.toLowerCase())
+        );
+      });
+    }
+
+    // Andere Format-Filter anwenden
+    const otherSelectedFormats = selectedFormats.value.filter(
+      (f) => f !== format
+    );
+    if (otherSelectedFormats.length > 0) {
+      filteredBooks = filteredBooks.filter((book) => {
+        if (!book.format) return false;
+        const bookFormats = book.format.toLowerCase();
+        return otherSelectedFormats.every((f) =>
+          bookFormats.includes(f.toLowerCase())
+        );
+      });
+    }
+
+    // Zählen für dieses spezifische Format
+    const count = filteredBooks.filter(
+      (book) =>
+        book.format && book.format.toLowerCase().includes(format.toLowerCase())
+    ).length;
+
+    return {
+      name: format,
+      count,
+    };
+  });
+});
+
+const allCategoriesWithCounts = computed<Category[]>(() => {
+  const categoryMap = new Map<string, Map<string, number>>();
+
+  // Alle Kategorien mit 0 initialisieren
+  defaultCategories.forEach((category) => {
+    categoryMap.set(category.title, new Map());
+    category.items.forEach((item) => {
+      categoryMap.get(category.title)!.set(item, 0);
+    });
+  });
+
+  // Für jedes Theme-Item berechnen
+  defaultCategories.forEach((category) => {
+    category.items.forEach((item) => {
+      let filteredBooks = books.value;
+
+      // Textsuche anwenden
+      if (searchQuery.value && filterType.value === "general") {
+        const query = searchQuery.value.toLowerCase();
+        filteredBooks = filteredBooks.filter(
+          (book) =>
+            book.title.toLowerCase().includes(query) ||
+            book.author.toLowerCase().includes(query) ||
+            book.categories.toLowerCase().includes(query)
+        );
       }
-      
+
       // Format filter anwenden
       if (selectedFormats.value.length > 0) {
-        filteredBooks = filteredBooks.filter(book =>
-          selectedFormats.value.some(format =>
+        filteredBooks = filteredBooks.filter((book) =>
+          selectedFormats.value.some((format) =>
             book.format.toLowerCase().includes(format.toLowerCase())
           )
-        )
+        );
       }
-      
+
       // Andere Theme-Filter anwenden
       if (selectedThemes.value.length > 0) {
-        const otherSelectedThemes = selectedThemes.value.filter(theme => theme !== item)
+        const otherSelectedThemes = selectedThemes.value.filter(
+          (theme) => theme !== item
+        );
         if (otherSelectedThemes.length > 0) {
-          filteredBooks = filteredBooks.filter(book => {
-            if (!book.categories) return false
-            const bookCategories = book.categories.toLowerCase()
-            return otherSelectedThemes.every(theme =>
+          filteredBooks = filteredBooks.filter((book) => {
+            if (!book.categories) return false;
+            const bookCategories = book.categories.toLowerCase();
+            return otherSelectedThemes.every((theme) =>
               bookCategories.includes(theme.toLowerCase())
-            )
-          })
+            );
+          });
         }
       }
-      
+
       // Zählen für dieses spezifische Theme
-      const count = filteredBooks.filter(book =>
-        book.categories && book.categories.toLowerCase().includes(item.toLowerCase())
-      ).length
-      
-      categoryMap.get(category.title)!.set(item, count)
-    })
-  })
-  
-  return defaultCategories.map(category => ({
+      const count = filteredBooks.filter(
+        (book) =>
+          book.categories &&
+          book.categories.toLowerCase().includes(item.toLowerCase())
+      ).length;
+
+      categoryMap.get(category.title)!.set(item, count);
+    });
+  });
+
+  return defaultCategories.map((category) => ({
     title: category.title,
-    items: category.items.map(item => ({
+    items: category.items.map((item) => ({
       name: item,
-      count: categoryMap.get(category.title)?.get(item) || 0
-    }))
-  }))
-})
+      count: categoryMap.get(category.title)?.get(item) || 0,
+    })),
+  }));
+});
 
 const filteredBooks = computed(() => {
-  let filtered = books.value
+  let filtered = books.value;
 
   // Textsuche (wenn kein spezifischer Filter)
-  if (searchQuery.value && filterType.value === 'general') {
-    const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(book => 
-      book.title.toLowerCase().includes(query) ||
-      book.author.toLowerCase().includes(query) ||
-      book.categories.toLowerCase().includes(query)
-    )
+  if (searchQuery.value && filterType.value === "general") {
+    const query = searchQuery.value.toLowerCase();
+    filtered = filtered.filter(
+      (book) =>
+        book.title.toLowerCase().includes(query) ||
+        book.author.toLowerCase().includes(query) ||
+        book.categories.toLowerCase().includes(query) ||
+        book.format.toLowerCase().includes(query)
+    );
   }
 
-  // Format filter - ALL selected formats must match
-  if (selectedFormats.value.length > 0) {
-    filtered = filtered.filter(book => {
-      if (!book.format) return false
-      
-      const bookFormats = book.format.toLowerCase()
-      return selectedFormats.value.every(format =>
-        bookFormats.includes(format.toLowerCase())
-      )
-    })
+  if (searchQuery.value && filterType.value === "author") {
+    const query = searchQuery.value.toLowerCase();
+    filtered = filtered.filter((book) => {
+      const authors = book.author.split(",").map((a) => a.trim().toLowerCase());
+      return authors.includes(query);
+    });
   }
+
+  if (searchQuery.value && filterType.value === "format") {
+    const query = searchQuery.value.toLowerCase();
+    filtered = filtered.filter((book) => {
+      const formate = book.format.split(",").map((f) => f.trim().toLowerCase());
+      return formate.includes(query);
+    }
+    );
+  }
+
 
   // Theme filter - ALL selected themes must match
   if (selectedThemes.value.length > 0) {
-    filtered = filtered.filter(book => {
-      if (!book.categories) return false
-      
-      const bookCategories = book.categories.toLowerCase()
-      return selectedThemes.value.every(theme =>
+    filtered = filtered.filter((book) => {
+      if (!book.categories) return false;
+
+      const bookCategories = book.categories.toLowerCase();
+      return selectedThemes.value.every((theme) =>
         bookCategories.includes(theme.toLowerCase())
-      )
-    })
+      );
+    });
   }
 
-  return filtered
-})
+  if (searchQuery.value) {
+    filtered = filtered.sort(
+      (a, b) =>
+        getRelevanceScore(b, searchQuery.value) -
+        getRelevanceScore(a, searchQuery.value)
+    );
+  }
+  return filtered;
+});
 
 const displayedBooks = computed(() => {
-  return filteredBooks.value.slice(0, displayLimit.value)
-})
+  return filteredBooks.value.slice(0, displayLimit.value);
+});
 
 const hasMoreBooks = computed(() => {
-  return filteredBooks.value.length > displayLimit.value
-})
+  return filteredBooks.value.length > displayLimit.value;
+});
 
 const remainingBooksCount = computed(() => {
-  return filteredBooks.value.length - displayLimit.value
-})
+  return filteredBooks.value.length - displayLimit.value;
+});
 
 // Methods
 const toggleCategory = (categoryTitle: string) => {
-  const index = expandedCategories.value.indexOf(categoryTitle)
+  const index = expandedCategories.value.indexOf(categoryTitle);
   if (index > -1) {
-    expandedCategories.value.splice(index, 1)
+    expandedCategories.value.splice(index, 1);
   } else {
-    expandedCategories.value.push(categoryTitle)
+    expandedCategories.value.push(categoryTitle);
   }
-}
+};
 
 const getCategoryTotal = (category: Category): number => {
-  return category.items.reduce((total, item) => total + item.count, 0)
-}
+  return category.items.reduce((total, item) => total + item.count, 0);
+};
 
 const clearAllFilters = () => {
-  selectedFormats.value = []
-  selectedThemes.value = []
-  displayLimit.value = 20 // Reset beim Filter-Reset
-}
+  selectedFormats.value = [];
+  selectedThemes.value = [];
+  displayLimit.value = 20; // Reset beim Filter-Reset
+};
 
 const loadMoreBooks = () => {
-  displayLimit.value += 20
-}
+  displayLimit.value += 20;
+};
 
 const toggleMobileFilter = () => {
-  isMobileFilterOpen.value = !isMobileFilterOpen.value
+  isMobileFilterOpen.value = !isMobileFilterOpen.value;
   if (isMobileFilterOpen.value) {
-    document.documentElement.classList.add('overlay-open')
-    document.body.classList.add('overlay-open')
+    document.documentElement.classList.add("overlay-open");
+    document.body.classList.add("overlay-open");
   } else {
-    document.documentElement.classList.remove('overlay-open')
-    document.body.classList.remove('overlay-open')
+    document.documentElement.classList.remove("overlay-open");
+    document.body.classList.remove("overlay-open");
   }
-}
+};
 
 const closeMobileFilter = () => {
-  isMobileFilterOpen.value = false
-  document.documentElement.classList.remove('overlay-open')
-  document.body.classList.remove('overlay-open')
-}
+  isMobileFilterOpen.value = false;
+  document.documentElement.classList.remove("overlay-open");
+  document.body.classList.remove("overlay-open");
+};
 
 const applyMobileFilters = () => {
-  closeMobileFilter()
-}
+  closeMobileFilter();
+};
 
 const navigateToBook = (book: BookData) => {
-  console.log('Navigate to book:', book.title)
+  console.log("Navigate to book:", book.title);
   if (book.slug) {
-    navigateTo(`/book/${book.slug}`)
+    navigateTo(`/book/${book.slug}`);
   } else {
     // Fallback - generiere slug aus Titel
-    const slug = book.title.toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-    navigateTo(`/book/${slug}`)
+    const slug = book.title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-");
+    navigateTo(`/book/${slug}`);
   }
-}
+};
 
 // Debug logging
-watch([searchQuery, filterType], ([query, filter]) => {
-  console.log('🔍 URL Parameter geändert:', { query, filter })
-}, { immediate: true })
+watch(
+  [searchQuery, filterType],
+  ([query, filter]) => {
+    console.log("🔍 URL Parameter geändert:", { query, filter });
+  },
+  { immediate: true }
+);
 
 // Load data on mount
 onMounted(() => {
-  console.log('✅ BookResults Slice geladen')
-  console.log('🔍 Initial URL params:', route.query)
-  loadBooksData()
-})
+  console.log("✅ BookResults Slice geladen");
+  console.log("🔍 Initial URL params:", route.query);
+  loadBooksData();
+});
 
 onUnmounted(() => {
-  document.documentElement.classList.remove('overlay-open')
-  document.body.classList.remove('overlay-open')
-})
+  document.documentElement.classList.remove("overlay-open");
+  document.body.classList.remove("overlay-open");
+});
 </script>
 
 <style scoped>
@@ -1200,7 +1299,7 @@ onUnmounted(() => {
   .mobile-filter-btn {
     display: none !important;
   }
-  
+
   .mobile-overlay {
     display: none !important;
   }
@@ -1210,37 +1309,37 @@ onUnmounted(() => {
   .mobile-filter-btn {
     display: flex;
   }
-  
+
   .mobile-apply-section {
     display: block;
   }
-  
+
   .layout {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .filter-sidebar {
     display: none;
   }
-  
+
   .page-container {
     padding: 1rem;
   }
-  
+
   .book-item {
     padding: 0.75rem;
   }
-  
+
   .book-cover {
     width: 50px;
     height: 75px;
   }
-  
+
   .results-title {
     font-size: 1rem;
   }
-  
+
   .header-content {
     flex-wrap: wrap;
   }
