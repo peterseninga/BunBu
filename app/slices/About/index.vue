@@ -3,8 +3,6 @@ import type { Content } from "@prismicio/client";
 import { getSliceComponentProps } from "@prismicio/vue";
 import { asHTML } from "@prismicio/helpers";
 
-// The array passed to `getSliceComponentProps` is purely optional.
-// Consider it as a visual hint for you when templating your slice.
 const { slice } = defineProps(
   getSliceComponentProps<Content.AboutSlice>([
     "slice",
@@ -67,15 +65,67 @@ console.log(asHTML(slice.primary.rechts));
 }
 
 .person-img {
-	width: 300px;
-	height: 300px;
 	border-radius: 50%;
 	object-fit: cover;
+	
+	/* Mobile: 200px */
+	width: 200px;
+	height: 200px;
+	
+	/* Small Tablet (640-768px): 220px */
+	@media (min-width: 640px) and (max-width: 768px) {
+		width: 220px;
+		height: 220px;
+	}
+	
+	/* Tablet (md): 250px */
+	@screen md {
+		width: 250px;
+		height: 250px;
+	}
+	
+	/* Desktop (lg): 280px */
+	@screen lg {
+		width: 280px;
+		height: 280px;
+	}
+	
+	/* Large Desktop (xl): 300px */
+	@screen xl {
+		width: 300px;
+		height: 300px;
+	}
 }
 
 .logo-img {
-	width: 241px;
-	height: 191px;
 	object-fit: contain;
+	
+	/* Mobile: 160px × 127px (ca. 66% der Originalgröße) */
+	width: 160px;
+	height: 127px;
+	
+	/* Small Tablet (640-768px): 180px × 143px (ca. 75% der Originalgröße) */
+	@media (min-width: 640px) and (max-width: 768px) {
+		width: 180px;
+		height: 143px;
+	}
+	
+	/* Tablet (md): 200px × 159px (ca. 83% der Originalgröße) */
+	@screen md {
+		width: 200px;
+		height: 159px;
+	}
+	
+	/* Desktop (lg): 220px × 175px (ca. 91% der Originalgröße) */
+	@screen lg {
+		width: 220px;
+		height: 175px;
+	}
+	
+	/* Large Desktop (xl): 241px × 191px (100% - Original) */
+	@screen xl {
+		width: 241px;
+		height: 191px;
+	}
 }
 </style>
