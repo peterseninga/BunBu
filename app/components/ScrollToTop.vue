@@ -87,9 +87,15 @@ onUnmounted(() => {
 }
 
 /* Responsive */
-@media (min-width: 769px) {
+@media (min-width: 1254px) {
   .scroll-to-top {
-    right: calc(50% - 700px + 2rem);
+    right: calc(50% - 650px + 2rem);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 976px) {
+  .scroll-to-top {
+    right: calc(50% - 400px + 2rem);
   }
 }
 

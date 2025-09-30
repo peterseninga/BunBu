@@ -32,7 +32,7 @@
         <div class="mobile-overlay-backdrop" @click="closeMobileFilter"></div>
         <div class="mobile-overlay-content">
           <div class="mobile-overlay-header">
-            <h2 class="mobile-overlay-title">Filter</h2>
+            <h2 class="mobile-overlay-title">Filter wählen</h2>
             <button 
               class="mobile-overlay-close"
               @click="closeMobileFilter"
@@ -235,7 +235,7 @@
         
         <!-- No Results -->
         <div v-else-if="filteredBooks.length === 0 && books.length > 0" class="no-results">
-          <p>Keine Bücher für die aktuellen Filter gefunden.</p>
+          <p>Keine Bücher für die aktuellen Filter/Suchergebnisse gefunden.</p>
           <button @click="clearAllFilters" class="reset-btn">Filter zurücksetzen</button>
         </div>
         

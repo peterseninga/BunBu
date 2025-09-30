@@ -75,7 +75,7 @@
 
     <!-- Mobile Format Overlay -->
     <teleport to="body" v-if="isMobile && showFormatDropdown">
-      <div class="mobile-overlay" @touchmove.prevent @scroll.prevent @wheel.prevent>
+      <div class="mobile-overlay">
         <div class="mobile-overlay-backdrop" @click="closeOverlay"></div>
         <div class="mobile-overlay-content">
           <div class="mobile-overlay-header">
@@ -149,7 +149,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 
-// Types
 interface Format {
   name: string
   count: number
@@ -165,7 +164,6 @@ interface ThemeSelection {
   category: string
 }
 
-// Props
 interface Props {
   customCategories?: Category[]
   customFormats?: Format[]
@@ -176,22 +174,18 @@ const props = withDefaults(defineProps<Props>(), {
   customFormats: undefined
 })
 
-// Emits
 const emit = defineEmits<{
   formatSelected: [format: Format]
   themeSelected: [selection: ThemeSelection]
 }>()
 
-// Reactive state
 const showThemenDropdown = ref<boolean>(false)
 const showFormatDropdown = ref<boolean>(false)
 const isMobile = ref<boolean>(false)
 
-// Timeouts
 let formatTimeout: ReturnType<typeof setTimeout> | null = null
 let themenTimeout: ReturnType<typeof setTimeout> | null = null
 
-// Default data
 const defaultCategories: Category[] = [
   {
     title: 'Entwicklung & Bildung',
@@ -253,15 +247,11 @@ const defaultCategories: Category[] = [
 const categoryCounts = ref<Record<string, number>>({})
 const formatCounts = ref<Record<string, number>>({})
 
-// Check mobile device
 const checkMobile = (): void => {
-  isMobile.value = window.innerWidth <= 1024 // iPad breakpoint
+  isMobile.value = window.innerWidth <= 1024
 }
 
-// Ersetzen Sie den onMounted-Block in Ihrem Dropdown:
-
 onMounted(async () => {
-  // CSV-Daten laden (gleiche Quelle wie BookResults)
   try {
     const response = await fetch('/books.csv')
     const csvText = await response.text()
@@ -290,12 +280,10 @@ onMounted(async () => {
       }
     }
     
-    // Format-Zählungen aus CSV-Daten berechnen
     const formatCountsFromCSV: Record<string, number> = {}
     const categoryCountsFromCSV: Record<string, number> = {}
     
     books.forEach(book => {
-      // Format-Zählung
       if (book.format) {
         const bookFormats = book.format.split(',').map((f: string) => f.trim())
         bookFormats.forEach((format: string) => {
@@ -303,7 +291,6 @@ onMounted(async () => {
         })
       }
       
-      // Kategorie-Zählung  
       if (book.categories) {
         const bookCategories = book.categories.split(',').map((c: string) => c.trim())
         bookCategories.forEach((category: string) => {
@@ -312,18 +299,13 @@ onMounted(async () => {
       }
     })
     
-    // Reactive refs setzen
     formatCounts.value = formatCountsFromCSV
     categoryCounts.value = categoryCountsFromCSV
     
-    console.log('📊 Format-Zählungen:', formatCountsFromCSV)
-    console.log('📊 Kategorie-Zählungen:', categoryCountsFromCSV)
-    
   } catch (error) {
-    console.error('❌ Fehler beim Laden der CSV für Dropdown:', error)
+    console.error('Fehler beim Laden der CSV:', error)
   }
 
-  // Setup mobile detection
   checkMobile()
   window.addEventListener('resize', checkMobile)
   document.addEventListener('click', handleClickOutside)
@@ -332,15 +314,12 @@ onMounted(async () => {
 onUnmounted(() => {
   window.removeEventListener('resize', checkMobile)
   document.removeEventListener('click', handleClickOutside)
-  // CSS-Klassen entfernen falls Komponente unmounted wird
   document.documentElement.classList.remove('overlay-open')
   document.body.classList.remove('overlay-open')
-  // Cleanup alle timeouts
   if (formatTimeout) clearTimeout(formatTimeout)
   if (themenTimeout) clearTimeout(themenTimeout)
 })
 
-// Computed properties
 const categories = computed<Category[]>(() => {
   if (props.customCategories) return props.customCategories
   return defaultCategories
@@ -357,11 +336,9 @@ const formats = computed<Format[]>(() => {
   ]
 })
 
-// Methods
 const handleFormatClick = (): void => {
   if (isMobile.value) {
     showFormatDropdown.value = true
-    // CSS-Klasse hinzufügen um Scrolling zu verhindern
     document.documentElement.classList.add('overlay-open')
     document.body.classList.add('overlay-open')
   }
@@ -370,7 +347,6 @@ const handleFormatClick = (): void => {
 const handleThemenClick = (): void => {
   if (isMobile.value) {
     showThemenDropdown.value = true
-    // CSS-Klasse hinzufügen um Scrolling zu verhindern
     document.documentElement.classList.add('overlay-open')
     document.body.classList.add('overlay-open')
   }
@@ -393,7 +369,6 @@ const handleMouseLeave = (type: 'format' | 'themen'): void => {
 const selectFormat = (format: Format): void => {
   emit('formatSelected', format)
   showFormatDropdown.value = false
-  // CSS-Klasse entfernen um Scrolling wieder zu aktivieren
   document.documentElement.classList.remove('overlay-open')
   document.body.classList.remove('overlay-open')
 
@@ -409,7 +384,6 @@ const selectFormat = (format: Format): void => {
 const selectTheme = (item: string, category: string): void => {
   emit('themeSelected', { item, category })
   showThemenDropdown.value = false
-  // CSS-Klasse entfernen um Scrolling wieder zu aktivieren
   document.documentElement.classList.remove('overlay-open')
   document.body.classList.remove('overlay-open')
 
@@ -425,13 +399,12 @@ const selectTheme = (item: string, category: string): void => {
 const closeOverlay = (): void => {
   showFormatDropdown.value = false
   showThemenDropdown.value = false
-  // CSS-Klasse entfernen um Scrolling wieder zu aktivieren
   document.documentElement.classList.remove('overlay-open')
   document.body.classList.remove('overlay-open')
 }
 
 const handleClickOutside = (event: Event): void => {
-  if (isMobile.value) return // Mobile uses overlays, not click outside
+  if (isMobile.value) return
 
   const target = event.target as Element | null
   const navbar = target?.closest('.mega-navbar')
@@ -614,7 +587,6 @@ const handleClickOutside = (event: Event): void => {
   margin-left: 0.5rem;
 }
 
-/* Mobile Overlay Styles */
 .mobile-overlay {
   position: fixed;
   top: 0;
@@ -625,7 +597,7 @@ const handleClickOutside = (event: Event): void => {
   display: flex;
   align-items: center;
   justify-content: center;
-  touch-action: none; /* Verhindert Touch-Scrolling */
+  touch-action: none;
 }
 
 .mobile-overlay-backdrop {
@@ -636,7 +608,6 @@ const handleClickOutside = (event: Event): void => {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   touch-action: none;
-  overflow: hidden;
 }
 
 .mobile-overlay-content {
@@ -646,7 +617,7 @@ const handleClickOutside = (event: Event): void => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  touch-action: auto; /* Scrolling nur im Content */
+  touch-action: auto;
 }
 
 .mobile-overlay-header {
@@ -676,6 +647,9 @@ const handleClickOutside = (event: Event): void => {
   cursor: pointer;
   color: #6b7280;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mobile-overlay-close:hover {
@@ -686,16 +660,17 @@ const handleClickOutside = (event: Event): void => {
 .mobile-overlay-body {
   padding: 1rem;
   flex: 1;
-  overflow-y: auto; /* Scrolling nur im Body-Bereich */
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
 }
 
-/* Format-spezifische Styles - kein Scrolling */
 .mobile-format-list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   align-items: stretch;
-  overflow: hidden; /* Verhindert Scrolling bei Formaten */
 }
 
 .mobile-format-item {
@@ -707,7 +682,7 @@ const handleClickOutside = (event: Event): void => {
   border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  min-height: 60px; /* Größere Touch-Targets */
+  min-height: 60px;
 }
 
 .mobile-format-item:hover {
@@ -729,13 +704,10 @@ const handleClickOutside = (event: Event): void => {
   font-weight: 500;
 }
 
-/* Theme-spezifische Styles - mit Scrolling */
 .mobile-theme-list {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  overflow: hidden;
-  /* Kein overflow hidden hier - Scrolling erlaubt */
 }
 
 .mobile-theme-category {
@@ -844,5 +816,15 @@ const handleClickOutside = (event: Event): void => {
     font-size: 1rem;
     padding: 0.5rem 1rem;
   }
+}
+</style>
+
+<style>
+html.overlay-open,
+body.overlay-open {
+  overflow: hidden !important;
+  position: fixed;
+  width: 100%;
+  height: 100%;
 }
 </style>
