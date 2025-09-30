@@ -323,18 +323,19 @@ const generateSuggestions = () => {
 }
 
 const selectSuggestion = (suggestion: Suggestion) => {
-  query.value = ''
-  searchInput.value?.blur()
   showSuggestions.value = false
   selectedIndex.value = -1
   
   // If it's a book, navigate directly to the book page
   if (suggestion.type === 'book' && suggestion.data?.slug) {
+    query.value = ''
+    searchInput.value?.blur()
     navigateTo(`/book/${suggestion.data.slug}`)
     return
   }
   
   // For authors and categories, perform search
+  query.value = suggestion.text
   performSearch(suggestion)
 }
 
