@@ -12,6 +12,10 @@ const props = defineProps(
     "context",
   ]),
 );
+
+useHead({
+  title: "BunBu",
+})
 </script>
 
 <template>

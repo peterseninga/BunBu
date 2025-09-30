@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { Content } from "@prismicio/client";
+import { asText } from "@prismicio/client";
 
 // The array passed to `getSliceComponentProps` is purely optional.
 // Consider it as a visual hint for you when templating your slice.
-defineProps(
+const props = defineProps(
   getSliceComponentProps<Content.DetailSlice>([
     "slice",
     "index",
@@ -11,6 +12,18 @@ defineProps(
     "context",
   ])
 );
+
+const bookTitle = computed(() => {
+  if (props.slice?.primary?.title) {
+    return asText(props.slice.primary.title);
+  }
+  return "Details";
+});
+
+useHead({
+  title: computed(() => `BunBu - ${bookTitle.value}`),
+});
+
 </script>
 
 <template>

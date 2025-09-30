@@ -11,6 +11,10 @@ defineProps(
     "context",
   ]),
 );
+
+useHead({
+  title: "BunBu - Impressum",
+})
 </script>
 
 <template>

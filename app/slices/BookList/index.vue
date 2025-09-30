@@ -105,7 +105,7 @@ const createSlugFromTitle = (title: string) => {
 }
 
 .book-card {
-	@apply flex flex-row place-items-center gap-4 sm:w-[400px] md:w-[500px] lg:w-[500px] bg-[rgba(0,75,90,0.1)] rounded-lg p-4;
+	@apply flex flex-row place-items-center gap-4 sm:w-[450px] md:w-[500px] lg:w-[450px] xl:w-[500px] bg-[rgba(0,75,90,0.1)] rounded-lg p-4;
 }
 
 .bottom {

@@ -14,8 +14,8 @@ const { data: book } = await useAsyncData(`book-${uid}`, () =>
 );
 
 useHead({
-  title: prismic.asText(book.value?.data.title),
-});
+  title: "BunBu"
+})
 </script>
 
 <template>

@@ -9,7 +9,7 @@ const { data: page } = await useAsyncData(route.params.uid as string, () =>
 
 
 useHead({
-  title: prismic.asText(page.value?.data.title)
+  title: "BunBu"
 })
 </script>
 

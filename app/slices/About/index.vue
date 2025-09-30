@@ -18,6 +18,10 @@ const formattedText = asHTML(slice.primary.rechts).replace(
 );
 
 console.log(asHTML(slice.primary.rechts));
+
+useHead({
+  title: "BunBu - About",
+})
 </script>
 
 <template>

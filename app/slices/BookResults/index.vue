@@ -326,6 +326,10 @@ defineProps(
   ])
 );
 
+useHead({
+  title: "BunBu - Suchergebnisse",
+})
+
 interface BookData {
   title: string;
   author: string;
