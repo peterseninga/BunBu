@@ -33,6 +33,60 @@
           }}</span>
         </button>
       </div>
+
+      <!-- Active Filters Display -->
+      <div v-if="hasActiveFilters" class="active-filters desktop-only" ref="activeFiltersRef">
+        <button 
+          v-if="canScrollLeft"
+          @click="scrollFiltersLeft"
+          class="scroll-arrow scroll-arrow-left"
+          aria-label="Nach links scrollen"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15,18 9,12 15,6"></polyline>
+          </svg>
+        </button>
+        
+        <div class="active-filters-scroll" ref="filtersScrollRef" @scroll="checkScrollPosition">
+          <div class="active-filters-list">
+            <span
+              v-for="filter in allActiveFilters"
+              :key="filter"
+              class="active-filter-tag"
+            >
+              {{ filter }}
+              <button
+                @click="removeFilter(filter)"
+                class="remove-filter-btn"
+                aria-label="Filter entfernen"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </span>
+          </div>
+        </div>
+        
+        <button 
+          v-if="canScrollRight"
+          @click="scrollFiltersRight"
+          class="scroll-arrow scroll-arrow-right"
+          aria-label="Nach rechts scrollen"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+        </button>
+      </div>
     </div>
 
     <!-- Mobile Filter Overlay -->
@@ -381,6 +435,11 @@ const books = ref<BookData[]>([]);
 const isLoading = ref(false);
 const isMobileFilterOpen = ref(false);
 const displayLimit = ref(20);
+const activeFiltersRef = ref(null);
+const visibleFiltersCount = ref(10);
+const filtersScrollRef = ref<HTMLElement | null>(null);
+const canScrollLeft = ref(false);
+const canScrollRight = ref(false);
 
 // Lokale Filter-States
 const selectedThemes = ref<string[]>([]);
@@ -571,17 +630,33 @@ const activeFilterCount = computed(() => {
 });
 
 const resultsTitle = computed(() => {
-  if (searchQuery.value) {
-    if (hasActiveFilters.value) {
-      return `Filtersuche: "${searchQuery.value}" - ${filteredBooks.value.length} Treffer`;
+  // Spezifische Filtersuche (format oder category)
+  if (filterType.value === 'format' || filterType.value === 'category') {
+    if (hasActiveFilters.value && searchQuery.value) {
+      return `Filtersuche: ${filteredBooks.value.length} Treffer`;
+    } else if (hasActiveFilters.value) {
+      return `Filtersuche: ${filteredBooks.value.length} Treffer`;
     } else {
-      return `Suchergebnisse für "${searchQuery.value}" - ${filteredBooks.value.length} Treffer`;
+      return `Filtersuche: ${filteredBooks.value.length} Treffer`;
     }
-  } else if (hasActiveFilters.value) {
-    return `Filtersuche: ${filteredBooks.value.length} Treffer`;
-  } else {
-    return `${books.value.length} Bücher`;
   }
+  
+  // Normale Textsuche (general oder author)
+  if (searchQuery.value && (filterType.value === 'general' || filterType.value === 'author')) {
+    if (hasActiveFilters.value) {
+      return `Suchergebnis: "${searchQuery.value}" - ${filteredBooks.value.length} Treffer`;
+    } else {
+      return `Suchergebnis: "${searchQuery.value}" - ${filteredBooks.value.length} Treffer`;
+    }
+  }
+  
+  // Nur manuelle Filter ohne URL-Parameter
+  if (hasActiveFilters.value) {
+    return `Filtersuche: ${filteredBooks.value.length} Treffer`;
+  }
+  
+  // Default: Alle Bücher
+  return `${books.value.length} Bücher`;
 });
 
 const allFormatsWithCounts = computed<Format[]>(() => {
@@ -777,7 +852,30 @@ const remainingBooksCount = computed(() => {
   return filteredBooks.value.length - displayLimit.value;
 });
 
+// Active filters for display
+const allActiveFilters = computed(() => {
+  return [...selectedFormats.value, ...selectedThemes.value];
+});
+
 // Methods
+const checkScrollPosition = () => {
+  if (!filtersScrollRef.value) return;
+  
+  const element = filtersScrollRef.value;
+  canScrollLeft.value = element.scrollLeft > 0;
+  canScrollRight.value = element.scrollLeft < (element.scrollWidth - element.clientWidth - 1);
+};
+
+const scrollFiltersLeft = () => {
+  if (!filtersScrollRef.value) return;
+  filtersScrollRef.value.scrollBy({ left: -200, behavior: 'smooth' });
+};
+
+const scrollFiltersRight = () => {
+  if (!filtersScrollRef.value) return;
+  filtersScrollRef.value.scrollBy({ left: 200, behavior: 'smooth' });
+};
+
 const toggleCategory = (categoryTitle: string) => {
   const index = expandedCategories.value.indexOf(categoryTitle);
   if (index > -1) {
@@ -795,6 +893,21 @@ const clearAllFilters = () => {
   selectedFormats.value = [];
   selectedThemes.value = [];
   displayLimit.value = 20; // Reset beim Filter-Reset
+};
+
+const removeFilter = (filterName: string) => {
+  // Check if it's a format
+  const formatIndex = selectedFormats.value.indexOf(filterName);
+  if (formatIndex > -1) {
+    selectedFormats.value.splice(formatIndex, 1);
+    return;
+  }
+  
+  // Check if it's a theme
+  const themeIndex = selectedThemes.value.indexOf(filterName);
+  if (themeIndex > -1) {
+    selectedThemes.value.splice(themeIndex, 1);
+  }
 };
 
 const loadMoreBooks = () => {
@@ -850,11 +963,23 @@ onMounted(() => {
   console.log("✅ BookResults Slice geladen");
   console.log("🔍 Initial URL params:", route.query);
   loadBooksData();
+  
+  // Check scroll position after a short delay to ensure content is rendered
+  setTimeout(() => {
+    checkScrollPosition();
+  }, 100);
 });
 
 onUnmounted(() => {
   document.documentElement.classList.remove("overlay-open");
   document.body.classList.remove("overlay-open");
+});
+
+// Watch for filter changes to update scroll indicators
+watch(allActiveFilters, () => {
+  setTimeout(() => {
+    checkScrollPosition();
+  }, 100);
 });
 </script>
 
@@ -876,6 +1001,115 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Active Filters Display */
+.active-filters {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.desktop-only {
+  display: flex;
+}
+
+.active-filters-scroll {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.active-filters-scroll::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.active-filters-list {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.scroll-arrow {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  border: 2px solid #004b5a;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #004b5a;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+.scroll-arrow:hover {
+  background: #004b5a;
+  color: #fff;
+}
+
+.scroll-arrow-left {
+  margin-right: 0.25rem;
+}
+
+.scroll-arrow-right {
+  margin-left: 0.25rem;
+}
+
+.active-filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background: #004b5a;
+  color: #fff;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.active-filter-tag:hover {
+  background: #003a47;
+}
+
+.remove-filter-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  transition: opacity 0.2s ease;
+}
+
+.remove-filter-btn:hover {
+  opacity: 0.7;
+}
+
+.more-filters-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  background: #e0e0e0;
+  color: #333;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  flex-shrink: 0;
 }
 
 .mobile-filter-btn {
@@ -1298,7 +1532,7 @@ onUnmounted(() => {
 }
 
 /* Responsive */
-@media (min-width: 769px) {
+@media (min-width: 1024px) {
   /* Desktop: Overlay verstecken */
   .mobile-filter-btn {
     display: none !important;
@@ -1309,7 +1543,11 @@ onUnmounted(() => {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
+  .desktop-only {
+    display: none !important;
+  }
+
   .mobile-filter-btn {
     display: flex;
   }
@@ -1343,7 +1581,23 @@ onUnmounted(() => {
   .results-title {
     font-size: 1rem;
   }
+}
 
+/* Tablet: Button unter der Überschrift */
+@media (min-width: 481px) and (max-width: 1023px) {
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .mobile-filter-btn {
+    align-self: flex-start;
+  }
+}
+
+/* Handy: Button rechts neben der Überschrift */
+@media (max-width: 480px) {
   .header-content {
     flex-wrap: wrap;
   }
