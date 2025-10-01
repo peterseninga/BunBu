@@ -75,22 +75,11 @@ useHead({
 
 <style scoped>
 .formate {
-  margin-bottom: 2rem;
+  @apply mb-8;
 }
 
 .layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  max-width: 72rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-@media (min-width: 768px) {
-  .layout {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  @apply grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto;
 }
 
 @media (min-width: 1024px) {
@@ -102,7 +91,6 @@ useHead({
     align-items: baseline;
   }
 }
-
 @media (min-width: 728px) and (max-width: 1023px) {
   .layout {
     grid-template-columns: 225px 1fr;
@@ -119,7 +107,7 @@ useHead({
   }
 
   .img {
-    width: 100%;
+    width: 120%;
     max-width: 120%;
   }
 }
@@ -131,8 +119,7 @@ useHead({
   }
 
   .kat {
-    width: 100%;
-    text-align: left;
+    @apply w-full text-left;
   }
 
   .img {
@@ -165,7 +152,6 @@ useHead({
     max-width: 80%;
   }
 }
-
 @media (max-width: 639px) {
   .sidebar {
     flex-direction: column;
@@ -173,32 +159,22 @@ useHead({
   }
 
   .kat {
-    width: 100%;
-    text-align: left;
+    @apply w-full text-left;
   }
 
   .img {
     width: 30%;
     max-width: 30%;
   }
+
 }
 
 .cover {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-}
-
-@media (min-width: 768px) {
-  .cover {
-    justify-content: flex-start;
-  }
+  @apply flex justify-center md:justify-start items-start;
 }
 
 .content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  @apply space-y-4;
 }
 
 .img {
@@ -212,73 +188,22 @@ useHead({
 }
 
 .sidebar {
-  margin-top: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: flex-start;
-}
-
-@media (min-width: 1024px) {
-  .sidebar {
-    display: none;
-  }
+  @apply mt-6 lg:hidden flex flex-wrap gap-2 items-start;
 }
 
 .sidebardesk {
-  display: none;
-}
-
-@media (min-width: 1024px) {
-  .sidebardesk {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: flex-end;
-    flex-wrap: wrap;
-  }
+  @apply hidden lg:flex flex-col gap-2 items-end flex-wrap;
 }
 
 .kat {
-  text-align: center;
-  padding: 0.5rem 1rem;
-  border-radius: 0.75rem;
-  background-color: #8f4200;
-  color: white;
-  font-size: 0.875rem;
-  margin-right: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-@media (min-width: 1024px) {
-  .kat {
-    width: 200px;
-  }
+  @apply text-center px-4 py-2 rounded-xl bg-[#8f4200] text-white text-sm mr-2 mb-2 lg:w-[200px];
 }
 
 .form {
-  display: inline-block;
-  padding: 0.25rem 1rem;
-  border: 1px solid #8f4200;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  color: #8f4200;
-  margin-right: 1.25rem;
-  margin-bottom: 5rem;
+  @apply inline-block px-4 py-1 border border-[#8f4200] rounded-full text-sm text-[#8f4200] mr-5 mb-20;
 }
 
 .prose {
-  color: black;
-  line-height: 1.625;
-  font-size: 1rem;
-  margin-top: 2rem;
-}
-
-.max-w-none {
-  max-width: none;
-}
-
-.mt-12 {
-  margin-top: 3rem;
+  @apply text-black leading-relaxed text-base mt-8;
 }
 </style>

@@ -39,93 +39,52 @@ defineProps(
 </template>
 
 <style scoped>
-section .richheading {
+section:deep(.richheading) {
   font-family: 'Marcellus', serif;
   font-size: 50px;
 }
+</style>
 
-section .richtext {
+<style scoped>
+section:deep(.richtext) {
   margin: 1em auto;
   font-family: 'Mulish', sans-serif;
   font-size: 18px;
-  color: #334155; /* text-slate-700 */
-  max-width: 32rem; /* max-w-lg */
+  @apply text-slate-700 max-w-lg;
 }
+</style>
 
-section .richbutton {
+<style scoped>
+section:deep(.richbutton) {
   max-width: 600px;
   font-family: 'Mulish', sans-serif;
   font-size: 18px;
-  display: block;
-  width: fit-content;
-  background-color: #0e7490; /* bg-cyan-700 */
-  color: white;
-  font-weight: 700;
-  padding: 0.75rem 39px; /* py-3 px-[39px] */
-  border-radius: 9999px; /* rounded-full */
-  letter-spacing: 0.05em; /* tracking-wider */
-  transition: background-color 0.3s ease;
+  @apply block w-fit bg-cyan-700 hover:bg-cyan-900 text-white font-bold py-3 px-[39px] rounded-full tracking-wider;
 }
+</style>
 
-section .richbutton:hover {
-  background-color: #164e63; /* hover:bg-cyan-900 */
-}
-
-section .image {
+<style scoped>
+section:deep(.image) {
+  @apply mx-auto my-8 w-full sm:w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2;
   margin: 2em auto;
-  width: 100%;
-}
-
-@media (min-width: 640px) {
-  section .image {
-    width: 80%;
   }
-}
+</style>
 
-@media (min-width: 768px) {
-  section .image {
-    width: 75%;
-  }
-}
-
-@media (min-width: 1024px) {
-  section .image {
-    width: 66.666667%;
-  }
-}
-
-@media (min-width: 1280px) {
-  section .image {
-    width: 50%;
-  }
-}
-
+<style scoped>
 .horizontal {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
+  @apply grid grid-cols-1 md:grid-cols-2 gap-8;
   text-align: start;
   justify-items: center;
   align-items: start;
 }
 
-@media (min-width: 768px) {
-  .horizontal {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 .horizontal2 {
   padding-top: 120px;
-  text-align: center;
-  place-items: center;
-  justify-content: center;
-  display: grid;
+  @apply text-center place-items-center justify-center;
 }
 
 .default {
-  display: grid;
-  grid-template-columns: 1fr;
+  @apply grid grid-cols-1 ;
   text-align: center;
   align-items: center;
   place-items: center;

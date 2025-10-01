@@ -28,7 +28,7 @@ const createSlugFromTitle = (title: string) => {
 				<div class="done">
 					<template v-if="slice.primary.content && slice.primary.content.length > 0">
 						<NuxtLink 
-							:to="`/book/${item.slug || createSlugFromTitle(item.titel?.[0]?.text || '')}`" 
+							:to="item.book_link?.url || `/book/${item.slug || createSlugFromTitle(item.titel?.[0]?.text || '')}`" 
 							v-for="(item, index) in slice.primary.content" 
 							:key="index"
 							class="book-card hover:bg-[rgba(0,75,90,0.15)] transition-colors cursor-pointer block"
@@ -55,7 +55,7 @@ const createSlugFromTitle = (title: string) => {
 				<div class="done layout-left">
 					<template v-if="slice.primary.content_2 && slice.primary.content_2.length > 0">
 						<NuxtLink 
-							:to=" `/book/${item.slug || createSlugFromTitle(item.title?.[0]?.text || '')}`" 
+							:to="item.book_link?.url || `/book/${item.slug || createSlugFromTitle(item.title?.[0]?.text || '')}`" 
 							v-for="(item, index) in slice.primary.content_2" 
 							:key="index"
 							class="book-card bottom audio hover:bg-[rgba(0,75,90,0.15)] transition-colors cursor-pointer block"
@@ -81,129 +81,39 @@ const createSlugFromTitle = (title: string) => {
 
 <style scoped>
 .layout {
-	display: grid;
-	grid-template-columns: 1fr;
-	gap: 1rem 1rem;
-	max-width: 64rem;
-	margin-left: auto;
-	margin-right: auto;
-	place-items: center;
-}
-
-@media (min-width: 640px) {
-	.layout {
-		grid-template-columns: 1fr;
-	}
+	@apply grid sm:grid-cols-1 gap-x-4 gap-y-2 max-w-5xl mx-auto place-items-center;
 }
 
 .layout-left {
-	margin-left: 0;
-}
-
-@media (min-width: 640px) {
-	.layout-left {
-		margin-left: 2.25rem;
-	}
+	@apply sm:ml-9;
 }
 
 .h {
-	width: 100%;
-	text-align: center;
-	place-items: center;
-	align-items: center;
-	font-weight: 500;
-	padding-top: 1.75rem;
-	padding-bottom: 2rem;
+	@apply w-full text-center place-items-center items-center font-medium pt-7 pb-8;
 }
 
 .hed {
-	text-align: start;
-	align-items: flex-start;
-	font-weight: 500 !important;
-	margin-top: auto;
+	@apply text-start items-start !font-medium mt-auto;
 }
 
 .lay {
-	display: grid;
-	grid-template-columns: 1fr;
-}
-
-@media (min-width: 640px) {
-	.lay {
-		grid-template-columns: 1fr;
-	}
-}
-
-@media (min-width: 1024px) {
-	.lay {
-		grid-template-columns: repeat(2, 1fr);
-	}
+	@apply grid sm:grid-cols-1 lg:grid-cols-2;
 }
 
 .done {
-	display: flex;
-	flex-direction: column;
-	gap: 1.5rem;
-	width: 100%;
+	@apply flex flex-col gap-6 w-full;
 }
 
 .book-card {
-	display: flex;
-	flex-direction: row;
-	place-items: center;
-	gap: 1rem;
-	width: 100%;
-	background-color: rgba(0, 75, 90, 0.1);
-	border-radius: 0.5rem;
-	padding: 1rem;
-}
-
-@media (min-width: 640px) {
-	.book-card {
-		width: 450px;
-	}
-}
-
-@media (min-width: 768px) {
-	.book-card {
-		width: 500px;
-	}
-}
-
-@media (min-width: 1024px) {
-	.book-card {
-		width: 450px;
-	}
-}
-
-@media (min-width: 1280px) {
-	.book-card {
-		width: 500px;
-	}
+	@apply flex flex-row place-items-center gap-4 sm:w-[450px] md:w-[500px] lg:w-[450px] xl:w-[500px] bg-[rgba(0,75,90,0.1)] rounded-lg p-4;
 }
 
 .bottom {
-	padding-left: 1rem;
-}
-
-@media (min-width: 640px) {
-	.bottom {
-		padding-left: 0;
-	}
+	@apply pl-4 sm:pl-0;
 }
 
 .audio {
-	background-color: transparent;
-	border-radius: 0;
-	padding: 0;
-}
-
-@media (min-width: 768px) {
-	.audio {
-		background-color: rgba(0, 75, 90, 0.1);
-		border-radius: 0.5rem;
-		padding: 1rem;
-	}
+	@apply md:bg-[rgba(0,75,90,0.1)] md:rounded-lg md:p-4;
 }
 
 .book-image {
@@ -215,9 +125,6 @@ const createSlugFromTitle = (title: string) => {
 }
 
 .book-info {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	gap: 0.25rem;
+	@apply flex flex-col justify-center gap-1;
 }
 </style>

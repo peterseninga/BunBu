@@ -30,9 +30,6 @@ console.log('📚 Slices:', book.value?.data?.slices);
 <style scoped>
 .not-found {
   display: block;
-  text-align: center;
-  padding-top: 5rem;
-  --tw-text-opacity: 1;
-    color: rgb(239 68 68 / var(--tw-text-opacity, 1));
+  @apply text-center text-red-500 pt-20;
 }
 </style>
