@@ -148,7 +148,7 @@ const loadBooksData = async () => {
     
     // Parse CSV
     const lines = csvText.split('\n')
-    const headers = lines[0].split(';').map(h => h.trim().replace(/^\uFEFF/, ''))
+    const headers = lines[0] ? lines[0].split(';').map(h => h.trim().replace(/^\uFEFF/, '')) : []
     
     const bookData: BookData[] = []
     const authorSet = new Set<string>()
@@ -156,7 +156,7 @@ const loadBooksData = async () => {
     const formatSet = new Set<string>()
     
     for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim()
+      const line = typeof lines[i] === 'string' ? lines[i].trim() : ''
       if (!line) continue
       
       const values = line.split(';').map(v => v.trim())
@@ -385,7 +385,7 @@ const handleEnterKey = () => {
   if (!query.value.trim()) return
 
   if (selectedIndex.value >= 0 && selectedIndex.value < filteredSuggestions.value.length) {
-    selectSuggestion(filteredSuggestions.value[selectedIndex.value])
+    selectSuggestion(filteredSuggestions.value[selectedIndex.value]!)
   } else {
     performSearch()
   }

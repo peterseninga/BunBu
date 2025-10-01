@@ -343,7 +343,7 @@
               :src="book.cover_url || '/placeholder-book.jpg'"
               :alt="`Cover von ${book.title}`"
               class="book-cover"
-              @error="(e) => (e.target.src = '/placeholder-book.jpg')"
+              @error="(e) => { if (e.target) (e.target as HTMLImageElement).src = '/placeholder-book.jpg'; }"
               loading="lazy"
             />
             <div class="book-details">
@@ -367,7 +367,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import { useRoute, navigateTo } from "#imports";
-import type { getSliceComponentProps } from "@prismicio/vue";
+import { getSliceComponentProps } from "@prismicio/vue";
 import type { Content } from "@prismicio/client";
 
 // Prismic Props
@@ -521,13 +521,18 @@ const loadBooksData = async () => {
       throw new Error("CSV file is empty");
     }
 
+    if (!lines[0]) {
+      throw new Error("CSV file is missing headers");
+    }
     const headers = lines[0]
       .split(";")
       .map((h) => h.trim().replace(/^\uFEFF/, ""));
     const bookData: BookData[] = [];
 
     for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim();
+      const rawLine = lines[i];
+      if (typeof rawLine !== "string") continue;
+      const line = rawLine.trim();
       if (!line) continue;
 
       const values = line.split(";").map((v) => v.trim());
