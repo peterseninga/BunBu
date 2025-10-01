@@ -77,5 +77,5 @@ const customCategories = computed(() => {
   display: flex;
   align-items: center;
 }
-};
+}
 </style>
