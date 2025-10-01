@@ -3,7 +3,7 @@ const settings = useSettings();
 </script>
 
 <template>
-    <Bounded as="footer" class="!py-4 md:!py-6 lg:!py-8 bg-[#004b5a] text-white">
+    <Bounded as="footer" ref="footerRef" class="!py-4 md:!py-6 lg:!py-8 bg-[#004b5a] text-white">
         <div class="flex flex-col items-center justify-between sm:flex-row gap-4">   
         <NuxtLink to="/home">
             <Logo class="order-1 sm:order-1"/>
