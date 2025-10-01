@@ -788,7 +788,7 @@ const handleClickOutside = (event: Event): void => {
   }
 
   .mobile-overlay-body {
-    padding: 5rem 1rem 5rem 1rem;
+    padding: 4.5rem 1rem 5rem 1rem;
   }
 }
 
