@@ -31,6 +31,7 @@ const createSlugFromTitle = (title: string) => {
 							:to="item.book_link?.url || `/book/${item.slug || createSlugFromTitle(item.titel?.[0]?.text || '')}`" 
 							v-for="(item, index) in slice.primary.content" 
 							:key="index"
+							alt="Cover von `/book/${item.slug}`"
 							class="book-card hover:bg-[rgba(0,75,90,0.15)] transition-colors cursor-pointer block"
 						>
 							<PrismicImage :field="item.cover_image" class="book-image"/> 
@@ -58,6 +59,7 @@ const createSlugFromTitle = (title: string) => {
 							:to="item.book_link?.url || `/book/${item.slug || createSlugFromTitle(item.title?.[0]?.text || '')}`" 
 							v-for="(item, index) in slice.primary.content_2" 
 							:key="index"
+							alt="Cover von `/book/${item.slug}`"
 							class="book-card bottom audio hover:bg-[rgba(0,75,90,0.15)] transition-colors cursor-pointer block"
 						>
 							<PrismicImage :field="item.cover_image" class="book-image"/>
