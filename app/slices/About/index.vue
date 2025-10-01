@@ -44,56 +44,93 @@ useHead({
 
 <style scoped>
 .layout {
-	@apply grid sm:grid-cols-2 grid-cols-1 gap-10;
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 2.5rem;
+}
+
+@media (min-width: 640px) {
+	.layout {
+		grid-template-columns: repeat(2, 1fr);
+	}
 }
 
 .h {
-	@apply mb-4 sm:mb-6 md:mb-8;
+	margin-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+	.h {
+		margin-bottom: 1.5rem;
+	}
+}
+
+@media (min-width: 768px) {
+	.h {
+		margin-bottom: 2rem;
+	}
 }
 
 .left {
-	@apply flex flex-col justify-center text-justify;
-	@screen md {
-		margin-top: 1rem;
-	}
-	@screen sm {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: justify;
+}
+
+@media (min-width: 640px) {
+	.left {
 		margin-top: 2rem;
 	}
 }
 
+@media (min-width: 768px) {
+	.left {
+		margin-top: 1rem;
+	}
+}
+
 .right {
-	@apply flex flex-col items-center space-y-4;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	text-align: justify;
+}
+
+.right > * + * {
+	margin-top: 1rem;
 }
 
 .person-img {
 	border-radius: 50%;
 	object-fit: cover;
-	
-	/* Mobile: 200px */
 	width: 200px;
 	height: 200px;
-	
-	/* Small Tablet (640-768px): 220px */
-	@media (min-width: 640px) and (max-width: 768px) {
+}
+
+@media (min-width: 640px) and (max-width: 768px) {
+	.person-img {
 		width: 220px;
 		height: 220px;
 	}
-	
-	/* Tablet (md): 250px */
-	@screen md {
+}
+
+@media (min-width: 768px) {
+	.person-img {
 		width: 250px;
 		height: 250px;
 	}
-	
-	/* Desktop (lg): 280px */
-	@screen lg {
+}
+
+@media (min-width: 1024px) {
+	.person-img {
 		width: 280px;
 		height: 280px;
 	}
-	
-	/* Large Desktop (xl): 300px */
-	@screen xl {
+}
+
+@media (min-width: 1280px) {
+	.person-img {
 		width: 300px;
 		height: 300px;
 	}
@@ -101,31 +138,33 @@ useHead({
 
 .logo-img {
 	object-fit: contain;
-	
-	/* Mobile: 160px × 127px (ca. 66% der Originalgröße) */
 	width: 160px;
 	height: 127px;
-	
-	/* Small Tablet (640-768px): 180px × 143px (ca. 75% der Originalgröße) */
-	@media (min-width: 640px) and (max-width: 768px) {
+}
+
+@media (min-width: 640px) and (max-width: 768px) {
+	.logo-img {
 		width: 180px;
 		height: 143px;
 	}
-	
-	/* Tablet (md): 200px × 159px (ca. 83% der Originalgröße) */
-	@screen md {
+}
+
+@media (min-width: 768px) {
+	.logo-img {
 		width: 200px;
 		height: 159px;
 	}
-	
-	/* Desktop (lg): 220px × 175px (ca. 91% der Originalgröße) */
-	@screen lg {
+}
+
+@media (min-width: 1024px) {
+	.logo-img {
 		width: 220px;
 		height: 175px;
 	}
-	
-	/* Large Desktop (xl): 241px × 191px (100% - Original) */
-	@screen xl {
+}
+
+@media (min-width: 1280px) {
+	.logo-img {
 		width: 241px;
 		height: 191px;
 	}

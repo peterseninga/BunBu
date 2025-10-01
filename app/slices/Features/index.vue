@@ -42,27 +42,27 @@ defineProps(
 
 <style scoped>
 .h {
-	@apply text-center !font-medium pb-10
+	@apply text-center !font-medium pb-10;
 }
 
 .he {
-	@apply mt-4 pb-5 
+	@apply mt-4 pb-5;
 }
 
 .layout {
-	@apply grid sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 max-w-5xl mx-auto sm:place-items-start place-items-center
+	@apply grid sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 max-w-5xl mx-auto sm:place-items-start place-items-center;
 }
 
 .descr {
-	@apply text-base font-medium font-body text-slate-600 leading-loose
+	@apply text-base font-medium font-body text-slate-600 leading-loose;
 }
 
 .item {
-	@apply max-w-xs grid sm:place-items-start place-items-center text-center sm:text-left
+	@apply max-w-xs grid sm:place-items-start place-items-center text-center sm:text-left;
 }
 
 .item2 {
-	@apply mb-0
+	@apply mb-0;
 }
 </style>
 

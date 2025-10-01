@@ -63,7 +63,7 @@ defineProps(
 
 <style scoped>
 .formate {
-	@apply mb-8;
+	margin-bottom: 2rem;
 }
 
 .layout {
