@@ -72,10 +72,10 @@ const customCategories = computed(() => {
 </template>
 
 <style scoped>
-@media (min-width: 1024px) {
+@media (main-width: 1024px) {
 .search-wrapper {
   display: flex;
   align-items: center;
 }
-};
+}
 </style>
