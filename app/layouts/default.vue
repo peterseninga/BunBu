@@ -13,7 +13,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <div>
+  <div class="scroll-button-wrapper">
     <Header />
     <slot />
     <ScrollToTop />
@@ -21,3 +21,10 @@ useSeoMeta({
     <div class="bg-white z-[-1]"/>
   </div>
 </template>
+
+<style scoped>
+.scroll-button-wrapper {
+  position: relative;
+  min-height: 100px;
+}
+</style>
