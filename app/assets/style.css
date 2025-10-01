@@ -41,39 +41,108 @@ html {
 
 /* Typography */
 .heading {
-    @apply font-heading leading-tight tracking-tight text-black;
+  font-family: var(--font-heading);
+  line-height: 1.125;
+  letter-spacing: -0.025em;
+  color: black;
 }
 
 .heading--sm {
-    @apply text-2xl md:text-3xl;
+  font-size: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .heading--sm {
+    font-size: 1.875rem;
+  }
 }
 
 .heading--md {
-    @apply text-3xl md:text-4xl;
+  font-size: 1.875rem;
+}
+
+@media (min-width: 768px) {
+  .heading--md {
+    font-size: 2.25rem;
+  }
 }
 
 .heading--lg {
-    @apply text-4xl md:text-5xl;
+  font-size: 2.25rem;
+}
+
+@media (min-width: 768px) {
+  .heading--lg {
+    font-size: 3rem;
+  }
 }
 
 .heading--xl {
-    @apply text-5xl md:text-6xl;
+  font-size: 3rem;
+}
+
+@media (min-width: 768px) {
+  .heading--xl {
+    font-size: 3.75rem;
+  }
 }
 
 .button {
-    @apply block w-fit bg-cyan-700 hover:bg-cyan-800 transition-colors duration-200 ease-in-out py-3 px-[39px] font-heading rounded-full text-white tracking-wider;
+  display: block;
+  width: fit-content;
+  background-color: rgb(14, 116, 144);
+  transition: background-color 200ms ease-in-out;
+  padding: 0.75rem 39px;
+  font-family: var(--font-heading);
+  border-radius: 9999px;
+  color: white;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+}
+
+.button:hover {
+  background-color: rgb(21, 94, 117);
 }
 
 .body {
-    @apply font-body leading-tight tracking-tight text-black;
+  font-family: var(--font-body);
+  line-height: 1.125;
+  letter-spacing: -0.025em;
+  color: black;
 }
 
 .body--sm {
-    @apply text-[16px] md:text-[18px] lg:text-[20px];
+  font-size: 16px;
+}
+
+@media (min-width: 768px) {
+  .body--sm {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .body--sm {
+    font-size: 20px;
+  }
 }
 
 .body-author {
-    @apply text-[12px] md:text-[14px] lg:text-[15px];
+  font-size: 12px;
+}
+
+@media (min-width: 768px) {
+  .body-author {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .body-author {
+    font-size: 15px;
+  }
 }
 
 /* Overlay Styles */

@@ -42,27 +42,62 @@ defineProps(
 
 <style scoped>
 .h {
-	@apply text-center !font-medium pb-10;
+	text-align: center;
+	font-weight: 500; /* entspricht !font-medium */
+	padding-bottom: 2.5rem; /* pb-10 */
 }
 
 .he {
-	@apply mt-4 pb-5;
+	margin-top: 1rem; /* mt-4 */
+	padding-bottom: 1.25rem; /* pb-5 */
 }
 
 .layout {
-	@apply grid sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 max-w-5xl mx-auto sm:place-items-start place-items-center;
+	display: grid;
+	grid-template-columns: repeat(1, minmax(0, 1fr));
+	gap: 3rem 2rem; /* gap-y-12 gap-x-8 */
+	max-width: 80rem; /* max-w-5xl */
+	margin-left: auto;
+	margin-right: auto;
+	place-items: center;
+}
+
+@media (min-width: 640px) {
+	.layout {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		place-items: start;
+	}
+}
+
+@media (min-width: 1024px) {
+	.layout {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
 }
 
 .descr {
-	@apply text-base font-medium font-body text-slate-600 leading-loose;
+	font-size: 1rem; /* text-base */
+	font-weight: 500; /* font-medium */
+	font-family: 'YourBodyFont', sans-serif; /* font-body */
+	color: #475569; /* text-slate-600 */
+	line-height: 1.75; /* leading-loose */
 }
 
 .item {
-	@apply max-w-xs grid sm:place-items-start place-items-center text-center sm:text-left;
+	max-width: 20rem; /* max-w-xs */
+	display: grid;
+	text-align: center;
+	place-items: center;
+}
+
+@media (min-width: 640px) {
+	.item {
+		place-items: start;
+		text-align: left;
+	}
 }
 
 .item2 {
-	@apply mb-0;
+	margin-bottom: 0;
 }
 </style>
-

@@ -31,10 +31,25 @@ useHead({
 
 <style scoped>
 .h {
-	@apply mb-4 sm:mb-6 md:mb-8;
+	margin-bottom: 1rem; /* mb-4 */
+}
+
+@media (min-width: 640px) {
+	.h {
+		margin-bottom: 1.5rem; /* sm:mb-6 */
+	}
+}
+
+@media (min-width: 768px) {
+	.h {
+		margin-bottom: 2rem; /* md:mb-8 */
+	}
 }
 
 .left {
-	@apply flex flex-col justify-center text-justify;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: justify;
 }
 </style>
