@@ -208,6 +208,6 @@ useHead({
 }
 
 .prose {
-  @apply text-black leading-relaxed text-base mt-8;
+  @apply text-black leading-relaxed text-base mt-4 md:mt-8 lg:mt-8 xl:mt-8;
 }
 </style>
