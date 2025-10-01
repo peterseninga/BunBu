@@ -166,6 +166,10 @@ useHead({
     width: 30%;
     max-width: 30%;
   }
+  
+  .prose {
+    margin-top: 1rem;
+  }
 
 }
 
