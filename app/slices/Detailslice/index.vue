@@ -49,7 +49,7 @@ useHead({
           </div>
         </div>
 
-        <div class="prose max-w-none mt-12">
+        <div class="prose max-w-none">
           <br />
           <strong>Beschreibung:</strong>
           <br />
