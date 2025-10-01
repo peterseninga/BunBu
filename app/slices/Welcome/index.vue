@@ -48,17 +48,11 @@ useHead({
 }
 
 .content {
-	padding: 2rem;
-	border-radius: 0.5rem;
-	text-align: center;
-	max-width: 48rem;
-	color: white;
+	@apply  p-8 rounded-lg text-center max-w-3xl text-white;
 }
 
 .h {
-	text-align: center;
-	color: white;
-	font-size: 80px;
+	@apply text-center text-white text-[80px];
 }
 
 .logo {
@@ -68,16 +62,10 @@ useHead({
 }
 
 .b {
-	--tw-text-opacity: 1;
-    color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+	@apply text-white;
 }
 
 .img {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin: 0 auto;
-	height: 10rem;
-	width: auto;
+	@apply items-center text-center h-40 w-auto;
 }
 </style>
