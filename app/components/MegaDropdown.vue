@@ -629,7 +629,7 @@ const handleClickOutside = (event: Event): void => {
   background: white;
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 100;
 }
 
 .mobile-overlay-title {
