@@ -107,7 +107,7 @@ useHead({
   }
 
   .img {
-    width: 100%;
+    width: 80%;
     max-width: 120%;
   }
 }
@@ -167,8 +167,8 @@ useHead({
     max-width: 30%;
   }
   
-  .prose {
-    margin-top: 1rem;
+  .layout .content .prose {
+    margin-top: 1rem !important;
   }
 
 }
