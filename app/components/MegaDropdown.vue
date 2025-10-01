@@ -257,15 +257,13 @@ onMounted(async () => {
     const csvText = await response.text()
     const lines = csvText.split('\n')
     
-    if (lines.length === 0 || !lines[0]) return
+    if (lines.length === 0) return
     
     const headers = lines[0].split(';').map(h => h.trim().replace(/^\uFEFF/, ''))
     const books: any[] = []
     
     for (let i = 1; i < lines.length; i++) {
-      const rawLine = lines[i]
-      if (!rawLine) continue
-      const line = rawLine.trim()
+      const line = lines[i].trim()
       if (!line) continue
       
       const values = line.split(';').map(v => v.trim())

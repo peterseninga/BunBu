@@ -48,25 +48,4 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2025-07-16',
-
-  runtimeConfig: {
-    public: {
-      WEBSITE_NAME_EN: process.env.WEBSITE_NAME_EN,
-      WEBSITE_ADDRESS: process.env.WEBSITE_ADDRESS,
-      API_BASE_URL: process.env.API_BASE_URL,
-    },
-  },
-
-  ssr: true,
-  nitro: {
-    baseURL: "http://localhost:3000",
-    prerender: {
-      crawlLinks: true,
-      failOnError: false, 
-    },
-  },
-  routeRules: {
-    "/**": { swr: true },
-    "/dashboard/**": { ssr: false },
-  },
 })
