@@ -119,7 +119,7 @@ useHead({
   }
 
   .img {
-    width: 120%;
+    width: 100%;
     max-width: 120%;
   }
 }
