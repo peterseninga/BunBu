@@ -786,6 +786,10 @@ const handleClickOutside = (event: Event): void => {
     font-size: 0.9rem;
     padding: 0.5rem 1rem;
   }
+
+  .mobile-overlay-body {
+    padding: 3rem 1rem 4rem 1rem;
+  }
 }
 
 @media (min-width: 640px) and (max-width: 768px) {
