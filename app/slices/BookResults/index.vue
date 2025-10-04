@@ -882,65 +882,68 @@ const toggleCategory = (categoryTitle: string) => {
   }
 };
 
-const getCategoryTotal = (category: Category): number => {
-  let filtered = books.value;
+const getCategoryTotal = computed(() => {
+  // Diese Funktion wird bei jeder Änderung von selectedFormats/selectedThemes neu erstellt
+  return (category: Category): number => {
+    let filtered = books.value;
 
-  // Suchfilter
-  if (searchQuery.value && filterType.value === "general") {
-    const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter(
-      (book) =>
-        book.title.toLowerCase().includes(query) ||
-        book.author.toLowerCase().includes(query) ||
-        book.categories.toLowerCase().includes(query) ||
-        book.format.toLowerCase().includes(query) ||
-        (book.description && book.description.toLowerCase().includes(query))
-    );
-  }
-
-  if (searchQuery.value && filterType.value === "author") {
-    const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter((book) => {
-      const authors = book.author.split(",").map((a) => a.trim().toLowerCase());
-      return authors.includes(query);
-    });
-  }
-
-  // Format-Filter
-  if (selectedFormats.value.length > 0) {
-    filtered = filtered.filter((book) => {
-      if (!book.format) return false;
-      const bookFormats = book.format.toLowerCase();
-      return selectedFormats.value.every((format) =>
-        bookFormats.includes(format.toLowerCase())
+    // Suchfilter
+    if (searchQuery.value && filterType.value === "general") {
+      const query = searchQuery.value.toLowerCase();
+      filtered = filtered.filter(
+        (book) =>
+          book.title.toLowerCase().includes(query) ||
+          book.author.toLowerCase().includes(query) ||
+          book.categories.toLowerCase().includes(query) ||
+          book.format.toLowerCase().includes(query) ||
+          (book.description && book.description.toLowerCase().includes(query))
       );
-    });
-  }
+    }
 
-  // ALLE ausgewählten Themen-Filter anwenden (inklusive aus dieser Kategorie!)
-  if (selectedThemes.value.length > 0) {
-    filtered = filtered.filter((book) => {
-      if (!book.categories) return false;
-      const bookCategories = book.categories.toLowerCase();
-      return selectedThemes.value.every((theme) =>
-        bookCategories.includes(theme.toLowerCase())
-      );
-    });
-  }
+    if (searchQuery.value && filterType.value === "author") {
+      const query = searchQuery.value.toLowerCase();
+      filtered = filtered.filter((book) => {
+        const authors = book.author.split(",").map((a) => a.trim().toLowerCase());
+        return authors.includes(query);
+      });
+    }
 
-  // Jetzt zähle Bücher die mindestens EIN Thema aus dieser Kategorie haben
-  const uniqueBooks = new Set<string>();
-  category.items.forEach((item) => {
-    filtered.forEach((book) => {
-      if (book.categories && 
-          book.categories.toLowerCase().includes(item.name.toLowerCase())) {
-        uniqueBooks.add(book.slug || book.title);
-      }
-    });
-  });
+    // Format-Filter
+    if (selectedFormats.value.length > 0) {
+      filtered = filtered.filter((book) => {
+        if (!book.format) return false;
+        const bookFormats = book.format.toLowerCase();
+        return selectedFormats.value.every((format) =>
+          bookFormats.includes(format.toLowerCase())
+        );
+      });
+    }
 
-  return uniqueBooks.size;
-};
+    // ALLE Themen-Filter anwenden
+    if (selectedThemes.value.length > 0) {
+      filtered = filtered.filter((book) => {
+        if (!book.categories) return false;
+        const bookCategories = book.categories.toLowerCase();
+        return selectedThemes.value.every((theme) =>
+          bookCategories.includes(theme.toLowerCase())
+        );
+      });
+    }
+
+    // Zähle unique Bücher mit Themen aus dieser Kategorie
+    const uniqueBooks = new Set<string>();
+    category.items.forEach((item) => {
+      filtered.forEach((book) => {
+        if (book.categories && 
+            book.categories.toLowerCase().includes(item.name.toLowerCase())) {
+          uniqueBooks.add(book.slug || book.title);
+        }
+      });
+    });
+
+    return uniqueBooks.size;
+  };
+});
 
 const clearAllFilters = () => {
   selectedFormats.value = [];
