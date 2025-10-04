@@ -581,13 +581,15 @@ const loadBooksData = async () => {
 // Filter aus URL übernehmen und Suche implementieren
 watch(
   [searchQuery, filterType],
-  ([q, type]) => {
+  ([q, type], [oldQ, oldType]) => {
     console.log("🔍 URL Parameter:", { q, type });
 
-    // Filter zurücksetzen
-    selectedThemes.value = [];
-    selectedFormats.value = [];
-    displayLimit.value = 20; // Reset beim URL-Wechsel
+    // Filter zurücksetzen wenn sich URL param ändert
+    if (q !== oldQ || type !== oldType) {
+      selectedThemes.value = [];
+      selectedFormats.value = [];
+      displayLimit.value = 20; // Reset beim URL-Wechsel
+    }
 
     if (!q || !type) return;
 
@@ -671,7 +673,8 @@ const allFormatsWithCounts = computed<Format[]>(() => {
           book.title.toLowerCase().includes(query) ||
           book.author.toLowerCase().includes(query) ||
           book.categories.toLowerCase().includes(query) ||
-          book.format.toLowerCase().includes(query)
+          book.format.toLowerCase().includes(query) ||
+          (book.description && book.description.toLowerCase().includes(query))
       );
     }
 
@@ -727,46 +730,49 @@ const allCategoriesWithCounts = computed<Category[]>(() => {
   // Für jedes Theme-Item berechnen
   defaultCategories.forEach((category) => {
     category.items.forEach((item) => {
-      let filteredBooks = books.value;
+      let filtered = books.value;
 
-      // Textsuche anwenden
+      // 1. Textsuche anwenden
       if (searchQuery.value && filterType.value === "general") {
         const query = searchQuery.value.toLowerCase();
-        filteredBooks = filteredBooks.filter(
+        filtered = filtered.filter(
           (book) =>
             book.title.toLowerCase().includes(query) ||
             book.author.toLowerCase().includes(query) ||
-            book.categories.toLowerCase().includes(query)
+            book.categories.toLowerCase().includes(query) ||
+          (book.description && book.description.toLowerCase().includes(query))
         );
       }
 
-      // Format filter anwenden
+      // 2. FORMAT-FILTER ANWENDEN (Das fehlt aktuell!)
       if (selectedFormats.value.length > 0) {
-        filteredBooks = filteredBooks.filter((book) =>
-          selectedFormats.value.some((format) =>
-            book.format.toLowerCase().includes(format.toLowerCase())
-          )
-        );
+        console.log('Vor Format-Filter:', filtered.length);
+        
+        filtered = filtered.filter((book) => {
+          if (!book.format) return false;
+          const bookFormats = book.format.toLowerCase();
+          return selectedFormats.value.every((format) =>
+            bookFormats.includes(format.toLowerCase())
+          );
+        });
       }
 
-      // Andere Theme-Filter anwenden
-      if (selectedThemes.value.length > 0) {
-        const otherSelectedThemes = selectedThemes.value.filter(
-          (theme) => theme !== item
-        );
-        if (otherSelectedThemes.length > 0) {
-          filteredBooks = filteredBooks.filter((book) => {
-            if (!book.categories) return false;
-            const bookCategories = book.categories.toLowerCase();
-            return otherSelectedThemes.every((theme) =>
-              bookCategories.includes(theme.toLowerCase())
-            );
-          });
-        }
+      // 3. Andere Theme-Filter anwenden (ohne das aktuell berechnete)
+      const otherSelectedThemes = selectedThemes.value.filter(
+        (theme) => theme !== item
+      );
+      if (otherSelectedThemes.length > 0) {
+        filtered = filtered.filter((book) => {
+          if (!book.categories) return false;
+          const bookCategories = book.categories.toLowerCase();
+          return otherSelectedThemes.every((theme) =>
+            bookCategories.includes(theme.toLowerCase())
+          );
+        });
       }
 
-      // Zählen für dieses spezifische Theme
-      const count = filteredBooks.filter(
+      // 4. Zählen für dieses spezifische Theme
+      const count = filtered.filter(
         (book) =>
           book.categories &&
           book.categories.toLowerCase().includes(item.toLowerCase())
@@ -786,6 +792,12 @@ const allCategoriesWithCounts = computed<Category[]>(() => {
 });
 
 const filteredBooks = computed(() => {
+  console.log('🔍 Filtering:', {
+    searchQuery: searchQuery.value,
+    filterType: filterType.value,
+    selectedFormats: selectedFormats.value,
+    selectedThemes: selectedThemes.value
+  });
   let filtered = books.value;
 
   // Textsuche (wenn kein spezifischer Filter)
@@ -796,7 +808,8 @@ const filteredBooks = computed(() => {
         book.title.toLowerCase().includes(query) ||
         book.author.toLowerCase().includes(query) ||
         book.categories.toLowerCase().includes(query) ||
-        book.format.toLowerCase().includes(query)
+        book.format.toLowerCase().includes(query) ||
+        (book.description && book.description.toLowerCase().includes(query))
     );
   }
 
@@ -808,15 +821,23 @@ const filteredBooks = computed(() => {
     });
   }
 
-  if (searchQuery.value && filterType.value === "format") {
-    const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter((book) => {
-      const formate = book.format.split(",").map((f) => f.trim().toLowerCase());
-      return formate.includes(query);
-    }
-    );
-  }
+  
 
+  if (selectedFormats.value.length > 0) {
+    console.log('Vor Format-Filter:', filtered.length);
+    console.log("Beispiel Formate in Daten:" , filtered.slice(0,5).map(b => ({ title: b.title , format: b.format })));
+    console.log("Aktive Formate:", selectedFormats.value);  
+    filtered = filtered.filter((book) => {
+      if (!book.format) return false;
+      const bookFormats = book.format.toLowerCase();
+      const matches = selectedFormats.value.every((format) =>
+        bookFormats.includes(format.toLowerCase())
+      );
+      return matches;
+    });
+    console.log('Nach Format-Filter:', filtered.length);
+  console.log('Sollte sein: 11 Hörbücher');
+  }
 
   // Theme filter - ALL selected themes must match
   if (selectedThemes.value.length > 0) {
@@ -937,16 +958,16 @@ const applyMobileFilters = () => {
 
 const navigateToBook = (book: BookData) => {
   console.log("Navigate to book:", book.title);
-  if (book.slug) {
-    navigateTo(`/book/${book.slug}`);
-  } else {
-    // Fallback - generiere slug aus Titel
-    const slug = book.title
+  const slug = book.title
       .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-");
-    navigateTo(`/book/${slug}`);
-  }
+      .replace(/ä/g, "ae")
+      .replace(/ö/g, "oe")
+      .replace(/ü/g, "ue")
+      .replace(/ß/g, "ss")
+      .normalize("NFD")                    // Zerlegt Akzente (é wird zu e + ´)
+      .replace(/[\u0300-\u036f]/g, "")     // Entfernt Akzentzeichen
+      .replace(/[^a-z0-9]/g, "")           // Nur Kleinbuchstaben und Zahlen
+    navigateTo(`/book/${slug}`)
 };
 
 // Debug logging
@@ -1510,26 +1531,39 @@ watch(allActiveFilters, () => {
 .load-more-container {
   display: flex;
   justify-content: center;
-  margin-top: 2rem;
-  padding-top: 1rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .load-more-btn {
-  padding: 0;
+  padding: 0.2rem 0;
   background: transparent;
   color: #000;
   border: none;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 400;
-  transition: all 0.2s ease;
   text-decoration: none;
   position: relative;
+  display: inline-block;
 }
 
-.load-more-btn:hover {
-  text-decoration: underline;
+.load-more-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background: #000;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
 }
+
+.load-more-btn:hover::after {
+  width: 100%;
+}
+
 
 /* Responsive */
 @media (min-width: 1024px) {

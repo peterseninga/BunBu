@@ -44,7 +44,7 @@ const createSlugFromTitle = (title: string) => {
 						Keine Bücher gefunden. Fügen Sie Bücher in Prismic hinzu.
 					</div>
 				</div>
-				<NuxtLink to="/suche?q=Buch&filter=format" class="hover:underline">
+				<NuxtLink to="/suche?q=Buch&filter=format" class="load-more-link">
 					<PrismicText :field="slice.primary.mehr_laden"/>
 				</NuxtLink>
 			</div>
@@ -71,7 +71,7 @@ const createSlugFromTitle = (title: string) => {
 						Keine Hörbücher gefunden. Fügen Sie Hörbücher in Prismic hinzu.
 					</div>
 				</div>
-				<NuxtLink to="/suche?q=Hörbuch&filter=format" class="hover:underline">
+				<NuxtLink to="/suche?q=Hörbuch&filter=format" class="load-more-link">
 					<PrismicText :field="slice.primary.mehr_laden" />
 				</NuxtLink>
 			</div>
@@ -126,5 +126,31 @@ const createSlugFromTitle = (title: string) => {
 
 .book-info {
 	@apply flex flex-col justify-center gap-1;
+}
+
+/* Load More Link Animation */
+.load-more-link {
+	display: inline-block;
+	padding: 0.2rem 0;
+	margin-top: 1rem;
+	position: relative;
+	color: #000;
+	text-decoration: none;
+}
+
+.load-more-link::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	width: 0;
+	height: 1px;
+	background: #000;
+	transition: all 0.3s ease;
+	transform: translateX(-50%);
+}
+
+.load-more-link:hover::after {
+	width: 100%;
 }
 </style>

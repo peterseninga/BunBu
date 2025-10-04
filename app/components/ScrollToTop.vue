@@ -18,24 +18,32 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 const isVisible = ref(false)
-const scrollThreshold = 300 // Pixel ab wann der Button erscheint
-const bottomOffset = ref('2rem') // Dynamischer Abstand vom unteren Rand
-const footerRef = ref<HTMLElement | null>(null)
+const scrollThreshold = 300
+const bottomOffset = ref('2rem')
 
 const updateButtonPosition = () => {
-  const footer = footerRef.value
-  const footerTop = footer?.getBoundingClientRect().top ?? Infinity
+  const scrollY = window.scrollY
   const windowHeight = window.innerHeight
-
-  // Wenn Footer im Viewport ist, Button höher setzen
-  if (footerTop < windowHeight) {
-    const overlap = windowHeight - footerTop + 20 // 20px Puffer
-    bottomOffset.value = `${overlap}px`
-  } else {
-    bottomOffset.value = '2rem'
+  const documentHeight = document.documentElement.scrollHeight
+  
+  // Button erscheinen lassen
+  isVisible.value = scrollY > scrollThreshold
+  
+  // Footer-Position berechnen
+  const footer = document.querySelector('footer')
+  if (footer) {
+    const footerRect = footer.getBoundingClientRect()
+    const footerTop = footerRect.top + scrollY
+    const distanceToFooter = documentHeight - scrollY - windowHeight
+    
+    // Wenn näher als 100px am Footer, Button nach oben verschieben
+    if (footerRect.top < windowHeight) {
+      const overlap = windowHeight - footerRect.top + 20
+      bottomOffset.value = `${overlap}px`
+    } else {
+      bottomOffset.value = '2rem'
+    }
   }
-
-  isVisible.value = window.scrollY > scrollThreshold
 }
 
 const scrollToTop = () => {
@@ -47,9 +55,7 @@ const scrollToTop = () => {
 
 onMounted(() => {
   window.addEventListener('scroll', updateButtonPosition)
-
-  // Footer-Element holen
-  footerRef.value = document.querySelector('footer')
+  updateButtonPosition() // Initial check
 })
 
 onUnmounted(() => {
@@ -59,7 +65,7 @@ onUnmounted(() => {
 
 <style scoped>
 .scroll-to-top {
-  position: absolute;
+  position: fixed; /* ← WICHTIG: fixed statt absolute */
   bottom: 2rem;
   right: 2rem;
   width: 50px;
@@ -86,14 +92,12 @@ onUnmounted(() => {
 
 .scroll-to-top svg {
   transition: stroke 0.3s ease;
-  stroke: #004b5a;
 }
 
 .scroll-to-top:hover svg {
   stroke: #fff;
 }
 
-/* Fade Transition */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;
@@ -107,7 +111,7 @@ onUnmounted(() => {
 /* Responsive */
 @media (min-width: 1254px) {
   .scroll-to-top {
-    right: calc(50% - 650px + 2rem);
+    right: calc(50% - 700px + 2rem);
   }
 }
 

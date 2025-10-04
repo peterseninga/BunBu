@@ -136,6 +136,8 @@ const authors = ref<Set<string>>(new Set())
 const categories = ref<Set<string>>(new Set())
 const formats = ref<Set<string>>(new Set())
 
+  const searchTimeout = ref<NodeJS.Timeout | null>(null)
+
 // Load CSV data
 const loadBooksData = async () => {
   try {
@@ -233,17 +235,26 @@ const onInput = () => {
   if (query.value.length === 0) {
     filteredSuggestions.value = []
     selectedIndex.value = -1
+    if (searchTimeout.value) clearTimeout(searchTimeout.value)
     return
   }
   
-// Searching after 1 character input  
-  if (query.value.length < 1) {
+  // Erst ab 2 Zeichen suchen
+  if (query.value.length < 2) {
     filteredSuggestions.value = []
     return
   }
   
-  generateSuggestions()
-  showSuggestions.value = true
+  // Debounce - vorherige Suche abbrechen
+  if (searchTimeout.value) {
+    clearTimeout(searchTimeout.value)
+  }
+  
+  // Neue Suche nach 200ms starten
+  searchTimeout.value = setTimeout(() => {
+    generateSuggestions()
+    showSuggestions.value = true
+  }, 200)
 }
 
 const generateSuggestions = () => {
