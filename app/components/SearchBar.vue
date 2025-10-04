@@ -118,7 +118,26 @@ const emit = defineEmits<{
 }>()
 
 const normalize = (str: string): string =>
-  str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+  str
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .replace(/[.,;:!?'"()]/g, '')
+  .toLowerCase()
+  .trim()
+
+const generateSlug = (title: string): string => {
+  return title
+    .toLowerCase()
+    .replace(/ä/g, "ae")
+    .replace(/ö/g, "oe")
+    .replace(/ü/g, "ue")
+    .replace(/ß/g, "ss")
+    .replace(/'/g, "")  // Apostrophe entfernen
+    .replace(/'/g, "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "")
+}
 
 
 // Reactive state
@@ -338,10 +357,11 @@ const selectSuggestion = (suggestion: Suggestion) => {
   selectedIndex.value = -1
   
   // If it's a book, navigate directly to the book page
-  if (suggestion.type === 'book' && suggestion.data?.slug) {
+  if (suggestion.type === 'book' && suggestion.data?.title) {
     query.value = ''
     searchInput.value?.blur()
-    navigateTo(`/book/${suggestion.data.slug}`)
+    const slug = generateSlug(suggestion.data.title)
+    navigateTo(`/book/${slug}`)
     return
   }
   
@@ -417,8 +437,20 @@ const hideSuggestionsDelayed = () => {
 const highlightMatch = (text: string, query: string): string => {
   if (!query.trim()) return text
   
-  const regex = new RegExp(`(${query.trim()})`, 'gi')
-  return text.replace(regex, '<mark>$1</mark>')
+  const normalizedQuery = normalize(query.trim())
+  const normalizedText = normalize(text)
+  
+  // Finde die Position des Matches im normalisierten Text
+  const index = normalizedText.toLowerCase().indexOf(normalizedQuery.toLowerCase())
+  
+  if (index === -1) return text
+  
+  // Extrahiere den entsprechenden Teil aus dem Original-Text
+  const before = text.substring(0, index)
+  const match = text.substring(index, index + normalizedQuery.length)
+  const after = text.substring(index + normalizedQuery.length)
+  
+  return `${before}<mark>${match}</mark>${after}`
 }
 
 const getTypeLabel = (type: string): string => {
