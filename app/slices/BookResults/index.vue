@@ -885,6 +885,7 @@ const toggleCategory = (categoryTitle: string) => {
 const getCategoryTotal = (category: Category): number => {
   let filtered = books.value;
 
+  // Suchfilter
   if (searchQuery.value && filterType.value === "general") {
     const query = searchQuery.value.toLowerCase();
     filtered = filtered.filter(
@@ -905,6 +906,7 @@ const getCategoryTotal = (category: Category): number => {
     });
   }
 
+  // Format-Filter
   if (selectedFormats.value.length > 0) {
     filtered = filtered.filter((book) => {
       if (!book.format) return false;
@@ -915,26 +917,29 @@ const getCategoryTotal = (category: Category): number => {
     });
   }
 
-  const otherSelectedThemes = selectedThemes.value.filter(
-    (theme) => !category.items.some(item => item.name === theme)
-  );
-  if (otherSelectedThemes.length > 0) {
+  // ALLE ausgewählten Themen-Filter anwenden (inklusive aus dieser Kategorie!)
+  if (selectedThemes.value.length > 0) {
     filtered = filtered.filter((book) => {
       if (!book.categories) return false;
       const bookCategories = book.categories.toLowerCase();
-      return otherSelectedThemes.every((theme) =>
+      return selectedThemes.value.every((theme) =>
         bookCategories.includes(theme.toLowerCase())
       );
     });
   }
 
-  return filtered.filter((book) => {
-    if (!book.categories) return false;
-    const bookCategories = book.categories.toLowerCase();
-    return category.items.some((item) =>
-      bookCategories.includes(item.name.toLowerCase())
-    );
-  }).length;
+  // Jetzt zähle Bücher die mindestens EIN Thema aus dieser Kategorie haben
+  const uniqueBooks = new Set<string>();
+  category.items.forEach((item) => {
+    filtered.forEach((book) => {
+      if (book.categories && 
+          book.categories.toLowerCase().includes(item.name.toLowerCase())) {
+        uniqueBooks.add(book.slug || book.title);
+      }
+    });
+  });
+
+  return uniqueBooks.size;
 };
 
 const clearAllFilters = () => {
