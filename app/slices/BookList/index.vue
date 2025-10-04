@@ -46,6 +46,7 @@ const createSlugFromTitle = (title: string) => {
 				</div>
 				<NuxtLink to="/suche?q=Buch&filter=format" class="load-more-link">
 					<PrismicText :field="slice.primary.mehr_laden"/>
+					<span class="count-badge"> (1829)</span>
 				</NuxtLink>
 			</div>
 			
@@ -73,6 +74,7 @@ const createSlugFromTitle = (title: string) => {
 				</div>
 				<NuxtLink to="/suche?q=Hörbuch&filter=format" class="load-more-link">
 					<PrismicText :field="slice.primary.mehr_laden" />
+					<span class="count-badge"> (991)</span>
 				</NuxtLink>
 			</div>
 		</div>
@@ -114,6 +116,11 @@ const createSlugFromTitle = (title: string) => {
 
 .audio {
 	@apply md:bg-[rgba(0,75,90,0.1)] md:rounded-lg md:p-4;
+}
+
+.count-badge {
+	color: #6b7280;
+	font-size: 0.95em;
 }
 
 .book-image {
