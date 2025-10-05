@@ -109,9 +109,27 @@ onUnmounted(() => {
 }
 
 /* Responsive */
-@media (min-width: 1254px) {
+@media (min-width: 1454px) {
   .scroll-to-top {
     right: calc(50% - 700px + 2rem);
+  }
+}
+
+@media (min-width: 1252px) and (max-width: 1453px) {
+  .scroll-to-top {
+    right: calc(50% - 650px + 2rem);
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1251px) {
+  .scroll-to-top {
+    right: calc(50% - 530px + 2rem);
+  }
+}
+
+@media (min-width: 977px) and (max-width: 1024px) {
+  .scroll-to-top {
+    right: calc(50% - 500px + 2rem);
   }
 }
 
