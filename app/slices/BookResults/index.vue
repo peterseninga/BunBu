@@ -343,7 +343,6 @@
               :src="book.cover_url || '/placeholder-book.jpg'"
               :alt="`Cover von ${book.title}`"
               class="book-cover"
-              @error="(e) => (e.target.src = '/placeholder-book.jpg')"
               loading="lazy"
             />
             <div class="book-details">
