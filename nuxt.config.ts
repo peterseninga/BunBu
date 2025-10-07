@@ -22,7 +22,7 @@ export default defineNuxtConfig({
         { name: 'format-detection', content: 'telephone=no' },
       ],
       link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'apple-touch-icon', href: '/favicon.svg' }
+        { rel: 'apple-touch-icon', href: '/apple-favicon.png' }
       ],
     }
   },
