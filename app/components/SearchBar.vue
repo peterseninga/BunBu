@@ -1,5 +1,6 @@
 <template>
   <div class="search-container">
+    <!-- Eingabefeld fuer die Suche -->
     <div class="search-input-wrapper">
       <input
         v-model="query"
@@ -16,6 +17,7 @@
         ref="searchInput"
       />
       
+      <!-- Suchbutton -->
       <button 
         @mousedown.prevent="handleEnterKey"
         class="search-button"
@@ -28,23 +30,23 @@
       </button>
     </div>
 
-    <!-- Suggestion Dropdown -->
+    <!-- Dropdown fuer Vorschlaege -->
     <div 
       v-if="showSuggestions && (filteredSuggestions.length > 0 || isLoading)"
       class="suggestions-dropdown"
     >
-      <!-- Loading -->
+      <!-- Ladeanzeige -->
       <div v-if="isLoading" class="suggestion-item loading">
         <div class="loading-spinner"></div>
         <span>Hier suchen...</span>
       </div>
 
-      <!-- No Results -->
+      <!-- Keine Ergebnisse -->
       <div v-else-if="query.length > 0 && filteredSuggestions.length === 0" class="suggestion-item no-results">
         <span>Keine Ergebnisse für "{{ query }}"</span>
       </div>
 
-      <!-- Suggestions -->
+      <!-- Vorschlagsliste -->
       <div
         v-for="(suggestion, index) in filteredSuggestions"
         :key="index"
@@ -59,6 +61,8 @@
           'format': suggestion.type === 'format'
         }"
       >
+        
+        <!-- Icon je nach Typ -->
         <div class="suggestion-icon">
           <svg v-if="suggestion.type === 'book'" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
@@ -75,6 +79,7 @@
           </svg>
         </div>
 
+        <!-- Inhalt des Vorschlags -->
         <div class="suggestion-content">
           <div class="suggestion-main">
             <span class="suggestion-text" v-html="highlightMatch(suggestion.text, query)"></span>
@@ -132,7 +137,7 @@ const generateSlug = (title: string): string => {
     .replace(/ö/g, "oe")
     .replace(/ü/g, "ue")
     .replace(/ß/g, "ss")
-    .replace(/'/g, "")  // Apostrophe entfernen
+    .replace(/'/g, "")  
     .replace(/'/g, "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -140,7 +145,7 @@ const generateSlug = (title: string): string => {
 }
 
 
-// Reactive state
+// Reaaktiver Zustand fuer Suchkomponente
 const query = ref('')
 const suggestions = ref<Suggestion[]>([])
 const filteredSuggestions = ref<Suggestion[]>([])
@@ -149,7 +154,7 @@ const isLoading = ref(false)
 const selectedIndex = ref(-1)
 const searchInput = ref<HTMLInputElement>()
 
-// Book data storage
+// Speicher fuer Buchdaten
 const books = ref<BookData[]>([])
 const authors = ref<Set<string>>(new Set())
 const categories = ref<Set<string>>(new Set())
@@ -157,20 +162,17 @@ const formats = ref<Set<string>>(new Set())
 
   const searchTimeout = ref<NodeJS.Timeout | null>(null)
 
-// Load CSV data
+// Laden und Parsen der Buchdaten aus books.csv
 const loadBooksData = async () => {
   try {
     isLoading.value = true
-    
-    // In a real Nuxt app, you would fetch this from an API endpoint
-    // For now, we'll simulate loading CSV data
+
     const response = await fetch('/books.csv')
     const csvText = await response.text()
-    
-    // Parse CSV
     const lines = csvText.split('\n')
     const headers = lines[0].split(';').map(h => h.trim().replace(/^\uFEFF/, ''))
     
+    // Temporaerer Speicher 
     const bookData: BookData[] = []
     const authorSet = new Set<string>()
     const categorySet = new Set<string>()
@@ -192,24 +194,25 @@ const loadBooksData = async () => {
         slug: values[headers.indexOf('slug')] || ''
       }
       
+      // Nur Buecher mit Titel uebernehmen
       if (book.title) {
         bookData.push(book)
         
-        // Collect authors
+        // Autoren extrahieren
         if (book.authors) {
           book.authors.split(',').forEach(author => {
             authorSet.add(author.trim())
           })
         }
         
-        // Collect categories
+        // Kategorien extrahieren
         if (book.categories) {
           book.categories.split(',').forEach(category => {
             categorySet.add(category.trim())
           })
         }
 
-        // Collect formats
+        // Formate extrahieren
         if (book.formats) {
           book.formats.split(',').forEach(format => {
             formatSet.add(format.trim())
@@ -218,17 +221,18 @@ const loadBooksData = async () => {
       }
     }
     
+    // Reaktive Zustaende fuellen
     books.value = bookData
     authors.value = authorSet
     categories.value = categorySet
     formats.value = formatSet
     
-    console.log(`${bookData.length} Bücher geladen`)
+    console.log(`${bookData.length} Bücher geladen`) // Debug
     
   } catch (error) {
     console.error('Fehler beim Laden der Buchdaten:', error)
     
-    // beispieldaten wenn Fehler
+    // Fallback: Beispieldaten bei Ladefehler
     books.value = [
       {
         title: 'Kennt ihr Blauland?',
@@ -237,7 +241,7 @@ const loadBooksData = async () => {
         categories: 'Vielfalt & Diversität, Toleranz & Respekt',
         cover_url: 'https://example.com/cover1.jpg',
         description: 'Ein liebevoll gestaltetes Bilderbuch...',
-        slug: 'kennt-ihr-blauland'
+        slug: 'kenntihrblauland'
       }
     ]
     authors.value = new Set(['Tina Rau'])
@@ -245,11 +249,11 @@ const loadBooksData = async () => {
     formats.value = new Set(['Buch'])
     
   } finally {
-    isLoading.value = false
+    isLoading.value = false // Ladeanzeige deaktivieren
   }
 }
 
-// Search functionality
+// Suchfunktionalitaet reagiert auf Eingabe in Suchfeld
 const onInput = () => {
   if (query.value.length === 0) {
     filteredSuggestions.value = []
@@ -276,11 +280,12 @@ const onInput = () => {
   }, 200)
 }
 
+// Generierte Vorschlaege basierend auf Suchbegriff
 const generateSuggestions = () => {
   const searchTerm = normalize(query.value)
   const suggestions: Suggestion[] = []
   
-  // Search in books
+  // Titel durchsuchen
   books.value.forEach(book => {
     if (normalize(book.title).includes(searchTerm)) {
       suggestions.push({
@@ -292,7 +297,7 @@ const generateSuggestions = () => {
     }
   })
   
-  // Search in authors
+  // Autoren durchsuchen
   authors.value.forEach(author => {
     if (normalize(author).includes(searchTerm)) {
       const bookCount = books.value.filter(book => 
@@ -307,7 +312,7 @@ const generateSuggestions = () => {
     }
   })
   
-  // Search in categories
+  // Kategorien durchsuchen
   categories.value.forEach(category => {
     if (normalize(category).includes(searchTerm)) {
       const bookCount = books.value.filter(book => 
@@ -322,6 +327,7 @@ const generateSuggestions = () => {
     }
   })
 
+  // Formate durchsuchen
   formats.value.forEach(format => {
     if (normalize(format).includes(searchTerm)) {
       const bookCount = books.value.filter(book => 
@@ -336,27 +342,28 @@ const generateSuggestions = () => {
     }
   })
   
-  // Sort by relevance and limit
+  // Nach Relevant sortieren
   filteredSuggestions.value = suggestions
     .sort((a, b) => {
-      // Exact matches first
+      // Exakte Treffer zuerst anzeigen
       const aExact = a.text.toLowerCase() === searchTerm
       const bExact = b.text.toLowerCase() === searchTerm
       if (aExact && !bExact) return -1
       if (!aExact && bExact) return 1
       
-      // Then by type priority: books > authors > categories
+      // Prio: books > authors > categories
       const typeOrder = { book: 0, author: 1, category: 2, format: 3 }
       return typeOrder[a.type] - typeOrder[b.type]
     })
     .slice(0, 8)
 }
 
+// Wird aufgerufen, wenn Vorschlag ausgewaehlt
 const selectSuggestion = (suggestion: Suggestion) => {
   showSuggestions.value = false
   selectedIndex.value = -1
   
-  // If it's a book, navigate directly to the book page
+  // Bei Buch direkt zur Buchseite
   if (suggestion.type === 'book' && suggestion.data?.title) {
     query.value = ''
     searchInput.value?.blur()
@@ -365,17 +372,19 @@ const selectSuggestion = (suggestion: Suggestion) => {
     return
   }
   
-  // For authors and categories, perform search
+  // Bei Autor, Kategorie und Format: Suche ausfuehren
   query.value = suggestion.text
   performSearch(suggestion)
 }
 
+// Fuehrt Suche aus und navigiert zu Suchseite
 const performSearch = (selectedSuggestion?: Suggestion) => {
   if (!query.value.trim()) return
   
   const searchQuery = query.value.trim()
   const filters: any = {}
   
+  // Filtertyp setzen, falls Vorschlag vorhanden
   if (selectedSuggestion) {
     filters.type = selectedSuggestion.type
     if (selectedSuggestion.data) {
@@ -383,8 +392,9 @@ const performSearch = (selectedSuggestion?: Suggestion) => {
     }
   }
   
-  console.log('🔍 Performing search:', searchQuery, filters)
+  console.log('Performing search:', searchQuery, filters) // Debug
   
+  // Navigation zur Suchseite mit Query-Parametern
   navigateTo({
     path: '/suche', 
     query: { 
@@ -399,53 +409,63 @@ const performSearch = (selectedSuggestion?: Suggestion) => {
   searchInput.value?.blur()
 }
 
+// Tastaturnav durch Vorschlaege
 const navigateSuggestions = (direction: number) => {
   if (filteredSuggestions.value.length === 0) return
   
   selectedIndex.value += direction
   
+  // zum ersten springen
   if (selectedIndex.value >= filteredSuggestions.value.length) {
     selectedIndex.value = 0
-  } else if (selectedIndex.value < 0) {
+  }
+  // zum letzen springen
+  else if (selectedIndex.value < 0) {
     selectedIndex.value = filteredSuggestions.value.length - 1
   }
 }
 
-// Handle Enter key when a suggestion is selected
+// Reaktion auf Enter-Taste
 const handleEnterKey = () => {
   if (!query.value.trim()) return
 
+  // Wenn Vorschlag gewaehlt, dann uebernehmen
   if (selectedIndex.value >= 0 && selectedIndex.value < filteredSuggestions.value.length) {
     selectSuggestion(filteredSuggestions.value[selectedIndex.value])
-  } else {
+  } 
+  // sonst normale Suche
+  else {
     performSearch()
   }
-  query.value = '' // Suchfeld
+  query.value = '' // Suchfeld zuruecksetzen
 }
 
+// Vorschlaege ausblenden
 const clearSuggestions = () => {
   showSuggestions.value = false
   selectedIndex.value = -1
 }
 
+// Vorschlaege mit Verzoegerung ausblenden
 const hideSuggestionsDelayed = () => {
   setTimeout(() => {
     showSuggestions.value = false
   }, 200)
 }
 
+// Hebt Uebereinstimmungen in Vorschlagstext hervor
 const highlightMatch = (text: string, query: string): string => {
   if (!query.trim()) return text
   
   const normalizedQuery = normalize(query.trim())
   const normalizedText = normalize(text)
   
-  // Finde die Position des Matches im normalisierten Text
+  // Position des Matches im normalisierten Text finden
   const index = normalizedText.toLowerCase().indexOf(normalizedQuery.toLowerCase())
   
   if (index === -1) return text
   
-  // Extrahiere den entsprechenden Teil aus dem Original-Text
+  // Treffer im Originaltext markieren
   const before = text.substring(0, index)
   const match = text.substring(index, index + normalizedQuery.length)
   const after = text.substring(index + normalizedQuery.length)
@@ -453,6 +473,7 @@ const highlightMatch = (text: string, query: string): string => {
   return `${before}<mark>${match}</mark>${after}`
 }
 
+// Liefert dt. Bezeichnung fuer Vorschlagstyp
 const getTypeLabel = (type: string): string => {
   const labels = {
     book: 'Buch',
@@ -463,7 +484,7 @@ const getTypeLabel = (type: string): string => {
   return labels[type as keyof typeof labels] || type
 }
 
-// Load data on mount
+// Laedt Buchdaten beim Mounten
 onMounted(() => {
   loadBooksData()
 })
@@ -474,7 +495,7 @@ onMounted(() => {
   position: relative;
   width: 100%;
   max-width: 400px;
-  z-index: 10000; /* Basis z-index für Container */
+  z-index: 10000; 
   margin: -8px auto;
 }
 
@@ -542,13 +563,13 @@ onMounted(() => {
   border-radius: 0.75rem;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   border: 1px solid #e5e7eb;
-  z-index: 10001; /* Höher als alle anderen Elemente */
+  z-index: 10001; 
   max-height: 400px;
   width: 300px;
   overflow-y: auto;
   margin-left: -25px;
   margin-top: 0.5rem;
-  overflow-x: hidden; /* Verhindert horizontales Scrollen im Dropdown, ggf noch die breite erhöhen */
+  overflow-x: hidden; 
 }
 
 .suggestion-item {
@@ -707,10 +728,9 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 80px; /* Mindesthöhe für konsistente Zentrierung */
+  min-height: 80px; 
 }
 
-/* 4. Alternative: Grid-Layout für bessere Kontrolle */
 .header-grid-layout {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
