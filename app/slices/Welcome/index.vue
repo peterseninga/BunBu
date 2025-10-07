@@ -15,6 +15,7 @@ const props = defineProps(
 
 useHead({
   title: "BunBu",
+
 })
 </script>
 
