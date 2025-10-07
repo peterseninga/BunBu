@@ -35,8 +35,8 @@ const createSlugFromTitle = (title: string) => {
 						>
 							<PrismicImage :field="item.cover_image" alt="Cover von `/book/${item.slug}`" class="book-image"/> 
 							<div class="book-info">
-								<PrismicText :field="item.titel" wrapper="h5" class="hed body--sm" />
-								<PrismicText :field="item.author" wrapper="p" />
+								<PrismicText :field="item.titel" wrapper="h5" class="book-title" />
+								<PrismicText :field="item.author" wrapper="p" class="book-author" />
 							</div>
 						</NuxtLink>
 					</template>
@@ -63,8 +63,8 @@ const createSlugFromTitle = (title: string) => {
 						>
 							<PrismicImage :field="item.cover_image" alt="Cover von `/book/${item.slug}`" class="book-image"/>
 							<div class="book-info">
-								<PrismicText :field="item.title" wrapper="h5" class="hed body--sm"/>
-								<PrismicText :field="item.author" wrapper="p" />
+								<PrismicText :field="item.title" wrapper="h5" class="book-title"/>
+								<PrismicText :field="item.author" wrapper="p" class="book-author" />
 							</div>
 						</NuxtLink>
 					</template>
@@ -94,8 +94,12 @@ const createSlugFromTitle = (title: string) => {
 	@apply w-full text-center place-items-center items-center font-medium pt-7 pb-8;
 }
 
-.hed {
-	@apply text-start items-start !font-medium mt-auto;
+.book-title {
+	font-size: 1rem;
+  font-weight: 600;
+  color: #000;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.3;
 }
 
 .lay {
@@ -118,6 +122,12 @@ const createSlugFromTitle = (title: string) => {
 	@apply md:bg-[rgba(0,75,90,0.1)] md:rounded-lg md:p-4;
 }
 
+.book-author {
+	color: #666;
+	margin: 0;
+	font-size: 0.9rem;
+}
+
 .count-badge {
 	color: #6b7280;
 	font-size: 0.95em;
@@ -132,7 +142,7 @@ const createSlugFromTitle = (title: string) => {
 }
 
 .book-info {
-	@apply flex flex-col justify-center gap-1;
+	flex: 1;
 }
 
 /* Load More Link Animation */
