@@ -33,7 +33,7 @@ const createSlugFromTitle = (title: string) => {
 							:key="index"
 							class="book-card hover:bg-[rgba(0,75,90,0.15)] transition-colors cursor-pointer block"
 						>
-							<PrismicImage :field="item.cover_image" alt="Cover von `/book/${item.slug}`" class="book-image"/> 
+							<PrismicImage :field="item.cover_image" class="book-image"/> 
 							<div class="book-info">
 								<PrismicText :field="item.titel" wrapper="h5" class="book-title" />
 								<PrismicText :field="item.author" wrapper="p" class="book-author" />
@@ -61,7 +61,7 @@ const createSlugFromTitle = (title: string) => {
 							:key="index"
 							class="book-card bottom audio hover:bg-[rgba(0,75,90,0.15)] transition-colors cursor-pointer block"
 						>
-							<PrismicImage :field="item.cover_image" alt="Cover von `/book/${item.slug}`" class="book-image"/>
+							<PrismicImage :field="item.cover_image" class="book-image"/>
 							<div class="book-info">
 								<PrismicText :field="item.title" wrapper="h5" class="book-title"/>
 								<PrismicText :field="item.author" wrapper="p" class="book-author" />
