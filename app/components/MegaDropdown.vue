@@ -280,10 +280,13 @@ onMounted(async () => {
       }
     }
     
+    // Init leerer Zaehlobjekte fuer Formate & Kategorien
     const formatCountsFromCSV: Record<string, number> = {}
     const categoryCountsFromCSV: Record<string, number> = {}
     
+    // Iteration ueber alle Buchdatensaetze
     books.forEach(book => {
+      // Verarbeitung des Formatfeldes
       if (book.format) {
         const bookFormats = book.format.split(',').map((f: string) => f.trim())
         bookFormats.forEach((format: string) => {
@@ -291,6 +294,7 @@ onMounted(async () => {
         })
       }
       
+      // Verarbeitung des Kategorienfeldes
       if (book.categories) {
         const bookCategories = book.categories.split(',').map((c: string) => c.trim())
         bookCategories.forEach((category: string) => {

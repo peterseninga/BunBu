@@ -552,7 +552,7 @@ const loadBooksData = async () => {
         categories: "Vielfalt & Diversität, Toleranz & Respekt",
         cover_url: "https://via.placeholder.com/100x150?text=Buch+1",
         description: "Ein liebevoll gestaltetes Bilderbuch...",
-        slug: "kennt-ihr-blauland",
+        slug: "kenntihrblauland",
       },
       {
         title: "Freunde fürs Leben",
@@ -561,7 +561,7 @@ const loadBooksData = async () => {
         categories: "Freundschaft & Familie, Emotionale Intelligenz & Empathie",
         cover_url: "https://via.placeholder.com/100x150?text=Buch+2",
         description: "Eine Geschichte über wahre Freundschaft",
-        slug: "freunde-fuers-leben",
+        slug: "freundefuersleben",
       },
     ];
   } finally {
