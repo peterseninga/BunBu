@@ -576,9 +576,9 @@ const loadBooksData = async () => {
     }
 
     books.value = bookData;
-    console.log(`📚 ${bookData.length} Bücher geladen`);
+    console.log(`${bookData.length} Bücher geladen`);
   } catch (error) {
-    console.error("❌ Fehler beim Laden der CSV:", error);
+    console.error("Fehler beim Laden der CSV:", error);
     
     // Fallback-Daten bei Fehler
     books.value = [
@@ -613,7 +613,7 @@ const loadBooksData = async () => {
 watch(
   [searchQuery, filterType],
   ([q, type], [oldQ, oldType]) => {
-    console.log("🔍 URL Parameter:", { q, type });
+    console.log("URL Parameter:", { q, type });
 
     // Bei Aenderung zuruecksetzen der Filter
     if (q !== oldQ || type !== oldType) {
@@ -634,7 +634,7 @@ watch(
       const matchedFormat = allFormats.find(f => normalize(f) === normalizedQ)
       if (matchedFormat) {
         selectedFormats.value = [matchedFormat]
-        console.log('✅ Format automatisch aktiviert:', matchedFormat)
+        console.log('Format automatisch aktiviert:', matchedFormat)
       }
 
       const matchedTheme = defaultCategories
@@ -642,7 +642,7 @@ watch(
         .find(item => normalize(item) === normalizedQ)
       if (matchedTheme) {
         selectedThemes.value = [matchedTheme]
-        console.log('✅ Thema automatisch aktiviert:', matchedTheme)
+        console.log('Thema automatisch aktiviert:', matchedTheme)
       }
     }
   },
@@ -838,7 +838,7 @@ const allCategoriesWithCounts = computed<Category[]>(() => {
  * Sortiert Ergebnisse nach Relevanz bei Suchanfragen
  */
 const filteredBooks = computed(() => {
-  console.log('🔍 Filtering:', {
+  console.log('Filtering:', {
     searchQuery: searchQuery.value,
     filterType: filterType.value,
     selectedFormats: selectedFormats.value,
