@@ -10,7 +10,7 @@ const props = defineProps(
 	]),
 );
 
-// Helper function to create book URL from title
+// Helper Funktion damit BookURL von Titel generiert werden kann
 const createSlugFromTitle = (title: string) => {
   return title.toLowerCase()
     .replace(/[^a-z0-9]/g, '-')
@@ -22,7 +22,8 @@ const createSlugFromTitle = (title: string) => {
 <template>
 	<Bounded :data-slice-type="slice.slice_type" :data-slice-variation="slice.variation">
 		<div class="lay">
-			<!-- Bücher Sektion -->
+
+			<!-- Buecher Sektion -->
 			<div class="layout">
 				<PrismicText :field="slice.primary.heading" wrapper="h2" class="h heading heading--lg" />
 				<div class="done">
@@ -50,7 +51,7 @@ const createSlugFromTitle = (title: string) => {
 				</NuxtLink>
 			</div>
 			
-			<!-- Hörbücher Sektion -->
+			<!-- Hoerbuecher Sektion -->
 			<div class="layout">
 				<PrismicText :field="slice.primary.heading_2" wrapper="h2" class="h heading heading--lg" />
 				<div class="done layout-left">

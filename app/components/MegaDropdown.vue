@@ -73,7 +73,7 @@
       </div>
     </nav>
 
-    <!-- Mobile Format Overlay -->
+    <!-- Mobiles Format Overlay -->
     <teleport to="body" v-if="isMobile && showFormatDropdown">
       <div class="mobile-overlay">
         <div class="mobile-overlay-backdrop" @click="closeOverlay"></div>
@@ -104,7 +104,7 @@
       </div>
     </teleport>
 
-    <!-- Mobile Themen Overlay -->
+    <!-- Mobiles Themen Overlay -->
     <teleport to="body" v-if="isMobile && showThemenDropdown">
       <div class="mobile-overlay">
         <div class="mobile-overlay-backdrop" @click="closeOverlay"></div>
@@ -149,6 +149,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 
+
+// Definition Datenstrukturen
 interface Format {
   name: string
   count: number
@@ -169,23 +171,28 @@ interface Props {
   customFormats?: Format[]
 }
 
+// Props mit Standardwerten definieren
 const props = withDefaults(defineProps<Props>(), {
   customCategories: undefined,
   customFormats: undefined
 })
 
+// Events für Parent-Komponente emittieren
 const emit = defineEmits<{
   formatSelected: [format: Format]
   themeSelected: [selection: ThemeSelection]
 }>()
 
+// Zustandsverwaltung
 const showThemenDropdown = ref<boolean>(false)
 const showFormatDropdown = ref<boolean>(false)
 const isMobile = ref<boolean>(false)
 
+// Timeouts
 let formatTimeout: ReturnType<typeof setTimeout> | null = null
 let themenTimeout: ReturnType<typeof setTimeout> | null = null
 
+// Kategorien fuer Themen Menu
 const defaultCategories: Category[] = [
   {
     title: 'Entwicklung & Bildung',
@@ -244,14 +251,20 @@ const defaultCategories: Category[] = [
   }
 ]
 
+// Zaehlen fuer Kategorien und Formate
 const categoryCounts = ref<Record<string, number>>({})
 const formatCounts = ref<Record<string, number>>({})
 
+/**
+ * Prueft auf Bildschrimbreite und aktualisiert den isMobile-Status
+ * @returns {void}
+ */
 const checkMobile = (): void => {
   isMobile.value = window.innerWidth <= 1024
 }
 
 onMounted(async () => {
+  // CSV-Daten laden
   try {
     const response = await fetch('/books.csv')
     const csvText = await response.text()
@@ -262,12 +275,14 @@ onMounted(async () => {
     const headers = lines[0].split(';').map(h => h.trim().replace(/^\uFEFF/, ''))
     const books: any[] = []
     
+    // Jede Zeile verarbeiten
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim()
       if (!line) continue
       
       const values = line.split(';').map(v => v.trim())
       
+      // Objekt erstellen
       const book = {
         title: values[headers.indexOf('title')] || '',
         author: values[headers.indexOf('author')] || '',
@@ -303,6 +318,7 @@ onMounted(async () => {
       }
     })
     
+    // Reactive Refs mit gezaehlten Werten aktualisieren
     formatCounts.value = formatCountsFromCSV
     categoryCounts.value = categoryCountsFromCSV
     
@@ -310,11 +326,13 @@ onMounted(async () => {
     console.error('Fehler beim Laden der CSV:', error)
   }
 
+  // Mobile-Check initialisieren und Event-Listener adden
   checkMobile()
   window.addEventListener('resize', checkMobile)
   document.addEventListener('click', handleClickOutside)
 })
 
+// Cleanup bei Komponenten-Unmount
 onUnmounted(() => {
   window.removeEventListener('resize', checkMobile)
   document.removeEventListener('click', handleClickOutside)
@@ -324,11 +342,13 @@ onUnmounted(() => {
   if (themenTimeout) clearTimeout(themenTimeout)
 })
 
+// Gibt entweder Custom- oder Default-Category
 const categories = computed<Category[]>(() => {
   if (props.customCategories) return props.customCategories
   return defaultCategories
 })
 
+// Gibt entweder Custom- oder Default-Format
 const formats = computed<Format[]>(() => {
   if (props.customFormats) return props.customFormats
 
@@ -340,6 +360,11 @@ const formats = computed<Format[]>(() => {
   ]
 })
 
+/**
+ * Behandelt Klick auf Format Menu auf mobilen Geraeten
+ * Oeffnet Overlay und verhindert Body-Scrolling
+ * @returns {void}
+ */
 const handleFormatClick = (): void => {
   if (isMobile.value) {
     showFormatDropdown.value = true
@@ -348,17 +373,30 @@ const handleFormatClick = (): void => {
   }
 }
 
+/**
+ * Behandelt Klick auf Themen Menu auf mobilen Geraeten
+ * Oeffnet Overlay und verhindert Body-Scrolling
+ * @returns {void}
+ */
 const handleThemenClick = (): void => {
   if (isMobile.value) {
     showThemenDropdown.value = true
+    // Body-Scroll verhindern wenn Overlay offen
     document.documentElement.classList.add('overlay-open')
     document.body.classList.add('overlay-open')
   }
 }
 
+/**
+ * Behandelt Verlassen des Mauszeigers aus Dropdown-Bereich
+ * Schliesst Dropdown nach kurzer Verzoegerung fuer bessere UX
+ * @param {('format' | 'themen')} type Typ des Dropdowns 
+ * @returns {void}
+ */
 const handleMouseLeave = (type: 'format' | 'themen'): void => {
   if (isMobile.value) return
 
+  // Dropdown mit kurzer Verzoegerung schliessen
   if (type === 'format') {
     formatTimeout = setTimeout(() => {
       showFormatDropdown.value = false
@@ -370,12 +408,22 @@ const handleMouseLeave = (type: 'format' | 'themen'): void => {
   }
 }
 
+/**
+ * Behandelt die Formatauswahl
+ * Emittiert Event, schliesst Dropdown und navigiert zu Suchseite
+ * @param {Format} format 
+ * @returns {void}
+ */
 const selectFormat = (format: Format): void => {
+  // Event an Parent emittieren
   emit('formatSelected', format)
+
+  // Dropdown schliessen und Body-Scroll wieder aktivieren
   showFormatDropdown.value = false
   document.documentElement.classList.remove('overlay-open')
   document.body.classList.remove('overlay-open')
 
+  // Zur Suchseite mit Format-Filter navigieren
   navigateTo({
     path: '/suche',
     query: { 
@@ -385,12 +433,23 @@ const selectFormat = (format: Format): void => {
   })
 }
 
+/**
+ * Behandelt Themenauswahl
+ * Emittiert Event, schliesst Dropdown und navigiert zu Suchseite
+ * @param {string} item Das ausgewaehlte Thema
+ * @param {string} category Die Kategorie des Themas
+ * @returns {void}
+ */
 const selectTheme = (item: string, category: string): void => {
+  // Event an Parent emittieren
   emit('themeSelected', { item, category })
+
+  // Dropdown schliessen und Body-Scroll aktivieren
   showThemenDropdown.value = false
   document.documentElement.classList.remove('overlay-open')
   document.body.classList.remove('overlay-open')
 
+  // Navigation zu Kategorie-Filter
   navigateTo({
     path: '/suche',
     query: { 
@@ -400,6 +459,10 @@ const selectTheme = (item: string, category: string): void => {
   })
 }
 
+/**
+ * Schliesst alle geoeffneten Overlays und reaktiviert Body-Scrolling
+ * @returns {void}
+ */
 const closeOverlay = (): void => {
   showFormatDropdown.value = false
   showThemenDropdown.value = false
@@ -407,11 +470,18 @@ const closeOverlay = (): void => {
   document.body.classList.remove('overlay-open')
 }
 
+/**
+ * Behandelt Klicks ausserhalb Navigation
+ * Schliesst alle Dropdowns wenn ausserhalb geklickt wurde (nur Desktop)
+ * @param {Event} event Das Klick-Event
+ * @returns {void}
+ */
 const handleClickOutside = (event: Event): void => {
   if (isMobile.value) return
 
   const target = event.target as Element | null
   const navbar = target?.closest('.mega-navbar')
+  // Wenn Klick nicht innerhalb Navbar, dann schliessen von Dropdown
   if (!navbar) {
     showFormatDropdown.value = false
     showThemenDropdown.value = false

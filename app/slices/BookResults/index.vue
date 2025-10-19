@@ -1,6 +1,7 @@
 <template>
   <div class="page-container">
-    <!-- Header with results count -->
+
+    <!-- Header mit Ergebniszaehler -->
     <div class="results-header">
       <div class="header-content">
         <h2 class="results-title">
@@ -9,13 +10,14 @@
           </span>
         </h2>
 
-        <!-- Mobile Filter Button -->
+        <!-- Mobile Filter Button (nur fuer kleine Bildschrime sichtbar) -->
         <button
           class="mobile-filter-btn"
           @click="toggleMobileFilter"
           :class="{ active: hasActiveFilters }"
         >
           Filtern
+          <!-- Hamburger Icon -->
           <svg
             width="20"
             height="20"
@@ -28,14 +30,16 @@
             <line x1="4" y1="12" x2="20" y2="12"></line>
             <line x1="4" y1="18" x2="20" y2="18"></line>
           </svg>
+          <!-- Anzahl aktiver Filter -->
           <span v-if="hasActiveFilters" class="filter-badge">{{
             activeFilterCount
           }}</span>
         </button>
       </div>
 
-      <!-- Active Filters Display -->
+      <!-- Aktive Filter auf Display (nur Desktop) -->
       <div v-if="hasActiveFilters" class="active-filters desktop-only" ref="activeFiltersRef">
+        <!-- Schroll-Pfeil links -->
         <button 
           v-if="canScrollLeft"
           @click="scrollFiltersLeft"
@@ -46,7 +50,8 @@
             <polyline points="15,18 9,12 15,6"></polyline>
           </svg>
         </button>
-        
+
+        <!-- Scrollbar Container fuer Filter-Tags -->
         <div class="active-filters-scroll" ref="filtersScrollRef" @scroll="checkScrollPosition">
           <div class="active-filters-list">
             <span
@@ -60,6 +65,7 @@
                 class="remove-filter-btn"
                 aria-label="Filter entfernen"
               >
+                <!-- X-Icon zum Schliessen -->
                 <svg
                   width="14"
                   height="14"
@@ -76,6 +82,7 @@
           </div>
         </div>
         
+        <!-- Scroll-Pfeil rechts -->
         <button 
           v-if="canScrollRight"
           @click="scrollFiltersRight"
@@ -89,7 +96,7 @@
       </div>
     </div>
 
-    <!-- Mobile Filter Overlay -->
+    <!-- Mobile Filter Overlay (Fullscreen) -->
     <teleport to="body" v-if="isMobileFilterOpen">
       <div class="mobile-overlay">
         <div class="mobile-overlay-backdrop" @click="closeMobileFilter"></div>
@@ -111,6 +118,7 @@
             </button>
           </div>
 
+          <!-- Scrollbarer Bereich mit Filtern -->
           <div class="mobile-overlay-body">
             <!-- Format Filter -->
             <div class="filter-section">
@@ -170,6 +178,7 @@
                     </svg>
                   </button>
 
+                  <!-- Ausgeklappter Inhalt mit Themen -->
                   <div
                     v-if="expandedCategories.includes(category.title)"
                     class="category-content"
@@ -197,7 +206,7 @@
               </div>
             </div>
 
-            <!-- Clear Filters Button -->
+            <!-- Zuruecksetzen Filter Button -->
             <div v-if="hasActiveFilters" class="filter-section">
               <button @click="clearAllFilters" class="clear-filters-btn">
                 Alle Filter zurücksetzen
@@ -205,7 +214,7 @@
             </div>
           </div>
 
-          <!-- Mobile Apply Button -->
+          <!-- Sticky Button zum Anwenden der Filter (Mobile) -->
           <div class="mobile-apply-section">
             <button @click="applyMobileFilters" class="apply-filters-btn">
               Ergebnisse anzeigen ({{ filteredBooks.length }})
@@ -244,7 +253,7 @@
           </div>
         </div>
 
-        <!-- Theme Filter -->
+        <!-- Themen Filter -->
         <div class="filter-section">
           <h3 class="filter-title">Thema</h3>
           <div class="theme-categories">
@@ -305,7 +314,7 @@
           </div>
         </div>
 
-        <!-- Clear Filters Button -->
+        <!-- Filter Zuruecksetzen Button -->
         <div v-if="hasActiveFilters" class="filter-section">
           <button @click="clearAllFilters" class="clear-filters-btn">
             Alle Filter zurücksetzen
@@ -313,14 +322,14 @@
         </div>
       </div>
 
-      <!-- Right Content Area -->
+      <!-- Rechter Inhaltsbereich -->
       <div class="content-area">
-        <!-- Loading State -->
+        <!-- Ladezustand -->
         <div v-if="isLoading" class="loading-message">
           Bücher werden geladen...
         </div>
 
-        <!-- No Results -->
+        <!-- Keine Ergebnisse -->
         <div
           v-else-if="filteredBooks.length === 0 && books.length > 0"
           class="no-results"
@@ -331,7 +340,7 @@
           </button>
         </div>
 
-        <!-- Books List -->
+        <!-- Buecher Liste -->
         <div v-else class="books-list">
           <div
             v-for="book in displayedBooks"
@@ -351,7 +360,7 @@
             </div>
           </div>
 
-          <!-- Load More Button -->
+          <!-- Mehr Laden Button -->
           <div v-if="hasMoreBooks" class="load-more-container">
             <button @click="loadMoreBooks" class="load-more-btn">
               mehr laden
@@ -407,12 +416,25 @@ interface Category {
   items: CategoryItem[];
 }
 
+/**
+ * Normalisiert String fuer die Suche
+ * Entfernt Akzente und konvertiert zu Kleinbuchstaben
+ * @param {string} str Der zu normalisierende String
+ * @returns {string} Normalisierter String
+ */
 const normalize = (str: string): string =>
   str
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
 
+    /**
+     * Berechnet Relevanz eines Buches fuer eine Suchanfrage
+     * Hoehere Scores fuer genauere Matches (Titel > Autor > Kategorien > Beschreibung)
+     * @param {BookData} book Das zu bewertende Buch
+     * @param {string} query Die Suchanfrage
+     * @returns {number} Relevanz-Score 
+     */
 const getRelevanceScore = (book: BookData, query: string): number => {
   const q = normalize(query);
 
@@ -427,25 +449,30 @@ const getRelevanceScore = (book: BookData, query: string): number => {
 };
 
 const route = useRoute();
+// UI-Zustand
 const expandedCategories = ref<string[]>([]);
 const books = ref<BookData[]>([]);
 const isLoading = ref(false);
 const isMobileFilterOpen = ref(false);
 const displayLimit = ref(20);
+// Scroll-Funktionalitaet fuer Filter-Tags
 const activeFiltersRef = ref(null);
 const visibleFiltersCount = ref(10);
 const filtersScrollRef = ref<HTMLElement | null>(null);
 const canScrollLeft = ref(false);
 const canScrollRight = ref(false);
 
+// Ausgewaehlte Filter
 const selectedThemes = ref<string[]>([]);
 const selectedFormats = ref<string[]>([]);
 
 const searchQuery = computed(() => route.query.q?.toString() || "");
 const filterType = computed(() => route.query.filter?.toString() || "");
 
+// Alle verfuegbaren Formate
 const allFormats = ["Buch", "Hörbuch", "E-Book", "Braille"];
 
+// Alle Kategorien
 const defaultCategories = [
   {
     title: "Gesellschaft & Werte",
@@ -497,6 +524,12 @@ const defaultCategories = [
   },
 ];
 
+/**
+ * Laedt Buecher-Daten aus CSV
+ * Parst CSV und erstellt BookData-Objekte
+ * Bei Fehler werden Fallback-Daten verwendet
+ * @returns {Promise<void>}
+ */
 const loadBooksData = async () => {
   try {
     isLoading.value = true;
@@ -513,17 +546,20 @@ const loadBooksData = async () => {
       throw new Error("CSV file is empty");
     }
 
+    // Header-Zeile parsen
     const headers = lines[0]
       .split(";")
       .map((h) => h.trim().replace(/^\uFEFF/, ""));
     const bookData: BookData[] = [];
 
+    // Jede Zeile verarbeiten
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
 
       const values = line.split(";").map((v) => v.trim());
 
+      // Buch Objekt erstellen
       const book: BookData = {
         title: values[headers.indexOf("title")] || "",
         author: values[headers.indexOf("author")] || "",
@@ -543,7 +579,8 @@ const loadBooksData = async () => {
     console.log(`📚 ${bookData.length} Bücher geladen`);
   } catch (error) {
     console.error("❌ Fehler beim Laden der CSV:", error);
-
+    
+    // Fallback-Daten bei Fehler
     books.value = [
       {
         title: "Kennt ihr Blauland?",
@@ -569,11 +606,16 @@ const loadBooksData = async () => {
   }
 };
 
+/**
+ * Beobachtet Veraenderungen der URL-Params
+ * Aktiviert automatisch passende Filter basierend auf URL
+ */
 watch(
   [searchQuery, filterType],
   ([q, type], [oldQ, oldType]) => {
     console.log("🔍 URL Parameter:", { q, type });
 
+    // Bei Aenderung zuruecksetzen der Filter
     if (q !== oldQ || type !== oldType) {
       selectedThemes.value = [];
       selectedFormats.value = [];
@@ -607,14 +649,20 @@ watch(
   { immediate: true }
 );
 
+// Prueft ob mind. 1 Filter aktiv
 const hasActiveFilters = computed(() => {
   return selectedFormats.value.length > 0 || selectedThemes.value.length > 0;
 });
 
+// Zaehlt die Anzahl der aktiven Filter
 const activeFilterCount = computed(() => {
   return selectedFormats.value.length + selectedThemes.value.length;
 });
 
+/**
+ * Generiert dynamischen Titel fuer Ergebnisanzeige
+ * Passt sich Filter-Typ und Suchanfrage an
+ */
 const resultsTitle = computed(() => {
   if (filterType.value === 'format' || filterType.value === 'category') {
     if (hasActiveFilters.value && searchQuery.value) {
@@ -641,6 +689,10 @@ const resultsTitle = computed(() => {
   return `${books.value.length} Bücher`;
 });
 
+/**
+ * Berechnet fuer jedes Format die Anzahl verfuegbarer Buecher
+ * unter Beruecksichtigung der aktuellen Filter und Suchanfrage
+ */
 const allFormatsWithCounts = computed<Format[]>(() => {
   return allFormats.map((format) => {
     let filteredBooks = books.value;
@@ -700,6 +752,10 @@ const allFormatsWithCounts = computed<Format[]>(() => {
   });
 });
 
+/**
+ * Berechnet fuer jede Kategorie und jedes Item die Anzahl verfuegbarer Buecher
+ * unter Beruecksichtigung aller aktiven Filter
+ */
 const allCategoriesWithCounts = computed<Category[]>(() => {
   const categoryMap = new Map<string, Map<string, number>>();
 
@@ -777,6 +833,10 @@ const allCategoriesWithCounts = computed<Category[]>(() => {
   }));
 });
 
+/**
+ * Filtert die Buecher basierend auf Suchanfrage und ausgewaehltern Filtern 
+ * Sortiert Ergebnisse nach Relevanz bei Suchanfragen
+ */
 const filteredBooks = computed(() => {
   console.log('🔍 Filtering:', {
     searchQuery: searchQuery.value,
@@ -828,6 +888,7 @@ const filteredBooks = computed(() => {
     });
   }
 
+  // Bei Suchanfrage nach Relevanz sortieren
   if (searchQuery.value) {
     filtered = filtered.sort(
       (a, b) =>
@@ -838,22 +899,32 @@ const filteredBooks = computed(() => {
   return filtered;
 });
 
+// Gibt nur die aktuell anzuzeigeneden Buecher zurueck (begrenzt durch displayLimit fuer Pagination)
 const displayedBooks = computed(() => {
   return filteredBooks.value.slice(0, displayLimit.value);
 });
 
+// Prueft ob weitere Buecher zum Laden verfuegbar sind
 const hasMoreBooks = computed(() => {
   return filteredBooks.value.length > displayLimit.value;
 });
 
+// Berechnet die Anzahl der noch nicht angezeigten Buecher
 const remainingBooksCount = computed(() => {
   return filteredBooks.value.length - displayLimit.value;
 });
 
+// Kombiniert alle aktiven Filter in einem Array
+// Wird fuer die Anzeige der Filter-Tags verwendet
 const allActiveFilters = computed(() => {
   return [...selectedFormats.value, ...selectedThemes.value];
 });
 
+/**
+ * Prueft ob die Scroll-Position der Filter-Tags
+ * Aktualisiert die Sichtbarkeit der Scroll-Pfeile
+ * @returns {void}
+ */
 const checkScrollPosition = () => {
   if (!filtersScrollRef.value) return;
   
@@ -862,16 +933,29 @@ const checkScrollPosition = () => {
   canScrollRight.value = element.scrollLeft < (element.scrollWidth - element.clientWidth - 1);
 };
 
+/**
+ * Scrollt die Filter-Tags nach links
+ * @returns {void}
+ */
 const scrollFiltersLeft = () => {
   if (!filtersScrollRef.value) return;
   filtersScrollRef.value.scrollBy({ left: -200, behavior: 'smooth' });
 };
 
+/**
+ * Scrollt die Filter-Tags nach rechts
+ * @returns {void}
+ */
 const scrollFiltersRight = () => {
   if (!filtersScrollRef.value) return;
   filtersScrollRef.value.scrollBy({ left: 200, behavior: 'smooth' });
 };
 
+/**
+ * Klappt eine Kategorie auf oder zu
+ * @param {string} categoryTitle Der Titel der zu toggelnden Kategorie
+ * @returns {void}
+ */
 const toggleCategory = (categoryTitle: string) => {
   const index = expandedCategories.value.indexOf(categoryTitle);
   if (index > -1) {
@@ -881,8 +965,13 @@ const toggleCategory = (categoryTitle: string) => {
   }
 };
 
+/**
+ * Berechnet die Gesamtzahl der Buecher fuer eine Kategorie
+ * Beruecksichtigt alle aktiven Filter
+ * @returns {Function} Funktion die die Anzahl fuer eine Kategorie berechnet
+ */
 const getCategoryTotal = computed(() => {
-  // Diese Funktion wird bei jeder Änderung von selectedFormats/selectedThemes neu erstellt
+  // Diese Funktion wird bei jeder Aenderung von selectedFormats/selectedThemes neu erstellt
   return (category: Category): number => {
     let filtered = books.value;
 
@@ -918,7 +1007,7 @@ const getCategoryTotal = computed(() => {
       });
     }
 
-    // ALLE Themen-Filter anwenden
+    // Themen-Filter anwenden
     if (selectedThemes.value.length > 0) {
       filtered = filtered.filter((book) => {
         if (!book.categories) return false;
@@ -929,7 +1018,7 @@ const getCategoryTotal = computed(() => {
       });
     }
 
-    // Zähle unique Bücher mit Themen aus dieser Kategorie
+    // Zaehle unique Buecher mit Themen aus dieser Kategorie
     const uniqueBooks = new Set<string>();
     category.items.forEach((item) => {
       filtered.forEach((book) => {
@@ -944,29 +1033,50 @@ const getCategoryTotal = computed(() => {
   };
 });
 
+/**
+ * Setze alle Filter zurueck und resettet die Pagination
+ * @returns {void}
+ */
 const clearAllFilters = () => {
   selectedFormats.value = [];
   selectedThemes.value = [];
   displayLimit.value = 20;
 };
 
+/**
+ * Entfernt einen einzelnen Filter
+ * Sucht in Formaten und Themen und entfernt ersten Treffer
+ * @param {string} filterName Der Name des zu entfernenden Filters
+ * @returns {void}
+ */
 const removeFilter = (filterName: string) => {
+  // Erst in Formaten suchen
   const formatIndex = selectedFormats.value.indexOf(filterName);
   if (formatIndex > -1) {
     selectedFormats.value.splice(formatIndex, 1);
     return;
   }
-  
+
+  // Dann in Themen suchen
   const themeIndex = selectedThemes.value.indexOf(filterName);
   if (themeIndex > -1) {
     selectedThemes.value.splice(themeIndex, 1);
   }
 };
 
+/**
+ * Laedt weitere 20 Buecher durch Erhoehung des Display-Limits
+ * @returns {void}
+ */
 const loadMoreBooks = () => {
   displayLimit.value += 20;
 };
 
+/**
+ * Oeffnet oder schliesst das mobile Filter-Overlay
+ * Verhindert Body-Scrolling wenn geoeffnet
+ * @returns {void}
+ */
 const toggleMobileFilter = () => {
   isMobileFilterOpen.value = !isMobileFilterOpen.value;
   if (isMobileFilterOpen.value) {
@@ -978,16 +1088,31 @@ const toggleMobileFilter = () => {
   }
 };
 
+/**
+ * Schliesst das mobile Filter-Overlay 
+ * Reaktiviert Body-Scrolling
+ * @returns {void}
+ */
 const closeMobileFilter = () => {
   isMobileFilterOpen.value = false;
   document.documentElement.classList.remove("overlay-open");
   document.body.classList.remove("overlay-open");
 };
 
+/**
+ * Wendet die ausgewaehlten Filter an und schliesst das mobile Overlay
+ * @returns {void}
+ */
 const applyMobileFilters = () => {
   closeMobileFilter();
 };
 
+/**
+ * Navifiert zur Detailseite eines Buches
+ * Generiert Slug aus Buchtitel wenn noetig
+ * @param {BookData} book Das Buch zu dem navigiert werden soll
+ * @returns {void} 
+ */
 const navigateToBook = (book: BookData) => {
   console.log("Navigate to book:", book.title);
   const slug = book.title
@@ -1002,17 +1127,25 @@ const navigateToBook = (book: BookData) => {
     navigateTo(`/book/${slug}`)
 };
 
+/**
+ * Beobachtet Parameter Aenderungen
+ * Loggt Aenderungen fuer Debugging
+ */
 watch(
   [searchQuery, filterType],
   ([query, filter]) => {
-    console.log("🔍 URL Parameter geändert:", { query, filter });
+    console.log("URL Parameter geändert:", { query, filter });
   },
   { immediate: true }
 );
 
+/**
+ * Wird beim Mounten der Komponente ausgefuehrt 
+ * Laedt Buecher-Daten und initialisiert Scroll-Position
+ */
 onMounted(() => {
-  console.log("✅ BookResults Slice geladen");
-  console.log("🔍 Initial URL params:", route.query);
+  console.log("BookResults Slice geladen");
+  console.log("Initial URL params:", route.query);
   loadBooksData();
   
   setTimeout(() => {
@@ -1020,11 +1153,19 @@ onMounted(() => {
   }, 100);
 });
 
+/**
+ * Wird beim Unmounten der Komponente ausgefuehrt
+ * Stellt sicher, dass Body-Scrolling reaktiviert wird
+ */
 onUnmounted(() => {
   document.documentElement.classList.remove("overlay-open");
   document.body.classList.remove("overlay-open");
 });
 
+/**
+ * Beobachtet Aenderungn der aktiven Filter
+ * Aktualisiert die Scroll-Position nach kurzer Verzoegerung
+ */
 watch(allActiveFilters, () => {
   setTimeout(() => {
     checkScrollPosition();

@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-// Expliziter Import mit Ihrem korrekten Pfad
+// Expliziter Import
 import BookResults from '~/slices/BookResults/index.vue'
 
 console.log('Suchergebnisse-Seite geladen')

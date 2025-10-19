@@ -1,4 +1,5 @@
 <template>
+  <!-- Fade-Transition -->
   <transition name="fade">
     <button
       v-if="isVisible"
@@ -7,6 +8,7 @@
       :style="{ bottom: bottomOffset }"
       aria-label="Nach oben scrollen"
     >
+      <!-- SVG Pfeil nach oben -->
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="18,15 12,9 6,15"></polyline>
       </svg>
@@ -21,6 +23,11 @@ const isVisible = ref(false)
 const scrollThreshold = 300
 const bottomOffset = ref('2rem')
 
+/**
+ * Aktualisiert die Position und Sichtbarkeit des Scoll-to-top Buttons
+ * Berechnet die Position relativ zum footer, um Ueberlappungen zu vermeiden
+ * @returns {void}
+ */
 const updateButtonPosition = () => {
   const scrollY = window.scrollY
   const windowHeight = window.innerHeight
@@ -41,11 +48,16 @@ const updateButtonPosition = () => {
       const overlap = windowHeight - footerRect.top + 20
       bottomOffset.value = `${overlap}px`
     } else {
+      // Standardposition wiederherstellen
       bottomOffset.value = '2rem'
     }
   }
 }
 
+/**
+ * Scrollt die Seite sanft zum Anfang
+ * @returns {void}
+ */
 const scrollToTop = () => {
   window.scrollTo({
     top: 0,
@@ -53,11 +65,19 @@ const scrollToTop = () => {
   })
 }
 
+/**
+ * Komponente wird gemounted
+ * Event-Listener fuer Scroll-Events hinzufuegen und initiale Position berechnen
+ */
 onMounted(() => {
   window.addEventListener('scroll', updateButtonPosition)
   updateButtonPosition() // Initial check
 })
 
+/**
+ * Komponente wird unmounted
+ * Event-Listener fuer Scroll-Events entfernen
+ */
 onUnmounted(() => {
   window.removeEventListener('scroll', updateButtonPosition)
 })
