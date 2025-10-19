@@ -2,8 +2,8 @@
 import type { Content } from "@prismicio/client";
 import { asText } from "@prismicio/client";
 
-// The array passed to `getSliceComponentProps` is purely optional.
-// Consider it as a visual hint for you when templating your slice.
+// Slice-Props aus Prismic mit Type-Safety für die Detail-Ansicht
+// Enthaelt alle Informationen zu einem einzelnen Buch
 const props = defineProps(
   getSliceComponentProps<Content.DetailSlice>([
     "slice",
@@ -13,6 +13,11 @@ const props = defineProps(
   ])
 );
 
+/**
+ * Extrahiert Buchtitel aus Prismic-Daten
+ * Konvertiert RichText zu PlainText fuer den Meta-Title
+ * @returns {string} Der Buchtitel oder "Details als Fallback"
+ */
 const bookTitle = computed(() => {
   if (props.slice?.primary?.title) {
     return asText(props.slice.primary.title);
@@ -31,6 +36,7 @@ useHead({
     :data-slice-type="slice.slice_type"
     :data-slice-variation="slice.variation"
   >
+    <!-- Hauptlayout: 3 Spalten auf Desktop, 1-Spalte auf Mobile -->
     <div class="layout">
       <div class="cover">
         <img :src="slice.primary.cover_url" alt="Cover" class="img" />
@@ -49,7 +55,7 @@ useHead({
           </div>
         </div>
 
-        <div class="prose max-w-none mt-12">
+        <div class="prose max-w-none">
           <br />
           <strong>Beschreibung:</strong>
           <br />
@@ -107,7 +113,7 @@ useHead({
   }
 
   .img {
-    width: 120%;
+    width: 80%;
     max-width: 120%;
   }
 }
@@ -166,6 +172,10 @@ useHead({
     width: 30%;
     max-width: 30%;
   }
+  
+  .layout .content .prose {
+    margin-top: 1rem !important;
+  }
 
 }
 
@@ -204,6 +214,6 @@ useHead({
 }
 
 .prose {
-  @apply text-black leading-relaxed text-base mt-8;
+  @apply text-black leading-relaxed text-base mt-4 md:mt-8 lg:mt-8 xl:mt-8;
 }
 </style>

@@ -12,8 +12,8 @@ const { data: book } = await useAsyncData(`book-${uid}`, () =>
   prismic.client.getByUID('book', uid)
 );
 
-console.log('📚 Buch geladen:', book)
-console.log('📚 Slices:', book.value?.data?.slices);
+console.log('Buch geladen:', book)
+console.log('Slices:', book.value?.data?.slices);
 </script>
 
 <template>

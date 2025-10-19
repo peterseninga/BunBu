@@ -1,6 +1,7 @@
 <template>
   <div class="page-container">
-    <!-- Header with results count -->
+
+    <!-- Header mit Ergebniszaehler -->
     <div class="results-header">
       <div class="header-content">
         <h2 class="results-title">
@@ -9,13 +10,14 @@
           </span>
         </h2>
 
-        <!-- Mobile Filter Button -->
+        <!-- Mobile Filter Button (nur fuer kleine Bildschrime sichtbar) -->
         <button
           class="mobile-filter-btn"
           @click="toggleMobileFilter"
           :class="{ active: hasActiveFilters }"
         >
           Filtern
+          <!-- Hamburger Icon -->
           <svg
             width="20"
             height="20"
@@ -28,14 +30,16 @@
             <line x1="4" y1="12" x2="20" y2="12"></line>
             <line x1="4" y1="18" x2="20" y2="18"></line>
           </svg>
+          <!-- Anzahl aktiver Filter -->
           <span v-if="hasActiveFilters" class="filter-badge">{{
             activeFilterCount
           }}</span>
         </button>
       </div>
 
-      <!-- Active Filters Display -->
+      <!-- Aktive Filter auf Display (nur Desktop) -->
       <div v-if="hasActiveFilters" class="active-filters desktop-only" ref="activeFiltersRef">
+        <!-- Schroll-Pfeil links -->
         <button 
           v-if="canScrollLeft"
           @click="scrollFiltersLeft"
@@ -46,7 +50,8 @@
             <polyline points="15,18 9,12 15,6"></polyline>
           </svg>
         </button>
-        
+
+        <!-- Scrollbar Container fuer Filter-Tags -->
         <div class="active-filters-scroll" ref="filtersScrollRef" @scroll="checkScrollPosition">
           <div class="active-filters-list">
             <span
@@ -60,6 +65,7 @@
                 class="remove-filter-btn"
                 aria-label="Filter entfernen"
               >
+                <!-- X-Icon zum Schliessen -->
                 <svg
                   width="14"
                   height="14"
@@ -76,6 +82,7 @@
           </div>
         </div>
         
+        <!-- Scroll-Pfeil rechts -->
         <button 
           v-if="canScrollRight"
           @click="scrollFiltersRight"
@@ -89,7 +96,7 @@
       </div>
     </div>
 
-    <!-- Mobile Filter Overlay -->
+    <!-- Mobile Filter Overlay (Fullscreen) -->
     <teleport to="body" v-if="isMobileFilterOpen">
       <div class="mobile-overlay">
         <div class="mobile-overlay-backdrop" @click="closeMobileFilter"></div>
@@ -111,6 +118,7 @@
             </button>
           </div>
 
+          <!-- Scrollbarer Bereich mit Filtern -->
           <div class="mobile-overlay-body">
             <!-- Format Filter -->
             <div class="filter-section">
@@ -170,6 +178,7 @@
                     </svg>
                   </button>
 
+                  <!-- Ausgeklappter Inhalt mit Themen -->
                   <div
                     v-if="expandedCategories.includes(category.title)"
                     class="category-content"
@@ -197,7 +206,7 @@
               </div>
             </div>
 
-            <!-- Clear Filters Button -->
+            <!-- Zuruecksetzen Filter Button -->
             <div v-if="hasActiveFilters" class="filter-section">
               <button @click="clearAllFilters" class="clear-filters-btn">
                 Alle Filter zurücksetzen
@@ -205,7 +214,7 @@
             </div>
           </div>
 
-          <!-- Mobile Apply Button -->
+          <!-- Sticky Button zum Anwenden der Filter (Mobile) -->
           <div class="mobile-apply-section">
             <button @click="applyMobileFilters" class="apply-filters-btn">
               Ergebnisse anzeigen ({{ filteredBooks.length }})
@@ -244,7 +253,7 @@
           </div>
         </div>
 
-        <!-- Theme Filter -->
+        <!-- Themen Filter -->
         <div class="filter-section">
           <h3 class="filter-title">Thema</h3>
           <div class="theme-categories">
@@ -305,7 +314,7 @@
           </div>
         </div>
 
-        <!-- Clear Filters Button -->
+        <!-- Filter Zuruecksetzen Button -->
         <div v-if="hasActiveFilters" class="filter-section">
           <button @click="clearAllFilters" class="clear-filters-btn">
             Alle Filter zurücksetzen
@@ -313,14 +322,14 @@
         </div>
       </div>
 
-      <!-- Right Content Area -->
+      <!-- Rechter Inhaltsbereich -->
       <div class="content-area">
-        <!-- Loading State -->
+        <!-- Ladezustand -->
         <div v-if="isLoading" class="loading-message">
           Bücher werden geladen...
         </div>
 
-        <!-- No Results -->
+        <!-- Keine Ergebnisse -->
         <div
           v-else-if="filteredBooks.length === 0 && books.length > 0"
           class="no-results"
@@ -331,7 +340,7 @@
           </button>
         </div>
 
-        <!-- Books List -->
+        <!-- Buecher Liste -->
         <div v-else class="books-list">
           <div
             v-for="book in displayedBooks"
@@ -343,7 +352,6 @@
               :src="book.cover_url || '/placeholder-book.jpg'"
               :alt="`Cover von ${book.title}`"
               class="book-cover"
-              @error="(e) => (e.target.src = '/placeholder-book.jpg')"
               loading="lazy"
             />
             <div class="book-details">
@@ -352,7 +360,7 @@
             </div>
           </div>
 
-          <!-- Load More Button -->
+          <!-- Mehr Laden Button -->
           <div v-if="hasMoreBooks" class="load-more-container">
             <button @click="loadMoreBooks" class="load-more-btn">
               mehr laden
@@ -370,7 +378,6 @@ import { useRoute, navigateTo } from "#imports";
 import type { getSliceComponentProps } from "@prismicio/vue";
 import type { Content } from "@prismicio/client";
 
-// Prismic Props
 defineProps(
   getSliceComponentProps<Content.BookResultsSlice>([
     "slice",
@@ -409,12 +416,25 @@ interface Category {
   items: CategoryItem[];
 }
 
+/**
+ * Normalisiert String fuer die Suche
+ * Entfernt Akzente und konvertiert zu Kleinbuchstaben
+ * @param {string} str Der zu normalisierende String
+ * @returns {string} Normalisierter String
+ */
 const normalize = (str: string): string =>
   str
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
 
+    /**
+     * Berechnet Relevanz eines Buches fuer eine Suchanfrage
+     * Hoehere Scores fuer genauere Matches (Titel > Autor > Kategorien > Beschreibung)
+     * @param {BookData} book Das zu bewertende Buch
+     * @param {string} query Die Suchanfrage
+     * @returns {number} Relevanz-Score 
+     */
 const getRelevanceScore = (book: BookData, query: string): number => {
   const q = normalize(query);
 
@@ -428,31 +448,31 @@ const getRelevanceScore = (book: BookData, query: string): number => {
   return score;
 };
 
-// Reactive state
 const route = useRoute();
+// UI-Zustand
 const expandedCategories = ref<string[]>([]);
 const books = ref<BookData[]>([]);
 const isLoading = ref(false);
 const isMobileFilterOpen = ref(false);
 const displayLimit = ref(20);
+// Scroll-Funktionalitaet fuer Filter-Tags
 const activeFiltersRef = ref(null);
 const visibleFiltersCount = ref(10);
 const filtersScrollRef = ref<HTMLElement | null>(null);
 const canScrollLeft = ref(false);
 const canScrollRight = ref(false);
 
-// Lokale Filter-States
+// Ausgewaehlte Filter
 const selectedThemes = ref<string[]>([]);
 const selectedFormats = ref<string[]>([]);
 
-// URL-Parameter
 const searchQuery = computed(() => route.query.q?.toString() || "");
 const filterType = computed(() => route.query.filter?.toString() || "");
 
-// All possible formats
+// Alle verfuegbaren Formate
 const allFormats = ["Buch", "Hörbuch", "E-Book", "Braille"];
 
-// Default category structure
+// Alle Kategorien
 const defaultCategories = [
   {
     title: "Gesellschaft & Werte",
@@ -504,7 +524,12 @@ const defaultCategories = [
   },
 ];
 
-// Load CSV data
+/**
+ * Laedt Buecher-Daten aus CSV
+ * Parst CSV und erstellt BookData-Objekte
+ * Bei Fehler werden Fallback-Daten verwendet
+ * @returns {Promise<void>}
+ */
 const loadBooksData = async () => {
   try {
     isLoading.value = true;
@@ -521,17 +546,20 @@ const loadBooksData = async () => {
       throw new Error("CSV file is empty");
     }
 
+    // Header-Zeile parsen
     const headers = lines[0]
       .split(";")
       .map((h) => h.trim().replace(/^\uFEFF/, ""));
     const bookData: BookData[] = [];
 
+    // Jede Zeile verarbeiten
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
 
       const values = line.split(";").map((v) => v.trim());
 
+      // Buch Objekt erstellen
       const book: BookData = {
         title: values[headers.indexOf("title")] || "",
         author: values[headers.indexOf("author")] || "",
@@ -548,11 +576,11 @@ const loadBooksData = async () => {
     }
 
     books.value = bookData;
-    console.log(`📚 ${bookData.length} Bücher geladen`);
+    console.log(`${bookData.length} Bücher geladen`);
   } catch (error) {
-    console.error("❌ Fehler beim Laden der CSV:", error);
-
-    // Fallback Demo-Daten
+    console.error("Fehler beim Laden der CSV:", error);
+    
+    // Fallback-Daten bei Fehler
     books.value = [
       {
         title: "Kennt ihr Blauland?",
@@ -561,7 +589,7 @@ const loadBooksData = async () => {
         categories: "Vielfalt & Diversität, Toleranz & Respekt",
         cover_url: "https://via.placeholder.com/100x150?text=Buch+1",
         description: "Ein liebevoll gestaltetes Bilderbuch...",
-        slug: "kennt-ihr-blauland",
+        slug: "kenntihrblauland",
       },
       {
         title: "Freunde fürs Leben",
@@ -570,7 +598,7 @@ const loadBooksData = async () => {
         categories: "Freundschaft & Familie, Emotionale Intelligenz & Empathie",
         cover_url: "https://via.placeholder.com/100x150?text=Buch+2",
         description: "Eine Geschichte über wahre Freundschaft",
-        slug: "freunde-fuers-leben",
+        slug: "freundefuersleben",
       },
     ];
   } finally {
@@ -578,59 +606,64 @@ const loadBooksData = async () => {
   }
 };
 
-// Filter aus URL übernehmen und Suche implementieren
+/**
+ * Beobachtet Veraenderungen der URL-Params
+ * Aktiviert automatisch passende Filter basierend auf URL
+ */
 watch(
   [searchQuery, filterType],
-  ([q, type]) => {
-    console.log("🔍 URL Parameter:", { q, type });
+  ([q, type], [oldQ, oldType]) => {
+    console.log("URL Parameter:", { q, type });
 
-    // Filter zurücksetzen
-    selectedThemes.value = [];
-    selectedFormats.value = [];
-    displayLimit.value = 20; // Reset beim URL-Wechsel
+    // Bei Aenderung zuruecksetzen der Filter
+    if (q !== oldQ || type !== oldType) {
+      selectedThemes.value = [];
+      selectedFormats.value = [];
+      displayLimit.value = 20;
+    }
 
     if (!q || !type) return;
 
     const normalizedQ = normalize(q);
 
-    // Spezifische Filter aus URL anwenden
     if (type === "category") {
       selectedThemes.value = [q];
     } else if (type === "format") {
       selectedFormats.value = [q];
     } else if (type === 'general') {
-    // Automatisch aktivieren, wenn exakter Treffer bei Format
-    const matchedFormat = allFormats.find(f => normalize(f) === normalizedQ)
-    if (matchedFormat) {
-      selectedFormats.value = [matchedFormat]
-      console.log('✅ Format automatisch aktiviert:', matchedFormat)
-    }
+      const matchedFormat = allFormats.find(f => normalize(f) === normalizedQ)
+      if (matchedFormat) {
+        selectedFormats.value = [matchedFormat]
+        console.log('Format automatisch aktiviert:', matchedFormat)
+      }
 
-    // Automatisch aktivieren, wenn exakter Treffer bei Kategorie
-    const matchedTheme = defaultCategories
-      .flatMap(c => c.items)
-      .find(item => normalize(item) === normalizedQ)
-    if (matchedTheme) {
-      selectedThemes.value = [matchedTheme]
-      console.log('✅ Thema automatisch aktiviert:', matchedTheme)
+      const matchedTheme = defaultCategories
+        .flatMap(c => c.items)
+        .find(item => normalize(item) === normalizedQ)
+      if (matchedTheme) {
+        selectedThemes.value = [matchedTheme]
+        console.log('Thema automatisch aktiviert:', matchedTheme)
+      }
     }
-  }
-
   },
   { immediate: true }
 );
 
-// Computed properties
+// Prueft ob mind. 1 Filter aktiv
 const hasActiveFilters = computed(() => {
   return selectedFormats.value.length > 0 || selectedThemes.value.length > 0;
 });
 
+// Zaehlt die Anzahl der aktiven Filter
 const activeFilterCount = computed(() => {
   return selectedFormats.value.length + selectedThemes.value.length;
 });
 
+/**
+ * Generiert dynamischen Titel fuer Ergebnisanzeige
+ * Passt sich Filter-Typ und Suchanfrage an
+ */
 const resultsTitle = computed(() => {
-  // Spezifische Filtersuche (format oder category)
   if (filterType.value === 'format' || filterType.value === 'category') {
     if (hasActiveFilters.value && searchQuery.value) {
       return `Filtersuche: ${filteredBooks.value.length} Treffer`;
@@ -641,7 +674,6 @@ const resultsTitle = computed(() => {
     }
   }
   
-  // Normale Textsuche (general oder author)
   if (searchQuery.value && (filterType.value === 'general' || filterType.value === 'author')) {
     if (hasActiveFilters.value) {
       return `Suchergebnis: "${searchQuery.value}" - ${filteredBooks.value.length} Treffer`;
@@ -650,20 +682,21 @@ const resultsTitle = computed(() => {
     }
   }
   
-  // Nur manuelle Filter ohne URL-Parameter
   if (hasActiveFilters.value) {
     return `Filtersuche: ${filteredBooks.value.length} Treffer`;
   }
   
-  // Default: Alle Bücher
   return `${books.value.length} Bücher`;
 });
 
+/**
+ * Berechnet fuer jedes Format die Anzahl verfuegbarer Buecher
+ * unter Beruecksichtigung der aktuellen Filter und Suchanfrage
+ */
 const allFormatsWithCounts = computed<Format[]>(() => {
   return allFormats.map((format) => {
     let filteredBooks = books.value;
 
-    // Textsuche anwenden
     if (searchQuery.value && filterType.value === "general") {
       const query = searchQuery.value.toLowerCase();
       filteredBooks = filteredBooks.filter(
@@ -671,11 +704,19 @@ const allFormatsWithCounts = computed<Format[]>(() => {
           book.title.toLowerCase().includes(query) ||
           book.author.toLowerCase().includes(query) ||
           book.categories.toLowerCase().includes(query) ||
-          book.format.toLowerCase().includes(query)
+          book.format.toLowerCase().includes(query) ||
+          (book.description && book.description.toLowerCase().includes(query))
       );
     }
 
-    // Theme filter anwenden
+    if (searchQuery.value && filterType.value === "author") {
+      const query = searchQuery.value.toLowerCase();
+      filteredBooks = filteredBooks.filter((book) => {
+        const authors = book.author.split(",").map((a) => a.trim().toLowerCase());
+        return authors.includes(query);
+      });
+    }
+
     if (selectedThemes.value.length > 0) {
       filteredBooks = filteredBooks.filter((book) => {
         if (!book.categories) return false;
@@ -686,7 +727,6 @@ const allFormatsWithCounts = computed<Format[]>(() => {
       });
     }
 
-    // Andere Format-Filter anwenden
     const otherSelectedFormats = selectedFormats.value.filter(
       (f) => f !== format
     );
@@ -700,7 +740,6 @@ const allFormatsWithCounts = computed<Format[]>(() => {
       });
     }
 
-    // Zählen für dieses spezifische Format
     const count = filteredBooks.filter(
       (book) =>
         book.format && book.format.toLowerCase().includes(format.toLowerCase())
@@ -713,10 +752,13 @@ const allFormatsWithCounts = computed<Format[]>(() => {
   });
 });
 
+/**
+ * Berechnet fuer jede Kategorie und jedes Item die Anzahl verfuegbarer Buecher
+ * unter Beruecksichtigung aller aktiven Filter
+ */
 const allCategoriesWithCounts = computed<Category[]>(() => {
   const categoryMap = new Map<string, Map<string, number>>();
 
-  // Alle Kategorien mit 0 initialisieren
   defaultCategories.forEach((category) => {
     categoryMap.set(category.title, new Map());
     category.items.forEach((item) => {
@@ -724,49 +766,55 @@ const allCategoriesWithCounts = computed<Category[]>(() => {
     });
   });
 
-  // Für jedes Theme-Item berechnen
   defaultCategories.forEach((category) => {
     category.items.forEach((item) => {
-      let filteredBooks = books.value;
+      let filtered = books.value;
 
-      // Textsuche anwenden
       if (searchQuery.value && filterType.value === "general") {
         const query = searchQuery.value.toLowerCase();
-        filteredBooks = filteredBooks.filter(
+        filtered = filtered.filter(
           (book) =>
             book.title.toLowerCase().includes(query) ||
             book.author.toLowerCase().includes(query) ||
-            book.categories.toLowerCase().includes(query)
+            book.categories.toLowerCase().includes(query) ||
+          (book.description && book.description.toLowerCase().includes(query))
         );
       }
 
-      // Format filter anwenden
+      if (searchQuery.value && filterType.value === "author") {
+        const query = searchQuery.value.toLowerCase();
+        filtered = filtered.filter((book) => {
+          const authors = book.author.split(",").map((a) => a.trim().toLowerCase());
+          return authors.includes(query);
+        });
+      }
+
       if (selectedFormats.value.length > 0) {
-        filteredBooks = filteredBooks.filter((book) =>
-          selectedFormats.value.some((format) =>
-            book.format.toLowerCase().includes(format.toLowerCase())
-          )
-        );
+        console.log('Vor Format-Filter:', filtered.length);
+        
+        filtered = filtered.filter((book) => {
+          if (!book.format) return false;
+          const bookFormats = book.format.toLowerCase();
+          return selectedFormats.value.every((format) =>
+            bookFormats.includes(format.toLowerCase())
+          );
+        });
       }
 
-      // Andere Theme-Filter anwenden
-      if (selectedThemes.value.length > 0) {
-        const otherSelectedThemes = selectedThemes.value.filter(
-          (theme) => theme !== item
-        );
-        if (otherSelectedThemes.length > 0) {
-          filteredBooks = filteredBooks.filter((book) => {
-            if (!book.categories) return false;
-            const bookCategories = book.categories.toLowerCase();
-            return otherSelectedThemes.every((theme) =>
-              bookCategories.includes(theme.toLowerCase())
-            );
-          });
-        }
+      const otherSelectedThemes = selectedThemes.value.filter(
+        (theme) => theme !== item
+      );
+      if (otherSelectedThemes.length > 0) {
+        filtered = filtered.filter((book) => {
+          if (!book.categories) return false;
+          const bookCategories = book.categories.toLowerCase();
+          return otherSelectedThemes.every((theme) =>
+            bookCategories.includes(theme.toLowerCase())
+          );
+        });
       }
 
-      // Zählen für dieses spezifische Theme
-      const count = filteredBooks.filter(
+      const count = filtered.filter(
         (book) =>
           book.categories &&
           book.categories.toLowerCase().includes(item.toLowerCase())
@@ -785,10 +833,19 @@ const allCategoriesWithCounts = computed<Category[]>(() => {
   }));
 });
 
+/**
+ * Filtert die Buecher basierend auf Suchanfrage und ausgewaehltern Filtern 
+ * Sortiert Ergebnisse nach Relevanz bei Suchanfragen
+ */
 const filteredBooks = computed(() => {
+  console.log('Filtering:', {
+    searchQuery: searchQuery.value,
+    filterType: filterType.value,
+    selectedFormats: selectedFormats.value,
+    selectedThemes: selectedThemes.value
+  });
   let filtered = books.value;
 
-  // Textsuche (wenn kein spezifischer Filter)
   if (searchQuery.value && filterType.value === "general") {
     const query = searchQuery.value.toLowerCase();
     filtered = filtered.filter(
@@ -796,7 +853,8 @@ const filteredBooks = computed(() => {
         book.title.toLowerCase().includes(query) ||
         book.author.toLowerCase().includes(query) ||
         book.categories.toLowerCase().includes(query) ||
-        book.format.toLowerCase().includes(query)
+        book.format.toLowerCase().includes(query) ||
+        (book.description && book.description.toLowerCase().includes(query))
     );
   }
 
@@ -808,17 +866,17 @@ const filteredBooks = computed(() => {
     });
   }
 
-  if (searchQuery.value && filterType.value === "format") {
-    const query = searchQuery.value.toLowerCase();
+  if (selectedFormats.value.length > 0) {
     filtered = filtered.filter((book) => {
-      const formate = book.format.split(",").map((f) => f.trim().toLowerCase());
-      return formate.includes(query);
-    }
-    );
+      if (!book.format) return false;
+      const bookFormats = book.format.toLowerCase();
+      const matches = selectedFormats.value.every((format) =>
+        bookFormats.includes(format.toLowerCase())
+      );
+      return matches;
+    });
   }
 
-
-  // Theme filter - ALL selected themes must match
   if (selectedThemes.value.length > 0) {
     filtered = filtered.filter((book) => {
       if (!book.categories) return false;
@@ -830,6 +888,7 @@ const filteredBooks = computed(() => {
     });
   }
 
+  // Bei Suchanfrage nach Relevanz sortieren
   if (searchQuery.value) {
     filtered = filtered.sort(
       (a, b) =>
@@ -840,24 +899,32 @@ const filteredBooks = computed(() => {
   return filtered;
 });
 
+// Gibt nur die aktuell anzuzeigeneden Buecher zurueck (begrenzt durch displayLimit fuer Pagination)
 const displayedBooks = computed(() => {
   return filteredBooks.value.slice(0, displayLimit.value);
 });
 
+// Prueft ob weitere Buecher zum Laden verfuegbar sind
 const hasMoreBooks = computed(() => {
   return filteredBooks.value.length > displayLimit.value;
 });
 
+// Berechnet die Anzahl der noch nicht angezeigten Buecher
 const remainingBooksCount = computed(() => {
   return filteredBooks.value.length - displayLimit.value;
 });
 
-// Active filters for display
+// Kombiniert alle aktiven Filter in einem Array
+// Wird fuer die Anzeige der Filter-Tags verwendet
 const allActiveFilters = computed(() => {
   return [...selectedFormats.value, ...selectedThemes.value];
 });
 
-// Methods
+/**
+ * Prueft ob die Scroll-Position der Filter-Tags
+ * Aktualisiert die Sichtbarkeit der Scroll-Pfeile
+ * @returns {void}
+ */
 const checkScrollPosition = () => {
   if (!filtersScrollRef.value) return;
   
@@ -866,16 +933,29 @@ const checkScrollPosition = () => {
   canScrollRight.value = element.scrollLeft < (element.scrollWidth - element.clientWidth - 1);
 };
 
+/**
+ * Scrollt die Filter-Tags nach links
+ * @returns {void}
+ */
 const scrollFiltersLeft = () => {
   if (!filtersScrollRef.value) return;
   filtersScrollRef.value.scrollBy({ left: -200, behavior: 'smooth' });
 };
 
+/**
+ * Scrollt die Filter-Tags nach rechts
+ * @returns {void}
+ */
 const scrollFiltersRight = () => {
   if (!filtersScrollRef.value) return;
   filtersScrollRef.value.scrollBy({ left: 200, behavior: 'smooth' });
 };
 
+/**
+ * Klappt eine Kategorie auf oder zu
+ * @param {string} categoryTitle Der Titel der zu toggelnden Kategorie
+ * @returns {void}
+ */
 const toggleCategory = (categoryTitle: string) => {
   const index = expandedCategories.value.indexOf(categoryTitle);
   if (index > -1) {
@@ -885,35 +965,118 @@ const toggleCategory = (categoryTitle: string) => {
   }
 };
 
-const getCategoryTotal = (category: Category): number => {
-  return category.items.reduce((total, item) => total + item.count, 0);
-};
+/**
+ * Berechnet die Gesamtzahl der Buecher fuer eine Kategorie
+ * Beruecksichtigt alle aktiven Filter
+ * @returns {Function} Funktion die die Anzahl fuer eine Kategorie berechnet
+ */
+const getCategoryTotal = computed(() => {
+  // Diese Funktion wird bei jeder Aenderung von selectedFormats/selectedThemes neu erstellt
+  return (category: Category): number => {
+    let filtered = books.value;
 
+    // Suchfilter
+    if (searchQuery.value && filterType.value === "general") {
+      const query = searchQuery.value.toLowerCase();
+      filtered = filtered.filter(
+        (book) =>
+          book.title.toLowerCase().includes(query) ||
+          book.author.toLowerCase().includes(query) ||
+          book.categories.toLowerCase().includes(query) ||
+          book.format.toLowerCase().includes(query) ||
+          (book.description && book.description.toLowerCase().includes(query))
+      );
+    }
+
+    if (searchQuery.value && filterType.value === "author") {
+      const query = searchQuery.value.toLowerCase();
+      filtered = filtered.filter((book) => {
+        const authors = book.author.split(",").map((a) => a.trim().toLowerCase());
+        return authors.includes(query);
+      });
+    }
+
+    // Format-Filter
+    if (selectedFormats.value.length > 0) {
+      filtered = filtered.filter((book) => {
+        if (!book.format) return false;
+        const bookFormats = book.format.toLowerCase();
+        return selectedFormats.value.every((format) =>
+          bookFormats.includes(format.toLowerCase())
+        );
+      });
+    }
+
+    // Themen-Filter anwenden
+    if (selectedThemes.value.length > 0) {
+      filtered = filtered.filter((book) => {
+        if (!book.categories) return false;
+        const bookCategories = book.categories.toLowerCase();
+        return selectedThemes.value.every((theme) =>
+          bookCategories.includes(theme.toLowerCase())
+        );
+      });
+    }
+
+    // Zaehle unique Buecher mit Themen aus dieser Kategorie
+    const uniqueBooks = new Set<string>();
+    category.items.forEach((item) => {
+      filtered.forEach((book) => {
+        if (book.categories && 
+            book.categories.toLowerCase().includes(item.name.toLowerCase())) {
+          uniqueBooks.add(book.slug || book.title);
+        }
+      });
+    });
+
+    return uniqueBooks.size;
+  };
+});
+
+/**
+ * Setze alle Filter zurueck und resettet die Pagination
+ * @returns {void}
+ */
 const clearAllFilters = () => {
   selectedFormats.value = [];
   selectedThemes.value = [];
-  displayLimit.value = 20; // Reset beim Filter-Reset
+  displayLimit.value = 20;
 };
 
+/**
+ * Entfernt einen einzelnen Filter
+ * Sucht in Formaten und Themen und entfernt ersten Treffer
+ * @param {string} filterName Der Name des zu entfernenden Filters
+ * @returns {void}
+ */
 const removeFilter = (filterName: string) => {
-  // Check if it's a format
+  // Erst in Formaten suchen
   const formatIndex = selectedFormats.value.indexOf(filterName);
   if (formatIndex > -1) {
     selectedFormats.value.splice(formatIndex, 1);
     return;
   }
-  
-  // Check if it's a theme
+
+  // Dann in Themen suchen
   const themeIndex = selectedThemes.value.indexOf(filterName);
   if (themeIndex > -1) {
     selectedThemes.value.splice(themeIndex, 1);
   }
 };
 
+/**
+ * Laedt weitere 20 Buecher durch Erhoehung des Display-Limits
+ * @returns {void}
+ */
 const loadMoreBooks = () => {
   displayLimit.value += 20;
 };
 
+/**
+ * Oeffnet oder schliesst das mobile Filter-Overlay
+ * Verhindert Body-Scrolling wenn geoeffnet
+ * @returns {void}
+ */
 const toggleMobileFilter = () => {
   isMobileFilterOpen.value = !isMobileFilterOpen.value;
   if (isMobileFilterOpen.value) {
@@ -925,57 +1088,84 @@ const toggleMobileFilter = () => {
   }
 };
 
+/**
+ * Schliesst das mobile Filter-Overlay 
+ * Reaktiviert Body-Scrolling
+ * @returns {void}
+ */
 const closeMobileFilter = () => {
   isMobileFilterOpen.value = false;
   document.documentElement.classList.remove("overlay-open");
   document.body.classList.remove("overlay-open");
 };
 
+/**
+ * Wendet die ausgewaehlten Filter an und schliesst das mobile Overlay
+ * @returns {void}
+ */
 const applyMobileFilters = () => {
   closeMobileFilter();
 };
 
+/**
+ * Navifiert zur Detailseite eines Buches
+ * Generiert Slug aus Buchtitel wenn noetig
+ * @param {BookData} book Das Buch zu dem navigiert werden soll
+ * @returns {void} 
+ */
 const navigateToBook = (book: BookData) => {
   console.log("Navigate to book:", book.title);
-  if (book.slug) {
-    navigateTo(`/book/${book.slug}`);
-  } else {
-    // Fallback - generiere slug aus Titel
-    const slug = book.title
+  const slug = book.title
       .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-");
-    navigateTo(`/book/${slug}`);
-  }
+      .replace(/ä/g, "ae")
+      .replace(/ö/g, "oe")
+      .replace(/ü/g, "ue")
+      .replace(/ß/g, "ss")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]/g, "")
+    navigateTo(`/book/${slug}`)
 };
 
-// Debug logging
+/**
+ * Beobachtet Parameter Aenderungen
+ * Loggt Aenderungen fuer Debugging
+ */
 watch(
   [searchQuery, filterType],
   ([query, filter]) => {
-    console.log("🔍 URL Parameter geändert:", { query, filter });
+    console.log("URL Parameter geändert:", { query, filter });
   },
   { immediate: true }
 );
 
-// Load data on mount
+/**
+ * Wird beim Mounten der Komponente ausgefuehrt 
+ * Laedt Buecher-Daten und initialisiert Scroll-Position
+ */
 onMounted(() => {
-  console.log("✅ BookResults Slice geladen");
-  console.log("🔍 Initial URL params:", route.query);
+  console.log("BookResults Slice geladen");
+  console.log("Initial URL params:", route.query);
   loadBooksData();
   
-  // Check scroll position after a short delay to ensure content is rendered
   setTimeout(() => {
     checkScrollPosition();
   }, 100);
 });
 
+/**
+ * Wird beim Unmounten der Komponente ausgefuehrt
+ * Stellt sicher, dass Body-Scrolling reaktiviert wird
+ */
 onUnmounted(() => {
   document.documentElement.classList.remove("overlay-open");
   document.body.classList.remove("overlay-open");
 });
 
-// Watch for filter changes to update scroll indicators
+/**
+ * Beobachtet Aenderungn der aktiven Filter
+ * Aktualisiert die Scroll-Position nach kurzer Verzoegerung
+ */
 watch(allActiveFilters, () => {
   setTimeout(() => {
     checkScrollPosition();
@@ -1004,7 +1194,6 @@ watch(allActiveFilters, () => {
   margin-bottom: 1rem;
 }
 
-/* Active Filters Display */
 .active-filters {
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
@@ -1022,12 +1211,12 @@ watch(allActiveFilters, () => {
   flex: 1;
   overflow-x: auto;
   overflow-y: hidden;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .active-filters-scroll::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  display: none;
 }
 
 .active-filters-list {
@@ -1163,7 +1352,6 @@ watch(allActiveFilters, () => {
   color: #000;
 }
 
-/* Mobile Overlay Styles (wie MegaDropdown) */
 .mobile-overlay {
   position: fixed;
   top: 0;
@@ -1279,7 +1467,6 @@ watch(allActiveFilters, () => {
   align-items: start;
 }
 
-/* Filter Sidebar */
 .filter-sidebar {
   background: #ffffff;
   border-radius: 8px;
@@ -1345,7 +1532,6 @@ watch(allActiveFilters, () => {
   font-size: 0.85rem;
 }
 
-/* Theme Categories */
 .theme-categories {
   display: flex;
   flex-direction: column;
@@ -1422,7 +1608,6 @@ watch(allActiveFilters, () => {
   border-color: #ccc;
 }
 
-/* Content Area */
 .content-area {
   min-height: 400px;
 }
@@ -1457,7 +1642,6 @@ watch(allActiveFilters, () => {
   background: #e0e0e0;
 }
 
-/* Books List */
 .books-list {
   display: flex;
   flex-direction: column;
@@ -1506,34 +1690,43 @@ watch(allActiveFilters, () => {
   font-size: 0.9rem;
 }
 
-/* Load More Button */
 .load-more-container {
   display: flex;
   justify-content: center;
-  margin-top: 2rem;
-  padding-top: 1rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .load-more-btn {
-  padding: 0;
+  padding: 0.2rem 0;
   background: transparent;
   color: #000;
   border: none;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 400;
-  transition: all 0.2s ease;
   text-decoration: none;
   position: relative;
+  display: inline-block;
 }
 
-.load-more-btn:hover {
-  text-decoration: underline;
+.load-more-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background: #000;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
 }
 
-/* Responsive */
+.load-more-btn:hover::after {
+  width: 100%;
+}
+
 @media (min-width: 1024px) {
-  /* Desktop: Overlay verstecken */
   .mobile-filter-btn {
     display: none !important;
   }
@@ -1583,7 +1776,6 @@ watch(allActiveFilters, () => {
   }
 }
 
-/* Tablet: Button unter der Überschrift */
 @media (min-width: 481px) and (max-width: 1023px) {
   .header-content {
     flex-direction: column;
@@ -1596,7 +1788,6 @@ watch(allActiveFilters, () => {
   }
 }
 
-/* Handy: Button rechts neben der Überschrift */
 @media (max-width: 480px) {
   .header-content {
     flex-wrap: wrap;
@@ -1605,7 +1796,6 @@ watch(allActiveFilters, () => {
 </style>
 
 <style>
-/* Global overlay styles */
 html.overlay-open,
 body.overlay-open {
   overflow: hidden !important;

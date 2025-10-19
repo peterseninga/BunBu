@@ -1,11 +1,14 @@
 <template>
+  <!-- Fade-Transition -->
   <transition name="fade">
     <button
       v-if="isVisible"
       @click="scrollToTop"
       class="scroll-to-top"
+      :style="{ bottom: bottomOffset }"
       aria-label="Nach oben scrollen"
     >
+      <!-- SVG Pfeil nach oben -->
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="18,15 12,9 6,15"></polyline>
       </svg>
@@ -17,12 +20,44 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 const isVisible = ref(false)
-const scrollThreshold = 300 // Pixel ab wann der Button erscheint
+const scrollThreshold = 300
+const bottomOffset = ref('2rem')
 
-const handleScroll = () => {
-  isVisible.value = window.scrollY > scrollThreshold
+/**
+ * Aktualisiert die Position und Sichtbarkeit des Scoll-to-top Buttons
+ * Berechnet die Position relativ zum footer, um Ueberlappungen zu vermeiden
+ * @returns {void}
+ */
+const updateButtonPosition = () => {
+  const scrollY = window.scrollY
+  const windowHeight = window.innerHeight
+  const documentHeight = document.documentElement.scrollHeight
+  
+  // Button erscheinen lassen
+  isVisible.value = scrollY > scrollThreshold
+  
+  // Footer-Position berechnen
+  const footer = document.querySelector('footer')
+  if (footer) {
+    const footerRect = footer.getBoundingClientRect()
+    const footerTop = footerRect.top + scrollY
+    const distanceToFooter = documentHeight - scrollY - windowHeight
+    
+    // Wenn näher als 100px am Footer, Button nach oben verschieben
+    if (footerRect.top < windowHeight) {
+      const overlap = windowHeight - footerRect.top + 20
+      bottomOffset.value = `${overlap}px`
+    } else {
+      // Standardposition wiederherstellen
+      bottomOffset.value = '2rem'
+    }
+  }
 }
 
+/**
+ * Scrollt die Seite sanft zum Anfang
+ * @returns {void}
+ */
 const scrollToTop = () => {
   window.scrollTo({
     top: 0,
@@ -30,18 +65,27 @@ const scrollToTop = () => {
   })
 }
 
+/**
+ * Komponente wird gemounted
+ * Event-Listener fuer Scroll-Events hinzufuegen und initiale Position berechnen
+ */
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
+  window.addEventListener('scroll', updateButtonPosition)
+  updateButtonPosition() // Initial check
 })
 
+/**
+ * Komponente wird unmounted
+ * Event-Listener fuer Scroll-Events entfernen
+ */
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
+  window.removeEventListener('scroll', updateButtonPosition)
 })
 </script>
 
 <style scoped>
 .scroll-to-top {
-  position: fixed;
+  position: fixed; /* ← WICHTIG: fixed statt absolute */
   bottom: 2rem;
   right: 2rem;
   width: 50px;
@@ -68,14 +112,12 @@ onUnmounted(() => {
 
 .scroll-to-top svg {
   transition: stroke 0.3s ease;
-  stroke: #004b5a;
 }
 
 .scroll-to-top:hover svg {
   stroke: #fff;
 }
 
-/* Fade Transition */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;
@@ -87,9 +129,27 @@ onUnmounted(() => {
 }
 
 /* Responsive */
-@media (min-width: 1254px) {
+@media (min-width: 1454px) {
+  .scroll-to-top {
+    right: calc(50% - 700px + 2rem);
+  }
+}
+
+@media (min-width: 1252px) and (max-width: 1453px) {
   .scroll-to-top {
     right: calc(50% - 650px + 2rem);
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1251px) {
+  .scroll-to-top {
+    right: calc(50% - 530px + 2rem);
+  }
+}
+
+@media (min-width: 977px) and (max-width: 1024px) {
+  .scroll-to-top {
+    right: calc(50% - 500px + 2rem);
   }
 }
 

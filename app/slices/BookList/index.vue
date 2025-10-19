@@ -10,7 +10,7 @@ const props = defineProps(
 	]),
 );
 
-// Helper function to create book URL from title
+// Helper Funktion damit BookURL von Titel generiert werden kann
 const createSlugFromTitle = (title: string) => {
   return title.toLowerCase()
     .replace(/[^a-z0-9]/g, '-')
@@ -22,7 +22,8 @@ const createSlugFromTitle = (title: string) => {
 <template>
 	<Bounded :data-slice-type="slice.slice_type" :data-slice-variation="slice.variation">
 		<div class="lay">
-			<!-- Bücher Sektion -->
+
+			<!-- Buecher Sektion -->
 			<div class="layout">
 				<PrismicText :field="slice.primary.heading" wrapper="h2" class="h heading heading--lg" />
 				<div class="done">
@@ -35,8 +36,8 @@ const createSlugFromTitle = (title: string) => {
 						>
 							<PrismicImage :field="item.cover_image" class="book-image"/> 
 							<div class="book-info">
-								<PrismicText :field="item.titel" wrapper="h5" class="hed body--sm" />
-								<PrismicText :field="item.author" wrapper="p" />
+								<PrismicText :field="item.titel" wrapper="h5" class="book-title" />
+								<PrismicText :field="item.author" wrapper="p" class="book-author" />
 							</div>
 						</NuxtLink>
 					</template>
@@ -44,12 +45,13 @@ const createSlugFromTitle = (title: string) => {
 						Keine Bücher gefunden. Fügen Sie Bücher in Prismic hinzu.
 					</div>
 				</div>
-				<NuxtLink to="/suche?q=Buch&filter=format" class="hover:underline">
+				<NuxtLink to="/suche?q=Buch&filter=format" class="load-more-link">
 					<PrismicText :field="slice.primary.mehr_laden"/>
+					<span class="count-badge"> (1829)</span>
 				</NuxtLink>
 			</div>
 			
-			<!-- Hörbücher Sektion -->
+			<!-- Hoerbuecher Sektion -->
 			<div class="layout">
 				<PrismicText :field="slice.primary.heading_2" wrapper="h2" class="h heading heading--lg" />
 				<div class="done layout-left">
@@ -62,8 +64,8 @@ const createSlugFromTitle = (title: string) => {
 						>
 							<PrismicImage :field="item.cover_image" class="book-image"/>
 							<div class="book-info">
-								<PrismicText :field="item.title" wrapper="h5" class="hed body--sm"/>
-								<PrismicText :field="item.author" wrapper="p" />
+								<PrismicText :field="item.title" wrapper="h5" class="book-title"/>
+								<PrismicText :field="item.author" wrapper="p" class="book-author" />
 							</div>
 						</NuxtLink>
 					</template>
@@ -71,8 +73,9 @@ const createSlugFromTitle = (title: string) => {
 						Keine Hörbücher gefunden. Fügen Sie Hörbücher in Prismic hinzu.
 					</div>
 				</div>
-				<NuxtLink to="/suche?q=Hörbuch&filter=format" class="hover:underline">
+				<NuxtLink to="/suche?q=Hörbuch&filter=format" class="load-more-link">
 					<PrismicText :field="slice.primary.mehr_laden" />
+					<span class="count-badge"> (991)</span>
 				</NuxtLink>
 			</div>
 		</div>
@@ -92,8 +95,12 @@ const createSlugFromTitle = (title: string) => {
 	@apply w-full text-center place-items-center items-center font-medium pt-7 pb-8;
 }
 
-.hed {
-	@apply text-start items-start !font-medium mt-auto;
+.book-title {
+	font-size: 1rem;
+  font-weight: 600;
+  color: #000;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.3;
 }
 
 .lay {
@@ -116,6 +123,17 @@ const createSlugFromTitle = (title: string) => {
 	@apply md:bg-[rgba(0,75,90,0.1)] md:rounded-lg md:p-4;
 }
 
+.book-author {
+	color: #666;
+	margin: 0;
+	font-size: 0.9rem;
+}
+
+.count-badge {
+	color: #6b7280;
+	font-size: 0.95em;
+}
+
 .book-image {
 	width: 85px;
 	height: 115px;
@@ -125,6 +143,32 @@ const createSlugFromTitle = (title: string) => {
 }
 
 .book-info {
-	@apply flex flex-col justify-center gap-1;
+	flex: 1;
+}
+
+/* Load More Link Animation */
+.load-more-link {
+	display: inline-block;
+	padding: 0.2rem 0;
+	margin-top: 1rem;
+	position: relative;
+	color: #000;
+	text-decoration: none;
+}
+
+.load-more-link::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	width: 0;
+	height: 1px;
+	background: #000;
+	transition: all 0.3s ease;
+	transform: translateX(-50%);
+}
+
+.load-more-link:hover::after {
+	width: 100%;
 }
 </style>

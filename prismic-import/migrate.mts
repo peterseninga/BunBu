@@ -5,6 +5,7 @@ import csv from "csv-parser";
 
 import { repositoryName } from "../slicemachine.config.json";
 
+// Typdefinition fuer ein Buch aus der CSV-Datei
 type Book = {
   title: string;
   author: string;
@@ -15,14 +16,18 @@ type Book = {
   slug: string;
 };
 
+// Array zum Speichern aller Buecher
 const books: Book[] = [];
 
+// Prismic Write Client init fuer API-Zugriff
 const writeClient = prismic.createWriteClient(repositoryName, {
   writeToken: process.env.PRISMIC_WRITE_TOKEN!,
 });
 
+// Migration-Objekt erstellen fuer Bulk-Import
 const migration = prismic.createMigration();
 
+// CSV-Datei asynchron einlesen und parsen
 await new Promise<void>((resolve, reject) => {
   fs.createReadStream("./books.csv")
     .pipe(
@@ -35,19 +40,23 @@ await new Promise<void>((resolve, reject) => {
     .on("end", resolve);
 });
 
-console.log("📚 Vorschau auf Buchdaten:");
+// Debugging: Erstes Buch ausgeben um Datenstruktur zu pruefen
+console.log("Vorschau auf Buchdaten:");
 console.log(JSON.stringify(books[0], null, 2));
 
+// Ueber alle Buecher iterieren und Prismic-Dokumente erstellen
 for (const book of books) {
+  // Debug-Ausgaben
   console.log(
-    "🧪 Format:",
+    "Format:",
     book.format?.split(",").map((f) => ({ format: f.trim() }))
   );
   console.log(
-    "🧪 Kategorien:",
+    "Kategorien:",
     book.categories?.split(",").map((c) => ({ category: c.trim() }))
   );
 
+  // Helpsfunction: Komma-separierte Strings in Prismic-Gruppen-Format umwandeln
   function toGroupArray(
     csvValue: string,
     key: string
@@ -61,12 +70,14 @@ for (const book of books) {
     );
   }
 
+  // Neues Prismic-Dokument zur Migration hinzufuegen
   migration.createDocument(
     {
       type: "book",
       uid: book.slug,
       lang: "en-us",
       data: {
+        // Hauptfelder des Dokuments
         title: [{ type: "heading4", text: book.title }],
         author: [{ type: "paragraph", text: book.author }],
         description: [{ type: "paragraph", text: book.description }],
@@ -94,11 +105,11 @@ for (const book of books) {
 
       },
     },
-    book.title
+    book.title // Name/Label fuer das Dokument in Prismic
   );
 }
 
+// Migration ausfuehren und Events loggen
 await writeClient.migrate(migration, {
   reporter: (event) => console.log(event),
 });
-2

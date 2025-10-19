@@ -15,6 +15,7 @@ const props = defineProps(
 
 useHead({
   title: "BunBu",
+
 })
 </script>
 
@@ -25,7 +26,7 @@ useHead({
 	class="welcome-section"
   >
     <div class="content">
-		<PrismicImage :field="slice.primary.background_image" class="img"/>
+		<PrismicImage :field="slice.primary.background_image" alt="Hintergrund" class="img"/>
 		<PrismicRichText :field="slice.primary.heading" wrapper="h1" class="h heading"/>
 		<PrismicRichText :field="slice.primary.description" class="body--sm"/>
 	</div>
