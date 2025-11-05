@@ -1788,7 +1788,7 @@ watch(allActiveFilters, () => {
   }
 
   .mobile-overlay-body {
-    padding: 2rem 1rem 3rem 1rem;
+    padding: 3rem 1rem 2rem 1rem;
   }
 }
 
@@ -1798,7 +1798,7 @@ watch(allActiveFilters, () => {
   }
 
   .mobile-overlay-body {
-    padding: 2rem 1rem 3rem 1rem;
+    padding: 3rem 1rem 2rem 1rem;
   }
 }
 </style>
