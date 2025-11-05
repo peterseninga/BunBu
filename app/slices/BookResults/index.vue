@@ -1786,11 +1786,19 @@ watch(allActiveFilters, () => {
   .mobile-filter-btn {
     align-self: flex-start;
   }
+
+  .mobile-overlay-body {
+    padding: 2rem 1rem 3rem 1rem;
+  }
 }
 
 @media (max-width: 480px) {
   .header-content {
     flex-wrap: wrap;
+  }
+
+  .mobile-overlay-body {
+    padding: 2rem 1rem 3rem 1rem;
   }
 }
 </style>
