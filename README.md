@@ -1,104 +1,116 @@
-# Prismic + Nuxt Minimal Starter
+# Bunbu - Barrierefreie Kinderbücher
 
-Want to quickly get started building your own project with [Prismic][prismic] and [Nuxt][nuxt]? This project includes basic configurations and nothing else. The project includes one Rich Text Slice, a homepage, and a dynamic page.
+Eine Sammlung barrierefreier Kinderbücher, entwickelt mit [Prismic][prismic] und [Nuxt][nuxt].
 
-- **Demo**: [Open live demo][live-demo]
-- **Learn more about Prismic and Nuxt**: [Prismic Nuxt Documentation][prismic-docs]
-
-&nbsp;
-
-![Starter screenshot](https://user-images.githubusercontent.com/31219208/228820114-98993841-0b14-40cf-9f39-1b81effe752f.png)
+- **Live-Demo**: [bunbu.vercel.app](https://bunbu.vercel.app)
+- **Prismic & Nuxt Dokumentation**: [Prismic Nuxt Documentation][prismic-docs]
 
 &nbsp;
 
-## 🚀 Quick Start
+## Über das Projekt
 
-To start a new project using this starter, run the following commands in your terminal:
+Bunbu ist eine digitale Sammlung barrierefreier Kinderbücher. Die Plattform wurde entwickelt, um Erziehungspersonen von eingeschränkten Kindern und pädagogischen Fachkräften den Zugang zur Literatur zu erleichtern.
+
+### Barrierefreiheit
+
+Die Webseite legt besonderen Wert auf:
+- Klare und einfache Navigation
+- Lesbare Schriftarten und Kontraste
+- Responsive Design für alle Geräte
+
+&nbsp;
+
+## Schnellstart
+
+Um dieses Projekt lokal zu starten, führe folgende Befehle im Terminal aus:
 
 ```sh
-npx degit prismicio-community/nuxt-starter-prismic-minimal your-project-name
-cd your-project-name
-npx @slicemachine/init@latest
+git clone <bunbu>
+cd bunbu
+npm install
 ```
 
-The commands will do the following:
-
-1. Start a new Nuxt project using this starter.
-2. Ask you to log in to Prismic or [create an account][prismic-sign-up].
-3. Create a new Prismic content repository with sample content.
-
-When you're ready to start your project, run the following command:
+Anschließend starte den Entwicklungsserver:
 
 ```sh
 npm run dev
 ```
 
-## How to use your project
+Die Webseite ist dann unter `http://localhost:3000` erreichbar.
 
-To edit the content of this project, go to [prismic.io/dashboard](https://prismic.io/dashboard), click on the repository for this website, and start editing.
+## Inhalte verwalten
 
-### Create a page
+### Prismic CMS
 
-To create a page, click on the green pencil icon, then select **Page**.
+Die Inhalte werden über [Prismic](https://prismic.io/dashboard) verwaltet. Um Bücher hinzuzufügen oder zu bearbeiten:
 
-Pages are made of Slices. You can add and rearrange Slices to your pages.
+1. Melde dich im Prismic Dashboard an
+2. Wähle das Bunbu Repository aus
+3. Erstelle oder bearbeite Inhalte
 
-Your new page will be accessible by its URL, but it won't appear on the website automatically. To let users discover it, add it to the navigation.
+### Neues Buch hinzufügen
 
-### Preview documents
+1. Klicke im Prismic Dashboard auf das grüne Stift-Symbol
+2. Wähle den entsprechenden Content-Type für Bücher
+3. Fülle die Felder aus (Titel, Autor, Beschreibung, Cover-Bild, etc.)
+4. Füge Slices für den Buchinhalt hinzu
+5. Veröffentliche das Dokument
 
-If you launched this starter when you created a new repository in the Prismic Dashboard, then your repository is preconfigured with previews in development on localhost:3000.
+### Sammlung organisieren
 
-To add a production preview, option your repository and go to _Settings > Previews_. Under _Create a New Preview_, fill in the three fields:
+Die Bücher werden automatisch in der Sammlung angezeigt. Du kannst:
+- Bücher nach Kategorien sortieren
+- Barrierefreiheits-Features kennzeichnen
 
-- a name (like **Production**)
-- the domain where your app is running (like <https://www.yoursite.com>)
-- `/api/preview` for the Preview Route
+## Vorschau-Funktion
 
-Now, go to a draft document and click the eye icon in the top-right corner.
+Die Webseite ist für Vorschauen in der Entwicklung unter `localhost:3000` vorkonfiguriert.
 
-To learn more about how to configure previews, read [Preview Drafts in Nuxt](https://prismic.io/docs/technologies/nuxt-preview-drafts) in the Prismic documentation.
+Für eine Produktions-Vorschau:
+1. Gehe zu _Settings > Previews_ in deinem Prismic Repository
+2. Erstelle eine neue Vorschau mit:
+   - **Name**: Production
+   - **Domain**: https://bunbu.vercel.app
+   - **Preview Route**: `/api/preview`
 
-### Customize this website
+## Projekt-Struktur
 
-This website is preconfigured with Prismic. Functionality is provided by the `@nuxtjs/prismic` package, which makes Prismic utilities available throughout the app. Take a look at the code to see how it's used.
+### Wichtige Dateien
 
-### Edit the code
+- `nuxt.config.js` - Konfiguration für Prismic und Nuxt
+- `pages/index.vue` - Startseite mit der Büchersammlung
+- `pages/[uid].vue` - Dynamische Seiten für einzelne Bücher
+- `slices/` - Wiederverwendbare Komponenten für Buchinhalte
 
-There are two steps to rendering content from Prismic in your Nuxt project:
+### Slice Machine
 
-1. Fetch content from the Prismic API
-2. Template the content
+Dieses Projekt nutzt Slice Machine für die Content-Modellierung. Um Custom Types oder Slices zu bearbeiten:
 
-Here are some of the files in your project that you can edit:
+```sh
+npm run slicemachine
+```
 
-- `nuxt.config.js` - The `prismic` property includes configurations for `@nuxtjs/prismic`.
-- `pages/index.vue` - This is the app homepage. It queries and renders a page document with the UID (unique identifier) "home" from the Prismic API.
-- `pages/[uid].vue` - This is the page component, which queries and renders a page document from your Prismic repository based on the UID.
-- `slices/RichText/index.vue` - Each Slice has an `index.vue` file that renders the Slice component. Edit this file to customize your Slices.
+Mehr Informationen: [Model Content in Nuxt](https://prismic.io/docs/technologies/nuxt-model-content)
 
-These are important files that you should leave as-is:
+## Deployment
 
-- `pages/slice-simulator.vue` - Do not edit or delete this file. This file simulates your Slice components in development.
-- `slices/` - This directory contains Slice components, which are generated programmatically by Slice Machine. To customize a Slice template, you can edit the Slice's `index.vue` file. To add Slices, delete Slices, or edit Slice models, use Slice Machine (more info below).
+Das Projekt ist auf [Vercel](https://vercel.com) deployed. Bei jedem Push auf den Main-Branch wird automatisch eine neue Version veröffentlicht.
 
-Learn more about how to edit your components with [Fetch Data in Nuxt](https://prismic.io/docs/technologies/nuxt-fetch-data) and [Template Content in Nuxt](https://prismic.io/docs/technologies/nuxt-template-content).
+Manuelle Deployment-Befehle:
 
-### Deploy to the web
+```sh
+npm run build
+npm run preview
+```
 
-To put your project online, see [Deploy your Nuxt App](https://prismic.io/docs/technologies/nuxt-deploy).
+## Technologie-Stack
 
-### Edit content models with Slice Machine
+- **Frontend**: Nuxt 3
+- **CMS**: Prismic
+- **Hosting**: Vercel
+- **Styling**: TailwindCSS
 
-This project includes an application called Slice Machine, which generates models for your Custom Types and Slices. Slice Machine stores the models locally in your codebase, so you can save and version them. It also syncs your models to Prismic. To learn how to use Slice Machine, read [Model Content in Nuxt](https://prismic.io/docs/technologies/nuxt-model-content).
-
-If you change or add to your Custom Types, you'll need to update your route handling to match. To learn how to do that, read [Define Paths in Nuxt](https://prismic.io/docs/technologies/nuxt-define-routes).
-
-## Documentation
-
-For the official Prismic documentation, see [Prismic's guide for Nuxt](prismic-docs) or the [technical references for the installed Prismic packages](https://prismic.io/docs/technologies/technical-references).
-
-## License
+## Lizenz
 
 ```
 Copyright 2013-2023 Prismic <contact@prismic.io> (https://prismic.io)
@@ -116,8 +128,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
+---
+
+**Bunbu** - Bunte Bücher
+
 [prismic]: https://prismic.io
 [prismic-docs]: https://prismic.io/docs/nuxt-3-setup
-[prismic-sign-up]: https://prismic.io/dashboard/signup
 [nuxt]: https://nuxt.com
-[live-demo]: https://nuxt-starter-prismic-minimal.vercel.app
