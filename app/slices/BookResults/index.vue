@@ -374,7 +374,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from "vue";
-import { useRoute, navigateTo } from "#imports";
+import { useRoute, useRouter, navigateTo } from "#imports";
 import type { getSliceComponentProps } from "@prismicio/vue";
 import type { Content } from "@prismicio/client";
 
@@ -449,6 +449,7 @@ const getRelevanceScore = (book: BookData, query: string): number => {
 };
 
 const route = useRoute();
+const router = useRouter();
 // UI-Zustand
 const expandedCategories = ref<string[]>([]);
 const books = ref<BookData[]>([]);
@@ -465,6 +466,39 @@ const canScrollRight = ref(false);
 // Ausgewaehlte Filter
 const selectedThemes = ref<string[]>([]);
 const selectedFormats = ref<string[]>([]);
+
+// Filter aus URL lesen
+const readFiltersFromQuery = () => {
+  const formatsParam = route.query.formats?.toString() || "";
+  const themesParam = route.query.themes?.toString() || "";
+
+  if (formatsParam) {
+    selectedFormats.value = formatsParam.split(",").filter(Boolean);
+  }
+  if (themesParam) {
+    selectedThemes.value = themesParam.split(",").filter(Boolean);
+  }
+};
+
+// Filter in URL schreiben ohne neuen Eintrag
+const writeFiltersToQuery = () => {
+  const current = { ...route.query };
+
+  if (selectedFormats.value.length > 0) {
+    current.formats = selectedFormats.value.join(",");
+  } else {
+    delete current.formats;
+  }
+
+  if (selectedThemes.value.length > 0) {
+    current.themes = selectedThemes.value.join(",");
+  } else {
+    delete current.themes;
+  }
+
+  router.replace({ query: current });
+};
+
 
 const searchQuery = computed(() => route.query.q?.toString() || "");
 const filterType = computed(() => route.query.filter?.toString() || "");
@@ -613,40 +647,28 @@ const loadBooksData = async () => {
 watch(
   [searchQuery, filterType],
   ([q, type], [oldQ, oldType]) => {
-    console.log("URL Parameter:", { q, type });
+    // Erster Lauf, dann nichts resetten
+    if (oldQ === undefined && oldType === undefined) return;
 
-    // Bei Aenderung zuruecksetzen der Filter
     if (q !== oldQ || type !== oldType) {
       selectedThemes.value = [];
       selectedFormats.value = [];
       displayLimit.value = 20;
-    }
 
-    if (!q || !type) return;
-
-    const normalizedQ = normalize(q);
-
-    if (type === "category") {
-      selectedThemes.value = [q];
-    } else if (type === "format") {
-      selectedFormats.value = [q];
-    } else if (type === 'general') {
-      const matchedFormat = allFormats.find(f => normalize(f) === normalizedQ)
-      if (matchedFormat) {
-        selectedFormats.value = [matchedFormat]
-        console.log('Format automatisch aktiviert:', matchedFormat)
-      }
-
-      const matchedTheme = defaultCategories
-        .flatMap(c => c.items)
-        .find(item => normalize(item) === normalizedQ)
-      if (matchedTheme) {
-        selectedThemes.value = [matchedTheme]
-        console.log('Thema automatisch aktiviert:', matchedTheme)
-      }
+      // Falls URL Filter enthaelt, dann wiederherstellen
+      readFiltersFromQuery();
     }
   },
   { immediate: true }
+);
+
+// Wenn Filter geaendert werden, dann URL aktualisieren
+watch(
+  [selectedFormats, selectedThemes],
+  () => {
+    writeFiltersToQuery();
+  },
+  { deep: true }
 );
 
 // Prueft ob mind. 1 Filter aktiv
@@ -1146,6 +1168,8 @@ watch(
 onMounted(() => {
   console.log("BookResults Slice geladen");
   console.log("Initial URL params:", route.query);
+
+  readFiltersFromQuery();
   loadBooksData();
   
   setTimeout(() => {
