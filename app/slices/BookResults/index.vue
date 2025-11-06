@@ -467,7 +467,7 @@ const canScrollRight = ref(false);
 const selectedThemes = ref<string[]>([]);
 const selectedFormats = ref<string[]>([]);
 
-// Filter aus URL lesen
+// Liest Filter aus der URL
 const readFiltersFromQuery = () => {
   const formatsParam = route.query.formats?.toString() || "";
   const themesParam = route.query.themes?.toString() || "";
@@ -480,7 +480,7 @@ const readFiltersFromQuery = () => {
   }
 };
 
-// Filter in URL schreiben ohne neuen Eintrag
+// Schreibt current Filter zurueck in die URL
 const writeFiltersToQuery = () => {
   const current = { ...route.query };
 
@@ -499,6 +499,47 @@ const writeFiltersToQuery = () => {
   router.replace({ query: current });
 };
 
+// Alles aus der Route anwenden
+const applyFiltersFromRoute = () => {
+  // Leeren
+  selectedThemes.value = [];
+  selectedFormats.value = [];
+  displayLimit.value = 20;
+
+  readFiltersFromQuery();
+
+  if (
+    selectedFormats.value.length === 0 &&
+    selectedThemes.value.length === 0
+  ) {
+    const q = route.query.q?.toString();
+    const type = route.query.filter?.toString();
+
+    if (q && type) {
+      const normalizedQ = normalize(q);
+
+      if (type === "category") {
+        selectedThemes.value = [q];
+      } else if (type === "format") {
+        selectedFormats.value = [q];
+      } else if (type === "general") {
+        const matchedFormat = allFormats.find(
+          (f) => normalize(f) === normalizedQ
+        );
+        if (matchedFormat) {
+          selectedFormats.value = [matchedFormat];
+        }
+
+        const matchedTheme = defaultCategories
+          .flatMap((c) => c.items)
+          .find((item) => normalize(item) === normalizedQ);
+        if (matchedTheme) {
+          selectedThemes.value = [matchedTheme];
+        }
+      }
+    }
+  }
+};
 
 const searchQuery = computed(() => route.query.q?.toString() || "");
 const filterType = computed(() => route.query.filter?.toString() || "");
@@ -647,20 +688,54 @@ const loadBooksData = async () => {
 watch(
   [searchQuery, filterType],
   ([q, type], [oldQ, oldType]) => {
-    // Erster Lauf, dann nichts resetten
+    // Rrster Lauf, da nichts resetten
     if (oldQ === undefined && oldType === undefined) return;
 
+    // Nur reagieren, wenn Aenderung
     if (q !== oldQ || type !== oldType) {
+      // Basis-Reset
       selectedThemes.value = [];
       selectedFormats.value = [];
       displayLimit.value = 20;
 
-      // Falls URL Filter enthaelt, dann wiederherstellen
-      readFiltersFromQuery();
+       readFiltersFromQuery();
+
+      if (
+        selectedFormats.value.length === 0 &&
+        selectedThemes.value.length === 0 &&
+        q &&
+        type
+      ) {
+        const normalizedQ = normalize(q);
+
+        if (type === "category") {
+          selectedThemes.value = [q];
+        } else if (type === "format") {
+          selectedFormats.value = [q];
+        } else if (type === "general") {
+          // Schauen, ob q einem Format entspricht
+          const matchedFormat = allFormats.find(
+            (f) => normalize(f) === normalizedQ
+          );
+          if (matchedFormat) {
+            selectedFormats.value = [matchedFormat];
+          }
+
+          // Oder einem Thema
+          const matchedTheme = defaultCategories
+            .flatMap((c) => c.items)
+            .find((item) => normalize(item) === normalizedQ);
+          if (matchedTheme) {
+            selectedThemes.value = [matchedTheme];
+          }
+        }
+      }
     }
   },
   { immediate: true }
 );
+
+
 
 // Wenn Filter geaendert werden, dann URL aktualisieren
 watch(
@@ -1130,7 +1205,7 @@ const applyMobileFilters = () => {
 };
 
 /**
- * Navifiert zur Detailseite eines Buches
+ * Navigiert zur Detailseite eines Buches
  * Generiert Slug aus Buchtitel wenn noetig
  * @param {BookData} book Das Buch zu dem navigiert werden soll
  * @returns {void} 
@@ -1151,15 +1226,27 @@ const navigateToBook = (book: BookData) => {
 
 /**
  * Beobachtet Parameter Aenderungen
- * Loggt Aenderungen fuer Debugging
  */
 watch(
   [searchQuery, filterType],
-  ([query, filter]) => {
-    console.log("URL Parameter geändert:", { query, filter });
+  () => {
+    applyFiltersFromRoute();
   },
   { immediate: true }
 );
+
+/**
+ * Beobachet Filter Aenderungen
+ */
+watch(
+  [selectedFormats, selectedThemes],
+  () => {
+    writeFiltersToQuery();
+  },
+  { deep: true }
+);
+
+
 
 /**
  * Wird beim Mounten der Komponente ausgefuehrt 
