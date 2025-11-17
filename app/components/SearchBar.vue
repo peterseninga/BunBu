@@ -480,7 +480,7 @@ const getTypeLabel = (type: string): string => {
   const labels = {
     book: 'Buch',
     author: 'Autor',
-    category: 'Kategorie',
+    category: 'Thema',
     format: 'Format'
   }
   return labels[type as keyof typeof labels] || type
