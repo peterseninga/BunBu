@@ -34,7 +34,8 @@
     <div 
       v-if="showSuggestions && (filteredSuggestions.length > 0 || isLoading)"
       class="suggestions-dropdown"
-    >
+      >
+    
       <!-- Ladeanzeige -->
       <div v-if="isLoading" class="suggestion-item loading">
         <div class="loading-spinner"></div>
@@ -52,6 +53,7 @@
         :key="index"
         @mousedown.prevent="selectSuggestion(suggestion)"
         @mouseenter="selectedIndex = index"
+        @mouseleave="selectedIndex = -1"
         class="suggestion-item"
         :class="{ 
           'selected': index === selectedIndex,
