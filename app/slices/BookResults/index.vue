@@ -334,10 +334,9 @@
           v-else-if="filteredBooks.length === 0 && books.length > 0"
           class="no-results"
         >
-          <p>Keine Bücher für die aktuellen Filter/Suchergebnisse gefunden.</p>
-          <button @click="clearAllFilters" class="reset-btn">
-            Filter zurücksetzen
-          </button>
+          <p class="body--sm"><strong>Keine Bücher für die aktuellen <br>
+            Filter/Suchergebnisse <br>
+            gefunden.</strong></p>
         </div>
 
         <!-- Buecher Liste -->
